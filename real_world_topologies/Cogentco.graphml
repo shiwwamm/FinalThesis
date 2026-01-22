@@ -1,0 +1,3031 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d41" for="edge" attr.name="LinkLabel" attr.type="string"/>
+<key id="d40" for="edge" attr.name="capacity" attr.type="string"/>
+<key id="d39" for="edge" attr.name="key" attr.type="long"/>
+<key id="d38" for="edge" attr.name="id" attr.type="string"/>
+<key id="d37" for="node" attr.name="hyperedge" attr.type="long"/>
+<key id="d36" for="node" attr.name="geocode_append" attr.type="string"/>
+<key id="d35" for="node" attr.name="label" attr.type="string"/>
+<key id="d34" for="node" attr.name="Longitude" attr.type="double"/>
+<key id="d33" for="node" attr.name="id" attr.type="long"/>
+<key id="d32" for="node" attr.name="type" attr.type="string"/>
+<key id="d31" for="node" attr.name="Country" attr.type="string"/>
+<key id="d30" for="node" attr.name="Latitude" attr.type="double"/>
+<key id="d29" for="node" attr.name="Internal" attr.type="long"/>
+<key id="d28" for="graph" attr.name="Testbed" attr.type="long"/>
+<key id="d27" for="graph" attr.name="LastProcessed" attr.type="string"/>
+<key id="d26" for="graph" attr.name="DateYear" attr.type="string"/>
+<key id="d25" for="graph" attr.name="NetworkDate" attr.type="string"/>
+<key id="d24" for="graph" attr.name="Transit" attr.type="long"/>
+<key id="d23" for="graph" attr.name="Developed" attr.type="long"/>
+<key id="d22" for="graph" attr.name="Creator" attr.type="string"/>
+<key id="d21" for="graph" attr.name="Layer" attr.type="string"/>
+<key id="d20" for="graph" attr.name="Access" attr.type="long"/>
+<key id="d19" for="graph" attr.name="LastAccess" attr.type="string"/>
+<key id="d18" for="graph" attr.name="DateMonth" attr.type="string"/>
+<key id="d17" for="graph" attr.name="DateModifier" attr.type="string"/>
+<key id="d16" for="graph" attr.name="SourceGitVersion" attr.type="string"/>
+<key id="d15" for="graph" attr.name="IX" attr.type="long"/>
+<key id="d14" for="graph" attr.name="Customer" attr.type="long"/>
+<key id="d13" for="graph" attr.name="ToolsetVersion" attr.type="string"/>
+<key id="d12" for="graph" attr.name="label" attr.type="string"/>
+<key id="d11" for="graph" attr.name="Commercial" attr.type="long"/>
+<key id="d10" for="graph" attr.name="Backbone" attr.type="long"/>
+<key id="d9" for="graph" attr.name="Type" attr.type="string"/>
+<key id="d8" for="graph" attr.name="DateType" attr.type="string"/>
+<key id="d7" for="graph" attr.name="Version" attr.type="string"/>
+<key id="d6" for="graph" attr.name="Source" attr.type="string"/>
+<key id="d5" for="graph" attr.name="Note" attr.type="string"/>
+<key id="d4" for="graph" attr.name="Provenance" attr.type="string"/>
+<key id="d3" for="graph" attr.name="Network" attr.type="string"/>
+<key id="d2" for="graph" attr.name="GeoExtent" attr.type="string"/>
+<key id="d1" for="graph" attr.name="GeoLocation" attr.type="string"/>
+<key id="d0" for="graph" attr.name="DateObtained" attr.type="string"/>
+<graph edgedefault="undirected"><data key="d0">19/10/10</data>
+<data key="d1">USA, Europe</data>
+<data key="d2">Country+</data>
+<data key="d3">Cogent </data>
+<data key="d4">Primary</data>
+<data key="d5">Contains Aleron</data>
+<data key="d6">http://www.cogentco.com/us/network_map.php</data>
+<data key="d7">1.0</data>
+<data key="d8">Current</data>
+<data key="d9">COM</data>
+<data key="d10">1</data>
+<data key="d11">0</data>
+<data key="d12">Cogentco</data>
+<data key="d13">0.3.34dev-20120328</data>
+<data key="d14">1</data>
+<data key="d15">0</data>
+<data key="d16">e278b1b</data>
+<data key="d17">=</data>
+<data key="d18">08</data>
+<data key="d19">3/08/10</data>
+<data key="d20">0</data>
+<data key="d21">IP</data>
+<data key="d22">Topology Zoo Toolset</data>
+<data key="d23">1</data>
+<data key="d24">1</data>
+<data key="d25">2010_08</data>
+<data key="d26">2010</data>
+<data key="d27">2011_09_01</data>
+<data key="d28">0</data>
+<node id="n0">
+  <data key="d29">1</data>
+  <data key="d30">45.74944</data>
+  <data key="d31">Romania</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">0</data>
+  <data key="d34">21.22722</data>
+  <data key="d35">n0</data>
+</node>
+<node id="n1">
+  <data key="d29">1</data>
+  <data key="d30">44.43225</data>
+  <data key="d31">Romania</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">1</data>
+  <data key="d34">26.10626</data>
+  <data key="d35">n1</data>
+</node>
+<node id="n2">
+  <data key="d29">1</data>
+  <data key="d30">50.0</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">2</data>
+  <data key="d34">8.27111</data>
+  <data key="d35">n2</data>
+</node>
+<node id="n3">
+  <data key="d29">1</data>
+  <data key="d30">49.48833</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">3</data>
+  <data key="d34">8.46472</data>
+  <data key="d35">n3</data>
+</node>
+<node id="n4">
+  <data key="d29">1</data>
+  <data key="d30">48.78232</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">4</data>
+  <data key="d34">9.17702</data>
+  <data key="d35">n4</data>
+</node>
+<node id="n5">
+  <data key="d29">1</data>
+  <data key="d30">49.44778</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">5</data>
+  <data key="d34">11.06833</data>
+  <data key="d35">n5</data>
+</node>
+<node id="n6">
+  <data key="d29">1</data>
+  <data key="d30">48.13743</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">6</data>
+  <data key="d34">11.57549</data>
+  <data key="d35">n6</data>
+</node>
+<node id="n7">
+  <data key="d29">1</data>
+  <data key="d30">48.20849</data>
+  <data key="d31">Austria</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">7</data>
+  <data key="d34">16.37208</data>
+  <data key="d35">n7</data>
+</node>
+<node id="n8">
+  <data key="d29">1</data>
+  <data key="d30">48.14816</data>
+  <data key="d31">Slovakia</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">8</data>
+  <data key="d34">17.10674</data>
+  <data key="d35">n8</data>
+</node>
+<node id="n9">
+  <data key="d29">1</data>
+  <data key="d30">47.49801</data>
+  <data key="d31">Hungary</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">9</data>
+  <data key="d34">19.03991</data>
+  <data key="d35">n9</data>
+</node>
+<node id="n10">
+  <data key="d29">1</data>
+  <data key="d30">43.0389</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">10</data>
+  <data key="d34">-87.90647</data>
+  <data key="d35">n10</data>
+</node>
+<node id="n11">
+  <data key="d29">1</data>
+  <data key="d30">44.97997</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">11</data>
+  <data key="d34">-93.26384</data>
+  <data key="d35">n11</data>
+</node>
+<node id="n12">
+  <data key="d29">1</data>
+  <data key="d30">41.68338</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">12</data>
+  <data key="d34">-86.25001</data>
+  <data key="d35">n12</data>
+</node>
+<node id="n13">
+  <data key="d29">1</data>
+  <data key="d30">41.85003</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">13</data>
+  <data key="d34">-87.65005</data>
+  <data key="d35">n13</data>
+</node>
+<node id="n14">
+  <data key="d29">1</data>
+  <data key="d30">39.11417</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">14</data>
+  <data key="d34">-94.62746</data>
+  <data key="d35">n14</data>
+</node>
+<node id="n15">
+  <data key="d29">1</data>
+  <data key="d30">38.62727</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">15</data>
+  <data key="d34">-90.19789</data>
+  <data key="d35">n15</data>
+</node>
+<node id="n16">
+  <data key="d29">1</data>
+  <data key="d30">41.60054</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">16</data>
+  <data key="d34">-93.60911</data>
+  <data key="d35">n16</data>
+</node>
+<node id="n17">
+  <data key="d29">1</data>
+  <data key="d30">41.25861</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">17</data>
+  <data key="d34">-95.93779</data>
+  <data key="d35">n17</data>
+</node>
+<node id="n18">
+  <data key="d29">1</data>
+  <data key="d30">38.25424</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">18</data>
+  <data key="d34">-85.75941</data>
+  <data key="d35">n18</data>
+</node>
+<node id="n19">
+  <data key="d29">1</data>
+  <data key="d30">36.16589</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">19</data>
+  <data key="d34">-86.78444</data>
+  <data key="d35">n19</data>
+</node>
+<node id="n20">
+  <data key="d29">1</data>
+  <data key="d30">43.54111</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">20</data>
+  <data key="d34">-5.66444</data>
+  <data key="d35">n20</data>
+</node>
+<node id="n21">
+  <data key="d29">1</data>
+  <data key="d30">43.46472</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">21</data>
+  <data key="d34">-3.80444</data>
+  <data key="d35">n21</data>
+</node>
+<node id="n22">
+  <data key="d29">1</data>
+  <data key="d30">42.23333</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">22</data>
+  <data key="d34">-8.71667</data>
+  <data key="d35">n22</data>
+</node>
+<node id="n23">
+  <data key="d29">1</data>
+  <data key="d30">42.6</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">23</data>
+  <data key="d34">-5.56667</data>
+  <data key="d35">n23</data>
+</node>
+<node id="n24">
+  <data key="d29">1</data>
+  <data key="d30">41.65606</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">24</data>
+  <data key="d34">-0.87734</data>
+  <data key="d35">n24</data>
+</node>
+<node id="n25">
+  <data key="d29">1</data>
+  <data key="d30">41.38879</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">25</data>
+  <data key="d34">2.15899</data>
+  <data key="d35">n25</data>
+</node>
+<node id="n26">
+  <data key="d29">1</data>
+  <data key="d30">43.26271</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">26</data>
+  <data key="d34">-2.92528</data>
+  <data key="d35">n26</data>
+</node>
+<node id="n27">
+  <data key="d29">1</data>
+  <data key="d30">42.46667</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">27</data>
+  <data key="d34">-2.45</data>
+  <data key="d35">n27</data>
+</node>
+<node id="n28">
+  <data key="d29">1</data>
+  <data key="d30">40.65</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">28</data>
+  <data key="d34">-4.7</data>
+  <data key="d35">n28</data>
+</node>
+<node id="n29">
+  <data key="d29">1</data>
+  <data key="d30">43.31283</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">29</data>
+  <data key="d34">-1.97499</data>
+  <data key="d35">n29</data>
+</node>
+<node id="n30">
+  <data key="d29">1</data>
+  <data key="d30">39.76838</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">30</data>
+  <data key="d34">-86.15804</data>
+  <data key="d35">n30</data>
+</node>
+<node id="n31">
+  <data key="d29">1</data>
+  <data key="d30">39.162</data>
+  <data key="d31">United States</data>
+  <data key="d32">Off-Net Market</data>
+  <data key="d33">31</data>
+  <data key="d34">-84.45689</data>
+  <data key="d35">n31</data>
+</node>
+<node id="n32">
+  <data key="d36">US</data>
+  <data key="d31">United States</data>
+  <data key="d34">-83.55521</data>
+  <data key="d35">n32</data>
+  <data key="d29">1</data>
+  <data key="d30">41.66394</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">32</data>
+</node>
+<node id="n33">
+  <data key="d29">1</data>
+  <data key="d30">42.33143</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">33</data>
+  <data key="d34">-83.04575</data>
+  <data key="d35">n33</data>
+</node>
+<node id="n34">
+  <data key="d29">1</data>
+  <data key="d30">39.75895</data>
+  <data key="d31">United States</data>
+  <data key="d32">Off-Net Market</data>
+  <data key="d33">34</data>
+  <data key="d34">-84.19161</data>
+  <data key="d35">n34</data>
+</node>
+<node id="n35">
+  <data key="d29">1</data>
+  <data key="d30">39.96118</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">35</data>
+  <data key="d34">-82.99879</data>
+  <data key="d35">n35</data>
+</node>
+<node id="n36">
+  <data key="d29">1</data>
+  <data key="d30">39.3995</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">36</data>
+  <data key="d34">-84.56134</data>
+  <data key="d35">n36</data>
+</node>
+<node id="n37">
+  <data key="d29">1</data>
+  <data key="d30">41.4995</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">37</data>
+  <data key="d34">-81.69541</data>
+  <data key="d35">n37</data>
+</node>
+<node id="n38">
+  <data key="d29">1</data>
+  <data key="d30">42.88645</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">38</data>
+  <data key="d34">-78.87837</data>
+  <data key="d35">n38</data>
+</node>
+<node id="n39">
+  <data key="d29">1</data>
+  <data key="d30">40.46423</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">39</data>
+  <data key="d34">-80.60091</data>
+  <data key="d35">n39</data>
+</node>
+<node id="n40">
+  <data key="d29">1</data>
+  <data key="d30">59.91273</data>
+  <data key="d31">Norway</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">40</data>
+  <data key="d34">10.74609</data>
+  <data key="d35">n40</data>
+</node>
+<node id="n41">
+  <data key="d29">1</data>
+  <data key="d30">59.33258</data>
+  <data key="d31">Sweden</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">41</data>
+  <data key="d34">18.0649</data>
+  <data key="d35">n41</data>
+</node>
+<node id="n42">
+  <data key="d29">1</data>
+  <data key="d30">55.67594</data>
+  <data key="d31">Denmark</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">42</data>
+  <data key="d34">12.56553</data>
+  <data key="d35">n42</data>
+</node>
+<node id="n43">
+  <data key="d29">1</data>
+  <data key="d30">55.60587</data>
+  <data key="d31">Sweden</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">43</data>
+  <data key="d34">13.00073</data>
+  <data key="d35">n43</data>
+</node>
+<node id="n44">
+  <data key="d29">1</data>
+  <data key="d30">54.97328</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">44</data>
+  <data key="d34">-1.61396</data>
+  <data key="d35">n44</data>
+</node>
+<node id="n45">
+  <data key="d29">1</data>
+  <data key="d30">53.79648</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">45</data>
+  <data key="d34">-1.54785</data>
+  <data key="d35">n45</data>
+</node>
+<node id="n46">
+  <data key="d29">1</data>
+  <data key="d30">55.86515</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">46</data>
+  <data key="d34">-4.25763</data>
+  <data key="d35">n46</data>
+</node>
+<node id="n47">
+  <data key="d29">1</data>
+  <data key="d30">55.95</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">47</data>
+  <data key="d34">-3.2</data>
+  <data key="d35">n47</data>
+</node>
+<node id="n48">
+  <data key="d29">1</data>
+  <data key="d30">53.41058</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">48</data>
+  <data key="d34">-2.97794</data>
+  <data key="d35">n48</data>
+</node>
+<node id="n49">
+  <data key="d29">1</data>
+  <data key="d30">53.48095</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">49</data>
+  <data key="d34">-2.23743</data>
+  <data key="d35">n49</data>
+</node>
+<node id="n50">
+  <data key="d29">1</data>
+  <data key="d30">38.71667</data>
+  <data key="d31">Portugal</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">50</data>
+  <data key="d34">-9.13333</data>
+  <data key="d35">n50</data>
+</node>
+<node id="n51">
+  <data key="d29">1</data>
+  <data key="d30">40.2</data>
+  <data key="d31">Portugal</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">51</data>
+  <data key="d34">-8.41667</data>
+  <data key="d35">n51</data>
+</node>
+<node id="n52">
+  <data key="d29">1</data>
+  <data key="d30">38.34517</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">52</data>
+  <data key="d34">-0.48149</data>
+  <data key="d35">n52</data>
+</node>
+<node id="n53">
+  <data key="d29">1</data>
+  <data key="d30">37.98333</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">53</data>
+  <data key="d34">-1.11667</data>
+  <data key="d35">n53</data>
+</node>
+<node id="n54">
+  <data key="d29">1</data>
+  <data key="d30">40.4165</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">54</data>
+  <data key="d34">-3.70256</data>
+  <data key="d35">n54</data>
+</node>
+<node id="n55">
+  <data key="d29">1</data>
+  <data key="d30">39.46975</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">55</data>
+  <data key="d34">-0.37739</data>
+  <data key="d35">n55</data>
+</node>
+<node id="n56">
+  <data key="d29">1</data>
+  <data key="d30">37.37722</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">56</data>
+  <data key="d34">-5.98694</data>
+  <data key="d35">n56</data>
+</node>
+<node id="n57">
+  <data key="d29">1</data>
+  <data key="d30">38.88333</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">57</data>
+  <data key="d34">-6.96667</data>
+  <data key="d35">n57</data>
+</node>
+<node id="n58">
+  <data key="d29">1</data>
+  <data key="d30">37.18817</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">58</data>
+  <data key="d34">-3.60667</data>
+  <data key="d35">n58</data>
+</node>
+<node id="n59">
+  <data key="d29">1</data>
+  <data key="d30">36.72016</data>
+  <data key="d31">Spain</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">59</data>
+  <data key="d34">-4.42034</data>
+  <data key="d35">n59</data>
+</node>
+<node id="n60">
+  <data key="d29">1</data>
+  <data key="d30">30.26715</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">60</data>
+  <data key="d34">-97.74306</data>
+  <data key="d35">n60</data>
+</node>
+<node id="n61">
+  <data key="d29">1</data>
+  <data key="d30">29.42412</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">61</data>
+  <data key="d34">-98.49363</data>
+  <data key="d35">n61</data>
+</node>
+<node id="n62">
+  <data key="d29">1</data>
+  <data key="d30">29.95465</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">62</data>
+  <data key="d34">-90.07507</data>
+  <data key="d35">n62</data>
+</node>
+<node id="n63">
+  <data key="d29">1</data>
+  <data key="d30">32.29876</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">63</data>
+  <data key="d34">-90.18481</data>
+  <data key="d35">n63</data>
+</node>
+<node id="n64">
+  <data key="d29">1</data>
+  <data key="d30">36.15398</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">64</data>
+  <data key="d34">-95.99278</data>
+  <data key="d35">n64</data>
+</node>
+<node id="n65">
+  <data key="d29">1</data>
+  <data key="d30">35.46756</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">65</data>
+  <data key="d34">-97.51643</data>
+  <data key="d35">n65</data>
+</node>
+<node id="n66">
+  <data key="d29">1</data>
+  <data key="d30">32.72541</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">66</data>
+  <data key="d34">-97.32085</data>
+  <data key="d35">n66</data>
+</node>
+<node id="n67">
+  <data key="d29">1</data>
+  <data key="d30">32.78306</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">67</data>
+  <data key="d34">-96.80667</data>
+  <data key="d35">n67</data>
+</node>
+<node id="n68">
+  <data key="d29">1</data>
+  <data key="d30">35.14953</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">68</data>
+  <data key="d34">-90.04898</data>
+  <data key="d35">n68</data>
+</node>
+<node id="n69">
+  <data key="d29">1</data>
+  <data key="d30">29.76328</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">69</data>
+  <data key="d34">-95.36327</data>
+  <data key="d35">n69</data>
+</node>
+<node id="n70">
+  <data key="d29">1</data>
+  <data key="d30">47.38333</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">70</data>
+  <data key="d34">0.68333</data>
+  <data key="d35">n70</data>
+</node>
+<node id="n71">
+  <data key="d29">1</data>
+  <data key="d30">47.21725</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">71</data>
+  <data key="d34">-1.55336</data>
+  <data key="d35">n71</data>
+</node>
+<node id="n72">
+  <data key="d29">1</data>
+  <data key="d30">48.08333</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">72</data>
+  <data key="d34">-1.68333</data>
+  <data key="d35">n72</data>
+</node>
+<node id="n73">
+  <data key="d29">1</data>
+  <data key="d30">49.18585</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">73</data>
+  <data key="d34">-0.35912</data>
+  <data key="d35">n73</data>
+</node>
+<node id="n74">
+  <data key="d29">1</data>
+  <data key="d30">49.44313</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">74</data>
+  <data key="d34">1.09932</data>
+  <data key="d35">n74</data>
+</node>
+<node id="n75">
+  <data key="d29">1</data>
+  <data key="d30">49.25</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">75</data>
+  <data key="d34">4.03333</data>
+  <data key="d35">n75</data>
+</node>
+<node id="n76">
+  <data key="d29">1</data>
+  <data key="d30">49.61167</data>
+  <data key="d31">Luxembourg</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">76</data>
+  <data key="d34">6.13</data>
+  <data key="d35">n76</data>
+</node>
+<node id="n77">
+  <data key="d29">1</data>
+  <data key="d30">50.11667</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">77</data>
+  <data key="d34">8.68333</data>
+  <data key="d35">n77</data>
+</node>
+<node id="n78">
+  <data key="d29">1</data>
+  <data key="d30">44.83333</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">78</data>
+  <data key="d34">-0.56667</data>
+  <data key="d35">n78</data>
+</node>
+<node id="n79">
+  <data key="d29">1</data>
+  <data key="d30">46.58333</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">79</data>
+  <data key="d34">0.33333</data>
+  <data key="d35">n79</data>
+</node>
+<node id="n80">
+  <data key="d29">1</data>
+  <data key="d30">25.77427</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">80</data>
+  <data key="d34">-80.19366</data>
+  <data key="d35">n80</data>
+</node>
+<node id="n81">
+  <data key="d29">1</data>
+  <data key="d30">26.35869</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">81</data>
+  <data key="d34">-80.0831</data>
+  <data key="d35">n81</data>
+</node>
+<node id="n82">
+  <data key="d29">1</data>
+  <data key="d30">33.749</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">82</data>
+  <data key="d34">-84.38798</data>
+  <data key="d35">n82</data>
+</node>
+<node id="n83">
+  <data key="d29">1</data>
+  <data key="d30">35.22709</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">83</data>
+  <data key="d34">-80.84313</data>
+  <data key="d35">n83</data>
+</node>
+<node id="n84">
+  <data key="d29">1</data>
+  <data key="d30">36.07264</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">84</data>
+  <data key="d34">-79.79198</data>
+  <data key="d35">n84</data>
+</node>
+<node id="n85">
+  <data key="d29">1</data>
+  <data key="d30">35.7721</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">85</data>
+  <data key="d34">-78.63861</data>
+  <data key="d35">n85</data>
+</node>
+<node id="n86">
+  <data key="d29">1</data>
+  <data key="d30">27.94752</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">86</data>
+  <data key="d34">-82.45843</data>
+  <data key="d35">n86</data>
+</node>
+<node id="n87">
+  <data key="d29">1</data>
+  <data key="d30">28.53834</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">87</data>
+  <data key="d34">-81.37924</data>
+  <data key="d35">n87</data>
+</node>
+<node id="n88">
+  <data key="d29">1</data>
+  <data key="d30">30.33218</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">88</data>
+  <data key="d34">-81.65565</data>
+  <data key="d35">n88</data>
+</node>
+<node id="n89">
+  <data key="d36">US</data>
+  <data key="d31">United States</data>
+  <data key="d34">-86.80249</data>
+  <data key="d35">n89</data>
+  <data key="d29">1</data>
+  <data key="d30">33.52066</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">89</data>
+</node>
+<node id="n90">
+  <data key="d29">1</data>
+  <data key="d30">43.70313</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">90</data>
+  <data key="d34">7.26608</data>
+  <data key="d35">n90</data>
+</node>
+<node id="n91">
+  <data key="d29">1</data>
+  <data key="d30">45.16667</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">91</data>
+  <data key="d34">5.71667</data>
+  <data key="d35">n91</data>
+</node>
+<node id="n92">
+  <data key="d29">1</data>
+  <data key="d30">45.75</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">92</data>
+  <data key="d34">4.85</data>
+  <data key="d35">n92</data>
+</node>
+<node id="n93">
+  <data key="d29">1</data>
+  <data key="d30">47.31667</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">93</data>
+  <data key="d34">5.01667</data>
+  <data key="d35">n93</data>
+</node>
+<node id="n94">
+  <data key="d29">1</data>
+  <data key="d30">43.60426</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">94</data>
+  <data key="d34">1.44367</data>
+  <data key="d35">n94</data>
+</node>
+<node id="n95">
+  <data key="d36">France</data>
+  <data key="d31">France</data>
+  <data key="d34">3.88333</data>
+  <data key="d35">n95</data>
+  <data key="d29">1</data>
+  <data key="d30">43.6</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">95</data>
+</node>
+<node id="n96">
+  <data key="d29">1</data>
+  <data key="d30">43.3</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">96</data>
+  <data key="d34">5.4</data>
+  <data key="d35">n96</data>
+</node>
+<node id="n97">
+  <data key="d29">1</data>
+  <data key="d30">42.69751</data>
+  <data key="d31">Bulgaria</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">97</data>
+  <data key="d34">23.32415</data>
+  <data key="d35">n97</data>
+</node>
+<node id="n98">
+  <data key="d29">1</data>
+  <data key="d30">50.08804</data>
+  <data key="d31">Czech Republic</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">98</data>
+  <data key="d34">14.42076</data>
+  <data key="d35">n98</data>
+</node>
+<node id="n99">
+  <data key="d29">1</data>
+  <data key="d30">46.20222</data>
+  <data key="d31">Switzerland</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">99</data>
+  <data key="d34">6.14569</data>
+  <data key="d35">n99</data>
+</node>
+<node id="n100">
+  <data key="d29">1</data>
+  <data key="d30">46.94809</data>
+  <data key="d31">Switzerland</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">100</data>
+  <data key="d34">7.44744</data>
+  <data key="d35">n100</data>
+</node>
+<node id="n101">
+  <data key="d29">1</data>
+  <data key="d30">34.05223</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">101</data>
+  <data key="d34">-118.24368</data>
+  <data key="d35">n101</data>
+</node>
+<node id="n102">
+  <data key="d29">1</data>
+  <data key="d30">33.78779</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">102</data>
+  <data key="d34">-117.85311</data>
+  <data key="d35">n102</data>
+</node>
+<node id="n103">
+  <data key="d29">1</data>
+  <data key="d30">37.77493</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">103</data>
+  <data key="d34">-122.41942</data>
+  <data key="d35">n103</data>
+</node>
+<node id="n104">
+  <data key="d29">1</data>
+  <data key="d30">37.35411</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">104</data>
+  <data key="d34">-121.95524</data>
+  <data key="d35">n104</data>
+</node>
+<node id="n105">
+  <data key="d29">1</data>
+  <data key="d30">38.58157</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">105</data>
+  <data key="d34">-121.4944</data>
+  <data key="d35">n105</data>
+</node>
+<node id="n106">
+  <data key="d29">1</data>
+  <data key="d30">37.80437</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">106</data>
+  <data key="d34">-122.2708</data>
+  <data key="d35">n106</data>
+</node>
+<node id="n107">
+  <data key="d29">1</data>
+  <data key="d30">40.76078</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">107</data>
+  <data key="d34">-111.89105</data>
+  <data key="d35">n107</data>
+</node>
+<node id="n108">
+  <data key="d29">1</data>
+  <data key="d30">43.6135</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">108</data>
+  <data key="d34">-116.20345</data>
+  <data key="d35">n108</data>
+</node>
+<node id="n109">
+  <data key="d29">1</data>
+  <data key="d30">32.71533</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">109</data>
+  <data key="d34">-117.15726</data>
+  <data key="d35">n109</data>
+</node>
+<node id="n110">
+  <data key="d29">1</data>
+  <data key="d30">33.44838</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">110</data>
+  <data key="d34">-112.07404</data>
+  <data key="d35">n110</data>
+</node>
+<node id="n111">
+  <data key="d29">1</data>
+  <data key="d30">43.46139</data>
+  <data key="d31">Italy</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">111</data>
+  <data key="d34">11.87691</data>
+  <data key="d35">n111</data>
+</node>
+<node id="n112">
+  <data key="d29">1</data>
+  <data key="d30">41.89474</data>
+  <data key="d31">Italy</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">112</data>
+  <data key="d34">12.4839</data>
+  <data key="d35">n112</data>
+</node>
+<node id="n113">
+  <data key="d29">1</data>
+  <data key="d30">46.47747</data>
+  <data key="d31">Ukraine</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">113</data>
+  <data key="d34">30.73262</data>
+  <data key="d35">n113</data>
+</node>
+<node id="n114">
+  <data key="d29">1</data>
+  <data key="d30">45.45</data>
+  <data key="d31">Romania</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">114</data>
+  <data key="d34">28.05</data>
+  <data key="d35">n114</data>
+</node>
+<node id="n115">
+  <data key="d29">1</data>
+  <data key="d30">43.41667</data>
+  <data key="d31">Bulgaria</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">115</data>
+  <data key="d34">28.16667</data>
+  <data key="d35">n115</data>
+</node>
+<node id="n116">
+  <data key="d29">1</data>
+  <data key="d30">44.18333</data>
+  <data key="d31">Romania</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">116</data>
+  <data key="d34">28.65</data>
+  <data key="d35">n116</data>
+</node>
+<node id="n117">
+  <data key="d29">1</data>
+  <data key="d30">42.50606</data>
+  <data key="d31">Bulgaria</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">117</data>
+  <data key="d34">27.46781</data>
+  <data key="d35">n117</data>
+</node>
+<node id="n118">
+  <data key="d29">1</data>
+  <data key="d30">43.21667</data>
+  <data key="d31">Bulgaria</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">118</data>
+  <data key="d34">27.91667</data>
+  <data key="d35">n118</data>
+</node>
+<node id="n119">
+  <data key="d29">1</data>
+  <data key="d30">42.69751</data>
+  <data key="d31">Bulgaria</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">119</data>
+  <data key="d34">23.32415</data>
+  <data key="d35">n119</data>
+</node>
+<node id="n120">
+  <data key="d29">1</data>
+  <data key="d30">41.71667</data>
+  <data key="d31">Bulgaria</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">120</data>
+  <data key="d34">26.31667</data>
+  <data key="d35">n120</data>
+</node>
+<node id="n121">
+  <data key="d29">1</data>
+  <data key="d30">26.20341</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">121</data>
+  <data key="d34">-98.23001</data>
+  <data key="d35">n121</data>
+</node>
+<node id="n122">
+  <data key="d29">1</data>
+  <data key="d30">27.50641</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">122</data>
+  <data key="d34">-99.50754</data>
+  <data key="d35">n122</data>
+</node>
+<node id="n123">
+  <data key="d29">1</data>
+  <data key="d30">20.6</data>
+  <data key="d31">Mexico</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">123</data>
+  <data key="d34">-100.38333</data>
+  <data key="d35">n123</data>
+</node>
+<node id="n124">
+  <data key="d29">1</data>
+  <data key="d30">25.66667</data>
+  <data key="d31">Mexico</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">124</data>
+  <data key="d34">-100.31667</data>
+  <data key="d35">n124</data>
+</node>
+<node id="n125">
+  <data key="d29">1</data>
+  <data key="d30">19.42847</data>
+  <data key="d31">Mexico</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">125</data>
+  <data key="d34">-99.12766</data>
+  <data key="d35">n125</data>
+</node>
+<node id="n126">
+  <data key="d29">1</data>
+  <data key="d30">20.66667</data>
+  <data key="d31">Mexico</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">126</data>
+  <data key="d34">-103.33333</data>
+  <data key="d35">n126</data>
+</node>
+<node id="n127">
+  <data key="d29">1</data>
+  <data key="d30">35.08449</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">127</data>
+  <data key="d34">-106.65114</data>
+  <data key="d35">n127</data>
+</node>
+<node id="n128">
+  <data key="d29">1</data>
+  <data key="d30">31.75872</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">128</data>
+  <data key="d34">-106.48693</data>
+  <data key="d35">n128</data>
+</node>
+<node id="n129">
+  <data key="d29">1</data>
+  <data key="d30">39.73915</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">129</data>
+  <data key="d34">-104.9847</data>
+  <data key="d35">n129</data>
+</node>
+<node id="n130">
+  <data key="d29">1</data>
+  <data key="d30">38.83388</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">130</data>
+  <data key="d34">-104.82136</data>
+  <data key="d35">n130</data>
+</node>
+<node id="n131">
+  <data key="d29">1</data>
+  <data key="d30">51.05089</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">131</data>
+  <data key="d34">13.73832</data>
+  <data key="d35">n131</data>
+</node>
+<node id="n132">
+  <data key="d29">1</data>
+  <data key="d30">47.56667</data>
+  <data key="d31">Switzerland</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">132</data>
+  <data key="d34">7.6</data>
+  <data key="d35">n132</data>
+</node>
+<node id="n133">
+  <data key="d29">1</data>
+  <data key="d30">48.58333</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">133</data>
+  <data key="d34">7.75</data>
+  <data key="d35">n133</data>
+</node>
+<node id="n134">
+  <data key="d29">1</data>
+  <data key="d30">45.46427</data>
+  <data key="d31">Italy</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">134</data>
+  <data key="d34">9.18951</data>
+  <data key="d35">n134</data>
+</node>
+<node id="n135">
+  <data key="d29">1</data>
+  <data key="d30">47.36667</data>
+  <data key="d31">Switzerland</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">135</data>
+  <data key="d34">8.55</data>
+  <data key="d35">n135</data>
+</node>
+<node id="n136">
+  <data key="d29">1</data>
+  <data key="d30">45.81444</data>
+  <data key="d31">Croatia</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">136</data>
+  <data key="d34">15.97798</data>
+  <data key="d35">n136</data>
+</node>
+<node id="n137">
+  <data key="d29">1</data>
+  <data key="d30">44.40632</data>
+  <data key="d31">Italy</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">137</data>
+  <data key="d34">8.93386</data>
+  <data key="d35">n137</data>
+</node>
+<node id="n138">
+  <data key="d29">1</data>
+  <data key="d30">45.43861</data>
+  <data key="d31">Italy</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">138</data>
+  <data key="d34">12.32667</data>
+  <data key="d35">n138</data>
+</node>
+<node id="n139">
+  <data key="d29">1</data>
+  <data key="d30">46.05108</data>
+  <data key="d31">Slovenia</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">139</data>
+  <data key="d34">14.50513</data>
+  <data key="d35">n139</data>
+</node>
+<node id="n140">
+  <data key="d29">1</data>
+  <data key="d30">43.76667</data>
+  <data key="d31">Italy</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">140</data>
+  <data key="d34">11.25</data>
+  <data key="d35">n140</data>
+</node>
+<node id="n141">
+  <data key="d29">1</data>
+  <data key="d30">44.49381</data>
+  <data key="d31">Italy</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">141</data>
+  <data key="d34">11.33875</data>
+  <data key="d35">n141</data>
+</node>
+<node id="n142">
+  <data key="d29">1</data>
+  <data key="d30">52.52437</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">142</data>
+  <data key="d34">13.41053</data>
+  <data key="d35">n142</data>
+</node>
+<node id="n143">
+  <data key="d29">1</data>
+  <data key="d30">53.55</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">143</data>
+  <data key="d34">10.0</data>
+  <data key="d35">n143</data>
+</node>
+<node id="n144">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">144</data>
+  <data key="d35">n144</data>
+</node>
+<node id="n145">
+  <data key="d29">1</data>
+  <data key="d30">41.03399</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">145</data>
+  <data key="d34">-73.76291</data>
+  <data key="d35">n145</data>
+</node>
+<node id="n146">
+  <data key="d29">1</data>
+  <data key="d30">39.29038</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">146</data>
+  <data key="d34">-76.61219</data>
+  <data key="d35">n146</data>
+</node>
+<node id="n147">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">147</data>
+  <data key="d35">n147</data>
+</node>
+<node id="n148">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">148</data>
+  <data key="d35">n148</data>
+</node>
+<node id="n149">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">149</data>
+  <data key="d35">n149</data>
+</node>
+<node id="n150">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">150</data>
+  <data key="d35">n150</data>
+</node>
+<node id="n151">
+  <data key="d29">1</data>
+  <data key="d30">40.73566</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">151</data>
+  <data key="d34">-74.17237</data>
+  <data key="d35">n151</data>
+</node>
+<node id="n152">
+  <data key="d29">1</data>
+  <data key="d30">39.95234</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">152</data>
+  <data key="d34">-75.16379</data>
+  <data key="d35">n152</data>
+</node>
+<node id="n153">
+  <data key="d29">1</data>
+  <data key="d30">40.2737</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">153</data>
+  <data key="d34">-76.88442</data>
+  <data key="d35">n153</data>
+</node>
+<node id="n154">
+  <data key="d29">1</data>
+  <data key="d30">38.89511</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">154</data>
+  <data key="d34">-77.03637</data>
+  <data key="d35">n154</data>
+</node>
+<node id="n155">
+  <data key="d29">1</data>
+  <data key="d30">42.35843</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">155</data>
+  <data key="d34">-71.05977</data>
+  <data key="d35">n155</data>
+</node>
+<node id="n156">
+  <data key="d29">1</data>
+  <data key="d30">41.82399</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">156</data>
+  <data key="d34">-71.41283</data>
+  <data key="d35">n156</data>
+</node>
+<node id="n157">
+  <data key="d29">1</data>
+  <data key="d30">41.05343</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">157</data>
+  <data key="d34">-73.53873</data>
+  <data key="d35">n157</data>
+</node>
+<node id="n158">
+  <data key="d29">1</data>
+  <data key="d30">40.71427</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">158</data>
+  <data key="d34">-74.00597</data>
+  <data key="d35">n158</data>
+</node>
+<node id="n159">
+  <data key="d29">1</data>
+  <data key="d30">38.96955</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">159</data>
+  <data key="d34">-77.3861</data>
+  <data key="d35">n159</data>
+</node>
+<node id="n160">
+  <data key="d29">1</data>
+  <data key="d30">40.44062</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">160</data>
+  <data key="d34">-79.99589</data>
+  <data key="d35">n160</data>
+</node>
+<node id="n161">
+  <data key="d29">1</data>
+  <data key="d30">50.93333</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">161</data>
+  <data key="d34">6.95</data>
+  <data key="d35">n161</data>
+</node>
+<node id="n162">
+  <data key="d29">1</data>
+  <data key="d30">51.22172</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">162</data>
+  <data key="d34">6.77616</data>
+  <data key="d35">n162</data>
+</node>
+<node id="n163">
+  <data key="d29">1</data>
+  <data key="d30">52.37403</data>
+  <data key="d31">Netherlands</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">163</data>
+  <data key="d34">4.88969</data>
+  <data key="d35">n163</data>
+</node>
+<node id="n164">
+  <data key="d29">1</data>
+  <data key="d30">52.2</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">164</data>
+  <data key="d34">0.11667</data>
+  <data key="d35">n164</data>
+</node>
+<node id="n165">
+  <data key="d29">1</data>
+  <data key="d30">51.50853</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">165</data>
+  <data key="d34">-0.12574</data>
+  <data key="d35">n165</data>
+</node>
+<node id="n166">
+  <data key="d29">1</data>
+  <data key="d30">51.5</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">166</data>
+  <data key="d34">-0.58333</data>
+  <data key="d35">n166</data>
+</node>
+<node id="n167">
+  <data key="d29">1</data>
+  <data key="d30">51.45</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">167</data>
+  <data key="d34">7.01667</data>
+  <data key="d35">n167</data>
+</node>
+<node id="n168">
+  <data key="d29">1</data>
+  <data key="d30">51.51667</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">168</data>
+  <data key="d34">7.45</data>
+  <data key="d35">n168</data>
+</node>
+<node id="n169">
+  <data key="d29">1</data>
+  <data key="d30">51.96236</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">169</data>
+  <data key="d34">7.62571</data>
+  <data key="d35">n169</data>
+</node>
+<node id="n170">
+  <data key="d29">1</data>
+  <data key="d30">51.9225</data>
+  <data key="d31">Netherlands</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">170</data>
+  <data key="d34">4.47917</data>
+  <data key="d35">n170</data>
+</node>
+<node id="n171">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">171</data>
+  <data key="d35">n171</data>
+</node>
+<node id="n172">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">172</data>
+  <data key="d35">n172</data>
+</node>
+<node id="n173">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">173</data>
+  <data key="d35">n173</data>
+</node>
+<node id="n174">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">174</data>
+  <data key="d35">n174</data>
+</node>
+<node id="n175">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">175</data>
+  <data key="d35">n175</data>
+</node>
+<node id="n176">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">176</data>
+  <data key="d35">n176</data>
+</node>
+<node id="n177">
+  <data key="d29">1</data>
+  <data key="d30">53.34399</data>
+  <data key="d31">Ireland</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">177</data>
+  <data key="d34">-6.26719</data>
+  <data key="d35">n177</data>
+</node>
+<node id="n178">
+  <data key="d29">1</data>
+  <data key="d30">47.60621</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">178</data>
+  <data key="d34">-122.33207</data>
+  <data key="d35">n178</data>
+</node>
+<node id="n179">
+  <data key="d29">1</data>
+  <data key="d30">45.52345</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">179</data>
+  <data key="d34">-122.67621</data>
+  <data key="d35">n179</data>
+</node>
+<node id="n180">
+  <data key="d29">1</data>
+  <data key="d30">36.17497</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">180</data>
+  <data key="d34">-115.13722</data>
+  <data key="d35">n180</data>
+</node>
+<node id="n181">
+  <data key="d29">1</data>
+  <data key="d30">45.50884</data>
+  <data key="d31">Canada</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">181</data>
+  <data key="d34">-73.58781</data>
+  <data key="d35">n181</data>
+</node>
+<node id="n182">
+  <data key="d29">1</data>
+  <data key="d30">59.43696</data>
+  <data key="d31">Estonia</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">182</data>
+  <data key="d34">24.75353</data>
+  <data key="d35">n182</data>
+</node>
+<node id="n183">
+  <data key="d29">1</data>
+  <data key="d30">48.85341</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">183</data>
+  <data key="d34">2.3488</data>
+  <data key="d35">n183</data>
+</node>
+<node id="n184">
+  <data key="d29">1</data>
+  <data key="d30">50.63333</data>
+  <data key="d31">France</data>
+  <data key="d32">On-Net and Off-Net Market with Cogent Data Center(s)</data>
+  <data key="d33">184</data>
+  <data key="d34">3.06667</data>
+  <data key="d35">n184</data>
+</node>
+<node id="n185">
+  <data key="d29">1</data>
+  <data key="d30">53.07516</data>
+  <data key="d31">Germany</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">185</data>
+  <data key="d34">8.80777</data>
+  <data key="d35">n185</data>
+</node>
+<node id="n186">
+  <data key="d29">1</data>
+  <data key="d30">50.85045</data>
+  <data key="d31">Belgium</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">186</data>
+  <data key="d34">4.34878</data>
+  <data key="d35">n186</data>
+</node>
+<node id="n187">
+  <data key="d29">1</data>
+  <data key="d30">51.21667</data>
+  <data key="d31">Belgium</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">187</data>
+  <data key="d34">4.41667</data>
+  <data key="d35">n187</data>
+</node>
+<node id="n188">
+  <data key="d29">1</data>
+  <data key="d30">41.15</data>
+  <data key="d31">Portugal</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">188</data>
+  <data key="d34">-8.61667</data>
+  <data key="d35">n188</data>
+</node>
+<node id="n189">
+  <data key="d29">1</data>
+  <data key="d30">60.16952</data>
+  <data key="d31">Finland</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">189</data>
+  <data key="d34">24.93545</data>
+  <data key="d35">n189</data>
+</node>
+<node id="n190">
+  <data key="d29">1</data>
+  <data key="d30">50.0</data>
+  <data key="d31">Ukraine</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">190</data>
+  <data key="d34">36.25</data>
+  <data key="d35">n190</data>
+</node>
+<node id="n191">
+  <data key="d29">1</data>
+  <data key="d30">50.45466</data>
+  <data key="d31">Ukraine</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">191</data>
+  <data key="d34">30.5238</data>
+  <data key="d35">n191</data>
+</node>
+<node id="n192">
+  <data key="d29">1</data>
+  <data key="d30">52.22977</data>
+  <data key="d31">Poland</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">192</data>
+  <data key="d34">21.01178</data>
+  <data key="d35">n192</data>
+</node>
+<node id="n193">
+  <data key="d29">1</data>
+  <data key="d30">50.08333</data>
+  <data key="d31">Poland</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">193</data>
+  <data key="d34">19.91667</data>
+  <data key="d35">n193</data>
+</node>
+<node id="n194">
+  <data key="d29">1</data>
+  <data key="d30">49.19522</data>
+  <data key="d31">Czech Republic</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">194</data>
+  <data key="d34">16.60796</data>
+  <data key="d35">n194</data>
+</node>
+<node id="n195">
+  <data key="d29">1</data>
+  <data key="d30">52.18935</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">195</data>
+  <data key="d34">-2.22001</data>
+  <data key="d35">n195</data>
+</node>
+<node id="n196">
+  <data key="d29">1</data>
+  <data key="d30">42.65258</data>
+  <data key="d31">United States</data>
+  <data key="d32">On-Net and Off-Net Market</data>
+  <data key="d33">196</data>
+  <data key="d34">-73.75623</data>
+  <data key="d35">n196</data>
+</node>
+<edge source="n0" target="n176">
+  <data key="d38">e62</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n0" target="n9">
+  <data key="d38">e61</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n1" target="n8">
+  <data key="d38">e59</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n1" target="n176">
+  <data key="d38">e64</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n1" target="n114">
+  <data key="d38">e63</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n1" target="n116">
+  <data key="d38">e65</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n1" target="n175">
+  <data key="d38">e66</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n2" target="n76">
+  <data key="d38">e50</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n2" target="n77">
+  <data key="d38">e49</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n3" target="n4">
+  <data key="d38">e51</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n3" target="n77">
+  <data key="d38">e52</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n4" target="n6">
+  <data key="d38">e54</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n4" target="n135">
+  <data key="d38">e53</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n5" target="n131">
+  <data key="d38">e11</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n5" target="n6">
+  <data key="d38">e55</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n6" target="n7">
+  <data key="d38">e56</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n7" target="n8">
+  <data key="d38">e57</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n7" target="n174">
+  <data key="d38">e58</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n8" target="n194">
+  <data key="d38">e7</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n8" target="n191">
+  <data key="d38">e3</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n8" target="n9">
+  <data key="d38">e60</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n10" target="n11">
+  <data key="d38">e180</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n10" target="n13">
+  <data key="d38">e178</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n11" target="n16">
+  <data key="d38">e181</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n12" target="n32">
+  <data key="d38">e172</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n12" target="n13">
+  <data key="d38">e176</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n12" target="n30">
+  <data key="d38">e174</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n13" target="n16">
+  <data key="d38">e179</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n13" target="n15">
+  <data key="d38">e177</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n14" target="n64">
+  <data key="d38">e183</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n14" target="n129">
+  <data key="d38">e185</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n14" target="n15">
+  <data key="d38">e184</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n16" target="n17">
+  <data key="d38">e182</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n18" target="n19">
+  <data key="d38">e186</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n18" target="n30">
+  <data key="d38">e175</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n19" target="n89">
+  <data key="d38">e187</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n19" target="n68">
+  <data key="d38">e188</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n19" target="n82">
+  <data key="d38">e189</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n20" target="n21">
+  <data key="d38">e124</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n20" target="n23">
+  <data key="d38">e125</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n21" target="n26">
+  <data key="d38">e123</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n22" target="n188">
+  <data key="d38">e127</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n22" target="n23">
+  <data key="d38">e126</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n24" target="n27">
+  <data key="d38">e119</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n25" target="n171">
+  <data key="d38">e118</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n25" target="n55">
+  <data key="d38">e117</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n26" target="n27">
+  <data key="d38">e120</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n26" target="n28">
+  <data key="d38">e122</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n26" target="n29">
+  <data key="d38">e121</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n28" target="n51">
+  <data key="d38">e128</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n28" target="n54">
+  <data key="d38">e129</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n29" target="n78">
+  <data key="d38">e103</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n30" target="n35">
+  <data key="d38">e173</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n31" target="n37">
+  <data key="d38">e164</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n32" target="n33">
+  <data key="d38">e171</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n32" target="n37">
+  <data key="d38">e166</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n34" target="n37">
+  <data key="d38">e168</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n35" target="n37">
+  <data key="d38">e167</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n36" target="n38">
+  <data key="d38">e170</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n36" target="n39">
+  <data key="d38">e169</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n37" target="n160">
+  <data key="d38">e163</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n37" target="n38">
+  <data key="d38">e165</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n38" target="n196">
+  <data key="d38">e147</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n39" target="n181">
+  <data key="d38">e145</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n40" target="n41">
+  <data key="d38">e19</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n40" target="n42">
+  <data key="d38">e17</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n41" target="n43">
+  <data key="d38">e18</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n41" target="n189">
+  <data key="d38">e1</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n42" target="n43">
+  <data key="d38">e16</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n42" target="n143">
+  <data key="d38">e14</data>
+  <data key="d39">1</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n44" target="n45">
+  <data key="d38">e23</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n44" target="n47">
+  <data key="d38">e22</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n45" target="n48">
+  <data key="d38">e24</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n45" target="n164">
+  <data key="d38">e25</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n46" target="n49">
+  <data key="d38">e20</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n46" target="n47">
+  <data key="d38">e21</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n48" target="n155">
+  <data key="d38">e27</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n48" target="n181">
+  <data key="d38">e26</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n49" target="n177">
+  <data key="d38">e28</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n49" target="n147">
+  <data key="d38">e29</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n49" target="n165">
+  <data key="d38">e30</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n50" target="n57">
+  <data key="d38">e137</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n50" target="n51">
+  <data key="d38">e138</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n51" target="n188">
+  <data key="d38">e139</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n52" target="n53">
+  <data key="d38">e132</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n52" target="n55">
+  <data key="d38">e131</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n53" target="n58">
+  <data key="d38">e133</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n54" target="n55">
+  <data key="d38">e130</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n56" target="n57">
+  <data key="d38">e136</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n56" target="n59">
+  <data key="d38">e135</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n58" target="n59">
+  <data key="d38">e134</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n60" target="n61">
+  <data key="d38">e216</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n60" target="n69">
+  <data key="d38">e215</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n61" target="n128">
+  <data key="d38">e218</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n61" target="n122">
+  <data key="d38">e217</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n62" target="n144">
+  <data key="d38">e204</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n62" target="n86">
+  <data key="d38">e201</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n62" target="n63">
+  <data key="d38">e205</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n63" target="n68">
+  <data key="d38">e207</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n63" target="n149">
+  <data key="d38">e206</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n64" target="n65">
+  <data key="d38">e208</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n64" target="n67">
+  <data key="d38">e209</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n64" target="n68">
+  <data key="d38">e210</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n65" target="n66">
+  <data key="d38">e211</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n66" target="n67">
+  <data key="d38">e212</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n67" target="n69">
+  <data key="d38">e213</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n69" target="n144">
+  <data key="d38">e214</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n70" target="n183">
+  <data key="d38">e100</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n70" target="n79">
+  <data key="d38">e101</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n71" target="n72">
+  <data key="d38">e98</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n71" target="n79">
+  <data key="d38">e99</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n72" target="n73">
+  <data key="d38">e97</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n73" target="n74">
+  <data key="d38">e95</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n74" target="n183">
+  <data key="d38">e96</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n75" target="n173">
+  <data key="d38">e94</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n75" target="n183">
+  <data key="d38">e93</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n76" target="n173">
+  <data key="d38">e92</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n77" target="n152">
+  <data key="d38">e91</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n77" target="n162">
+  <data key="d38">e47</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n77" target="n133">
+  <data key="d38">e90</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n78" target="n94">
+  <data key="d38">e104</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n78" target="n79">
+  <data key="d38">e102</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n80" target="n81">
+  <data key="d38">e202</data>
+  <data key="d39">1</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n80" target="n86">
+  <data key="d38">e200</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n80" target="n87">
+  <data key="d38">e199</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n82" target="n88">
+  <data key="d38">e194</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n82" target="n83">
+  <data key="d38">e192</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n82" target="n150">
+  <data key="d38">e195</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n83" target="n148">
+  <data key="d38">e193</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n84" target="n148">
+  <data key="d38">e191</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n84" target="n85">
+  <data key="d38">e190</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n86" target="n87">
+  <data key="d38">e198</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n87" target="n88">
+  <data key="d38">e197</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n89" target="n150">
+  <data key="d38">e196</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n90" target="n172">
+  <data key="d38">e111</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n91" target="n99">
+  <data key="d38">e113</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n91" target="n92">
+  <data key="d38">e112</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n92" target="n96">
+  <data key="d38">e109</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n92" target="n93">
+  <data key="d38">e115</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n92" target="n183">
+  <data key="d38">e114</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n94" target="n171">
+  <data key="d38">e105</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n95" target="n96">
+  <data key="d38">e106</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n95" target="n171">
+  <data key="d38">e107</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n96" target="n97">
+  <data key="d38">e108</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n97" target="n172">
+  <data key="d38">e110</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n98" target="n194">
+  <data key="d38">e8</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n98" target="n131">
+  <data key="d38">e9</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n99" target="n100">
+  <data key="d38">e116</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n100" target="n132">
+  <data key="d38">e88</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n101" target="n104">
+  <data key="d38">e236</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n101" target="n180">
+  <data key="d38">e238</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n101" target="n102">
+  <data key="d38">e237</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n102" target="n109">
+  <data key="d41">Leased Wavelength/Managed Service</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n103" target="n104">
+  <data key="d41">Leased Wavelength/Managed Service</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n103" target="n106">
+  <data key="d41">Leased Wavelength/Managed Service</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n105" target="n106">
+  <data key="d38">e232</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n105" target="n107">
+  <data key="d38">e230</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n105" target="n179">
+  <data key="d38">e233</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n107" target="n108">
+  <data key="d38">e229</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n107" target="n129">
+  <data key="d38">e228</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n108" target="n179">
+  <data key="d38">e231</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n109" target="n110">
+  <data key="d41">Leased Wavelength/Managed Service</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n110" target="n128">
+  <data key="d38">e225</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n111" target="n112">
+  <data key="d38">e75</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n111" target="n140">
+  <data key="d38">e77</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n112" target="n137">
+  <data key="d38">e76</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n113" target="n114">
+  <data key="d38">e67</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n113" target="n191">
+  <data key="d38">e4</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n115" target="n116">
+  <data key="d38">e68</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n115" target="n118">
+  <data key="d38">e69</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n117" target="n120">
+  <data key="d38">e71</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n117" target="n118">
+  <data key="d38">e70</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n119" target="n176">
+  <data key="d38">e73</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n119" target="n175">
+  <data key="d38">e74</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n120" target="n175">
+  <data key="d38">e72</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n121" target="n122">
+  <data key="d38">e219</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n121" target="n124">
+  <data key="d38">e220</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n123" target="n124">
+  <data key="d38">e221</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n123" target="n125">
+  <data key="d38">e223</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n123" target="n126">
+  <data key="d38">e222</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n127" target="n128">
+  <data key="d38">e224</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n127" target="n130">
+  <data key="d38">e226</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n129" target="n130">
+  <data key="d38">e227</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n131" target="n142">
+  <data key="d38">e10</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n132" target="n135">
+  <data key="d38">e87</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n133" target="n173">
+  <data key="d38">e89</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n134" target="n137">
+  <data key="d38">e84</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n134" target="n138">
+  <data key="d38">e80</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n134" target="n135">
+  <data key="d38">e86</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n136" target="n139">
+  <data key="d38">e83</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n137" target="n172">
+  <data key="d38">e85</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n138" target="n174">
+  <data key="d38">e81</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n138" target="n141">
+  <data key="d38">e79</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n139" target="n174">
+  <data key="d38">e82</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n140" target="n141">
+  <data key="d38">e78</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n142" target="n143">
+  <data key="d38">e12</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n143" target="n185">
+  <data key="d38">e15</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n144" target="n149">
+  <data key="d38">e244</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n145" target="n157">
+  <data key="d41">Leased Wavelength/Managed Service</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n146" target="n152">
+  <data key="d38">e157</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n146" target="n154">
+  <data key="d38">e162</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n147" target="n166">
+  <data key="d38">e33</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n147" target="n177">
+  <data key="d38">e242</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n148" target="n154">
+  <data key="d38">e160</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n149" target="n150">
+  <data key="d38">e243</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n151" target="n152">
+  <data key="d38">e155</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n152" target="n153">
+  <data key="d38">e156</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n153" target="n160">
+  <data key="d38">e159</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n153" target="n154">
+  <data key="d38">e158</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n154" target="n183">
+  <data key="d38">e144</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n154" target="n159">
+  <data key="d38">e161</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n155" target="n195">
+  <data key="d38">e150</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n155" target="n156">
+  <data key="d38">e151</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n155" target="n165">
+  <data key="d38">e37</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n156" target="n157">
+  <data key="d38">e152</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n157" target="n158">
+  <data key="d41">Leased Wavelength/Managed Service</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n158" target="n165">
+  <data key="d38">e38</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n158" target="n196">
+  <data key="d38">e148</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n158" target="n183">
+  <data key="d38">e143</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n161" target="n162">
+  <data key="d38">e48</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n162" target="n163">
+  <data key="d38">e41</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n162" target="n167">
+  <data key="d38">e46</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n163" target="n187">
+  <data key="d38">e42</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n163" target="n164">
+  <data key="d38">e40</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n165" target="n177">
+  <data key="d38">e39</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n165" target="n181">
+  <data key="d38">e36</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n165" target="n184">
+  <data key="d38">e35</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n165" target="n186">
+  <data key="d38">e34</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n166" target="n170">
+  <data key="d38">e31</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n166" target="n183">
+  <data key="d38">e32</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n167" target="n168">
+  <data key="d38">e45</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n168" target="n169">
+  <data key="d38">e43</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n169" target="n185">
+  <data key="d38">e44</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n178" target="n179">
+  <data key="d38">e241</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n181" target="n196">
+  <data key="d38">e146</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n182" target="n189">
+  <data key="d38">e0</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n183" target="n184">
+  <data key="d38">e142</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n183" target="n186">
+  <data key="d38">e141</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n186" target="n187">
+  <data key="d38">e140</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n190" target="n191">
+  <data key="d38">e2</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n192" target="n193">
+  <data key="d38">e5</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n193" target="n194">
+  <data key="d38">e6</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n195" target="n196">
+  <data key="d38">e149</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+</graph></graphml>

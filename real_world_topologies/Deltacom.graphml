@@ -1,0 +1,1756 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d38" for="edge" attr.name="capacity" attr.type="string"/>
+<key id="d37" for="edge" attr.name="key" attr.type="long"/>
+<key id="d36" for="edge" attr.name="id" attr.type="string"/>
+<key id="d35" for="node" attr.name="geocode_append" attr.type="string"/>
+<key id="d34" for="node" attr.name="label" attr.type="string"/>
+<key id="d33" for="node" attr.name="Longitude" attr.type="double"/>
+<key id="d32" for="node" attr.name="id" attr.type="long"/>
+<key id="d31" for="node" attr.name="Country" attr.type="string"/>
+<key id="d30" for="node" attr.name="Latitude" attr.type="double"/>
+<key id="d29" for="node" attr.name="Internal" attr.type="long"/>
+<key id="d28" for="graph" attr.name="Testbed" attr.type="long"/>
+<key id="d27" for="graph" attr.name="LastProcessed" attr.type="string"/>
+<key id="d26" for="graph" attr.name="DateYear" attr.type="string"/>
+<key id="d25" for="graph" attr.name="NetworkDate" attr.type="string"/>
+<key id="d24" for="graph" attr.name="Transit" attr.type="long"/>
+<key id="d23" for="graph" attr.name="Developed" attr.type="long"/>
+<key id="d22" for="graph" attr.name="Creator" attr.type="string"/>
+<key id="d21" for="graph" attr.name="Layer" attr.type="string"/>
+<key id="d20" for="graph" attr.name="Access" attr.type="long"/>
+<key id="d19" for="graph" attr.name="LastAccess" attr.type="string"/>
+<key id="d18" for="graph" attr.name="DateMonth" attr.type="string"/>
+<key id="d17" for="graph" attr.name="DateModifier" attr.type="string"/>
+<key id="d16" for="graph" attr.name="SourceGitVersion" attr.type="string"/>
+<key id="d15" for="graph" attr.name="IX" attr.type="long"/>
+<key id="d14" for="graph" attr.name="Customer" attr.type="long"/>
+<key id="d13" for="graph" attr.name="ToolsetVersion" attr.type="string"/>
+<key id="d12" for="graph" attr.name="label" attr.type="string"/>
+<key id="d11" for="graph" attr.name="Commercial" attr.type="long"/>
+<key id="d10" for="graph" attr.name="Backbone" attr.type="long"/>
+<key id="d9" for="graph" attr.name="Type" attr.type="string"/>
+<key id="d8" for="graph" attr.name="DateType" attr.type="string"/>
+<key id="d7" for="graph" attr.name="Version" attr.type="string"/>
+<key id="d6" for="graph" attr.name="Source" attr.type="string"/>
+<key id="d5" for="graph" attr.name="Note" attr.type="string"/>
+<key id="d4" for="graph" attr.name="Provenance" attr.type="string"/>
+<key id="d3" for="graph" attr.name="Network" attr.type="string"/>
+<key id="d2" for="graph" attr.name="GeoExtent" attr.type="string"/>
+<key id="d1" for="graph" attr.name="GeoLocation" attr.type="string"/>
+<key id="d0" for="graph" attr.name="DateObtained" attr.type="string"/>
+<graph edgedefault="undirected"><data key="d0">18/10/10</data>
+<data key="d1">USA</data>
+<data key="d2">Country</data>
+<data key="d3">ITC Deltacom </data>
+<data key="d4">Primary</data>
+<data key="d5">No name next to Lexington, most likely Greensboro based on http://web.archive.org/web/20061209005954/http://www.deltacom.com/docs/CORPORATE+FACT+SHEET.pdf</data>
+<data key="d6">http://deltacom.com/doc/NetworkReach_011110.pdf</data>
+<data key="d7">1.0</data>
+<data key="d8">Current</data>
+<data key="d9">COM</data>
+<data key="d10">1</data>
+<data key="d11">0</data>
+<data key="d12">Deltacom</data>
+<data key="d13">0.3.34dev-20120328</data>
+<data key="d14">0</data>
+<data key="d15">0</data>
+<data key="d16">e278b1b</data>
+<data key="d17">=</data>
+<data key="d18">08</data>
+<data key="d19">3/08/10</data>
+<data key="d20">0</data>
+<data key="d21">Fibre</data>
+<data key="d22">Topology Zoo Toolset</data>
+<data key="d23">1</data>
+<data key="d24">1</data>
+<data key="d25">2010_08</data>
+<data key="d26">2010</data>
+<data key="d27">2011_09_01</data>
+<data key="d28">0</data>
+<node id="n0">
+  <data key="d29">1</data>
+  <data key="d30">27.94752</data>
+  <data key="d31">United States</data>
+  <data key="d32">0</data>
+  <data key="d33">-82.45843</data>
+  <data key="d34">n0</data>
+</node>
+<node id="n1">
+  <data key="d29">1</data>
+  <data key="d30">27.33643</data>
+  <data key="d31">United States</data>
+  <data key="d32">1</data>
+  <data key="d33">-82.53065</data>
+  <data key="d34">n1</data>
+</node>
+<node id="n2">
+  <data key="d29">1</data>
+  <data key="d30">31.22323</data>
+  <data key="d31">United States</data>
+  <data key="d32">2</data>
+  <data key="d33">-85.39049</data>
+  <data key="d34">n2</data>
+</node>
+<node id="n3">
+  <data key="d29">1</data>
+  <data key="d30">30.43826</data>
+  <data key="d31">United States</data>
+  <data key="d32">3</data>
+  <data key="d33">-84.28073</data>
+  <data key="d34">n3</data>
+</node>
+<node id="n4">
+  <data key="d35">Florida</data>
+  <data key="d29">1</data>
+  <data key="d30">30.18968</data>
+  <data key="d31">United States</data>
+  <data key="d32">4</data>
+  <data key="d33">-82.63929</data>
+  <data key="d34">n4</data>
+</node>
+<node id="n5">
+  <data key="d29">1</data>
+  <data key="d30">30.8327</data>
+  <data key="d31">United States</data>
+  <data key="d32">5</data>
+  <data key="d33">-83.27849</data>
+  <data key="d34">n5</data>
+</node>
+<node id="n6">
+  <data key="d29">1</data>
+  <data key="d30">30.33218</data>
+  <data key="d31">United States</data>
+  <data key="d32">6</data>
+  <data key="d33">-81.65565</data>
+  <data key="d34">n6</data>
+</node>
+<node id="n7">
+  <data key="d29">1</data>
+  <data key="d30">29.65163</data>
+  <data key="d31">United States</data>
+  <data key="d32">7</data>
+  <data key="d33">-82.32483</data>
+  <data key="d34">n7</data>
+</node>
+<node id="n8">
+  <data key="d29">1</data>
+  <data key="d30">29.1872</data>
+  <data key="d31">United States</data>
+  <data key="d32">8</data>
+  <data key="d33">-82.14009</data>
+  <data key="d34">n8</data>
+</node>
+<node id="n9">
+  <data key="d29">1</data>
+  <data key="d30">28.02224</data>
+  <data key="d31">United States</data>
+  <data key="d32">9</data>
+  <data key="d33">-81.73286</data>
+  <data key="d34">n9</data>
+</node>
+<node id="n10">
+  <data key="d29">1</data>
+  <data key="d30">36.09986</data>
+  <data key="d31">United States</data>
+  <data key="d32">10</data>
+  <data key="d33">-80.24422</data>
+  <data key="d34">n10</data>
+</node>
+<node id="n11">
+  <data key="d35">NC</data>
+  <data key="d29">1</data>
+  <data key="d30">35.82403</data>
+  <data key="d31">United States</data>
+  <data key="d32">11</data>
+  <data key="d33">-80.25338</data>
+  <data key="d34">n11</data>
+</node>
+<node id="n12">
+  <data key="d29">1</data>
+  <data key="d30">35.99403</data>
+  <data key="d31">United States</data>
+  <data key="d32">12</data>
+  <data key="d33">-78.89862</data>
+  <data key="d34">n12</data>
+</node>
+<node id="n13">
+  <data key="d29">1</data>
+  <data key="d30">36.07264</data>
+  <data key="d31">United States</data>
+  <data key="d32">13</data>
+  <data key="d33">-79.79198</data>
+  <data key="d34">n13</data>
+</node>
+<node id="n14">
+  <data key="d29">1</data>
+  <data key="d30">33.38067</data>
+  <data key="d31">United States</data>
+  <data key="d32">14</data>
+  <data key="d33">-84.79966</data>
+  <data key="d34">n14</data>
+</node>
+<node id="n15">
+  <data key="d35">GA</data>
+  <data key="d29">1</data>
+  <data key="d30">34.29788</data>
+  <data key="d31">United States</data>
+  <data key="d32">15</data>
+  <data key="d33">-83.82407</data>
+  <data key="d34">n15</data>
+</node>
+<node id="n16">
+  <data key="d29">1</data>
+  <data key="d30">35.73319</data>
+  <data key="d31">United States</data>
+  <data key="d32">16</data>
+  <data key="d33">-81.3412</data>
+  <data key="d34">n16</data>
+</node>
+<node id="n17">
+  <data key="d35">GA</data>
+  <data key="d29">1</data>
+  <data key="d30">33.03929</data>
+  <data key="d31">United States</data>
+  <data key="d32">17</data>
+  <data key="d33">-85.03133</data>
+  <data key="d34">n17</data>
+</node>
+<node id="n18">
+  <data key="d29">1</data>
+  <data key="d30">35.93821</data>
+  <data key="d31">United States</data>
+  <data key="d32">18</data>
+  <data key="d33">-77.79053</data>
+  <data key="d34">n18</data>
+</node>
+<node id="n19">
+  <data key="d29">1</data>
+  <data key="d30">35.7721</data>
+  <data key="d31">United States</data>
+  <data key="d32">19</data>
+  <data key="d33">-78.63861</data>
+  <data key="d34">n19</data>
+</node>
+<node id="n20">
+  <data key="d29">1</data>
+  <data key="d30">32.52515</data>
+  <data key="d31">United States</data>
+  <data key="d32">20</data>
+  <data key="d33">-93.75018</data>
+  <data key="d34">n20</data>
+</node>
+<node id="n21">
+  <data key="d35">LA</data>
+  <data key="d29">1</data>
+  <data key="d30">32.50931</data>
+  <data key="d31">United States</data>
+  <data key="d32">21</data>
+  <data key="d33">-92.1193</data>
+  <data key="d34">n21</data>
+</node>
+<node id="n22">
+  <data key="d35">LA</data>
+  <data key="d29">1</data>
+  <data key="d30">31.31129</data>
+  <data key="d31">United States</data>
+  <data key="d32">22</data>
+  <data key="d33">-92.44514</data>
+  <data key="d34">n22</data>
+</node>
+<node id="n23">
+  <data key="d29">1</data>
+  <data key="d30">32.5007</data>
+  <data key="d31">United States</data>
+  <data key="d32">23</data>
+  <data key="d33">-94.74049</data>
+  <data key="d34">n23</data>
+</node>
+<node id="n24">
+  <data key="d29">1</data>
+  <data key="d30">29.95465</data>
+  <data key="d31">United States</data>
+  <data key="d32">24</data>
+  <data key="d33">-90.07507</data>
+  <data key="d34">n24</data>
+</node>
+<node id="n25">
+  <data key="d29">1</data>
+  <data key="d30">32.29876</data>
+  <data key="d31">United States</data>
+  <data key="d32">25</data>
+  <data key="d33">-90.18481</data>
+  <data key="d34">n25</data>
+</node>
+<node id="n26">
+  <data key="d29">1</data>
+  <data key="d30">32.35265</data>
+  <data key="d31">United States</data>
+  <data key="d32">26</data>
+  <data key="d33">-90.87788</data>
+  <data key="d34">n26</data>
+</node>
+<node id="n27">
+  <data key="d29">1</data>
+  <data key="d30">30.45075</data>
+  <data key="d31">United States</data>
+  <data key="d32">27</data>
+  <data key="d33">-91.15455</data>
+  <data key="d34">n27</data>
+</node>
+<node id="n28">
+  <data key="d29">1</data>
+  <data key="d30">34.22843</data>
+  <data key="d31">United States</data>
+  <data key="d32">28</data>
+  <data key="d33">-92.0032</data>
+  <data key="d34">n28</data>
+</node>
+<node id="n29">
+  <data key="d29">1</data>
+  <data key="d30">34.74648</data>
+  <data key="d31">United States</data>
+  <data key="d32">29</data>
+  <data key="d33">-92.28959</data>
+  <data key="d34">n29</data>
+</node>
+<node id="n30">
+  <data key="d29">1</data>
+  <data key="d30">33.68906</data>
+  <data key="d31">United States</data>
+  <data key="d32">30</data>
+  <data key="d33">-78.88669</data>
+  <data key="d34">n30</data>
+</node>
+<node id="n31">
+  <data key="d29">1</data>
+  <data key="d30">34.19543</data>
+  <data key="d31">United States</data>
+  <data key="d32">31</data>
+  <data key="d33">-79.76256</data>
+  <data key="d34">n31</data>
+</node>
+<node id="n32">
+  <data key="d29">1</data>
+  <data key="d30">38.89511</data>
+  <data key="d31">United States</data>
+  <data key="d32">32</data>
+  <data key="d33">-77.03637</data>
+  <data key="d34">n32</data>
+</node>
+<node id="n33">
+  <data key="d29">1</data>
+  <data key="d30">39.95234</data>
+  <data key="d31">United States</data>
+  <data key="d32">33</data>
+  <data key="d33">-75.16379</data>
+  <data key="d34">n33</data>
+</node>
+<node id="n34">
+  <data key="d29">1</data>
+  <data key="d30">37.55376</data>
+  <data key="d31">United States</data>
+  <data key="d32">34</data>
+  <data key="d33">-77.46026</data>
+  <data key="d34">n34</data>
+</node>
+<node id="n35">
+  <data key="d29">1</data>
+  <data key="d30">36.84681</data>
+  <data key="d31">United States</data>
+  <data key="d32">35</data>
+  <data key="d33">-76.28522</data>
+  <data key="d34">n35</data>
+</node>
+<node id="n36">
+  <data key="d29">1</data>
+  <data key="d30">34.22573</data>
+  <data key="d31">United States</data>
+  <data key="d32">36</data>
+  <data key="d33">-77.94471</data>
+  <data key="d34">n36</data>
+</node>
+<node id="n37">
+  <data key="d29">1</data>
+  <data key="d30">35.05266</data>
+  <data key="d31">United States</data>
+  <data key="d32">37</data>
+  <data key="d33">-78.87836</data>
+  <data key="d34">n37</data>
+</node>
+<node id="n38">
+  <data key="d29">1</data>
+  <data key="d30">40.73566</data>
+  <data key="d31">United States</data>
+  <data key="d32">38</data>
+  <data key="d33">-74.17237</data>
+  <data key="d34">n38</data>
+</node>
+<node id="n39">
+  <data key="d29">1</data>
+  <data key="d30">40.71427</data>
+  <data key="d31">United States</data>
+  <data key="d32">39</data>
+  <data key="d33">-74.00597</data>
+  <data key="d34">n39</data>
+</node>
+<node id="n40">
+  <data key="d29">1</data>
+  <data key="d30">32.94401</data>
+  <data key="d31">United States</data>
+  <data key="d32">40</data>
+  <data key="d33">-85.95385</data>
+  <data key="d34">n40</data>
+</node>
+<node id="n41">
+  <data key="d35">Alabama</data>
+  <data key="d29">1</data>
+  <data key="d30">32.60986</data>
+  <data key="d31">United States</data>
+  <data key="d32">41</data>
+  <data key="d33">-85.48078</data>
+  <data key="d34">n41</data>
+</node>
+<node id="n42">
+  <data key="d29">1</data>
+  <data key="d30">32.64541</data>
+  <data key="d31">United States</data>
+  <data key="d32">42</data>
+  <data key="d33">-85.37828</data>
+  <data key="d34">n42</data>
+</node>
+<node id="n43">
+  <data key="d35">GA</data>
+  <data key="d29">1</data>
+  <data key="d30">33.03929</data>
+  <data key="d31">United States</data>
+  <data key="d32">43</data>
+  <data key="d33">-85.03133</data>
+  <data key="d34">n43</data>
+</node>
+<node id="n44">
+  <data key="d29">1</data>
+  <data key="d30">33.60762</data>
+  <data key="d31">United States</data>
+  <data key="d32">44</data>
+  <data key="d33">-88.65033</data>
+  <data key="d34">n44</data>
+</node>
+<node id="n45">
+  <data key="d35">GA</data>
+  <data key="d29">1</data>
+  <data key="d30">31.57851</data>
+  <data key="d31">United States</data>
+  <data key="d32">45</data>
+  <data key="d33">-84.15574</data>
+  <data key="d34">n45</data>
+</node>
+<node id="n46">
+  <data key="d29">1</data>
+  <data key="d30">32.84069</data>
+  <data key="d31">United States</data>
+  <data key="d32">46</data>
+  <data key="d33">-83.6324</data>
+  <data key="d34">n46</data>
+</node>
+<node id="n47">
+  <data key="d29">1</data>
+  <data key="d30">33.749</data>
+  <data key="d31">United States</data>
+  <data key="d32">47</data>
+  <data key="d33">-84.38798</data>
+  <data key="d34">n47</data>
+</node>
+<node id="n48">
+  <data key="d29">1</data>
+  <data key="d30">34.01426</data>
+  <data key="d31">United States</data>
+  <data key="d32">48</data>
+  <data key="d33">-86.00664</data>
+  <data key="d34">n48</data>
+</node>
+<node id="n49">
+  <data key="d29">1</data>
+  <data key="d30">33.65983</data>
+  <data key="d31">United States</data>
+  <data key="d32">49</data>
+  <data key="d33">-85.83163</data>
+  <data key="d34">n49</data>
+</node>
+<node id="n50">
+  <data key="d29">1</data>
+  <data key="d30">36.16589</data>
+  <data key="d31">United States</data>
+  <data key="d32">50</data>
+  <data key="d33">-86.78444</data>
+  <data key="d34">n50</data>
+</node>
+<node id="n51">
+  <data key="d29">1</data>
+  <data key="d30">35.04563</data>
+  <data key="d31">United States</data>
+  <data key="d32">51</data>
+  <data key="d33">-85.30968</data>
+  <data key="d34">n51</data>
+</node>
+<node id="n52">
+  <data key="d29">1</data>
+  <data key="d30">35.96064</data>
+  <data key="d31">United States</data>
+  <data key="d32">52</data>
+  <data key="d33">-83.92074</data>
+  <data key="d34">n52</data>
+</node>
+<node id="n53">
+  <data key="d29">1</data>
+  <data key="d30">35.37371</data>
+  <data key="d31">United States</data>
+  <data key="d32">53</data>
+  <data key="d33">-83.22598</data>
+  <data key="d34">n53</data>
+</node>
+<node id="n54">
+  <data key="d29">1</data>
+  <data key="d30">33.52066</data>
+  <data key="d31">United States</data>
+  <data key="d32">54</data>
+  <data key="d33">-86.80249</data>
+  <data key="d34">n54</data>
+</node>
+<node id="n55">
+  <data key="d29">1</data>
+  <data key="d30">32.36681</data>
+  <data key="d31">United States</data>
+  <data key="d32">55</data>
+  <data key="d33">-86.29997</data>
+  <data key="d34">n55</data>
+</node>
+<node id="n56">
+  <data key="d29">1</data>
+  <data key="d30">34.31815</data>
+  <data key="d31">United States</data>
+  <data key="d32">56</data>
+  <data key="d33">-86.49582</data>
+  <data key="d34">n56</data>
+</node>
+<node id="n57">
+  <data key="d29">1</data>
+  <data key="d30">34.73037</data>
+  <data key="d31">United States</data>
+  <data key="d32">57</data>
+  <data key="d33">-86.5861</data>
+  <data key="d34">n57</data>
+</node>
+<node id="n58">
+  <data key="d29">1</data>
+  <data key="d30">29.76328</data>
+  <data key="d31">United States</data>
+  <data key="d32">58</data>
+  <data key="d33">-95.36327</data>
+  <data key="d34">n58</data>
+</node>
+<node id="n59">
+  <data key="d29">1</data>
+  <data key="d30">35.60095</data>
+  <data key="d31">United States</data>
+  <data key="d32">59</data>
+  <data key="d33">-82.55402</data>
+  <data key="d34">n59</data>
+</node>
+<node id="n60">
+  <data key="d29">1</data>
+  <data key="d30">34.85262</data>
+  <data key="d31">United States</data>
+  <data key="d32">60</data>
+  <data key="d33">-82.39401</data>
+  <data key="d34">n60</data>
+</node>
+<node id="n61">
+  <data key="d29">1</data>
+  <data key="d30">30.08605</data>
+  <data key="d31">United States</data>
+  <data key="d32">61</data>
+  <data key="d33">-94.10185</data>
+  <data key="d34">n61</data>
+</node>
+<node id="n62">
+  <data key="d29">1</data>
+  <data key="d30">29.21081</data>
+  <data key="d31">United States</data>
+  <data key="d32">62</data>
+  <data key="d33">-81.02283</data>
+  <data key="d34">n62</data>
+</node>
+<node id="n63">
+  <data key="d29">1</data>
+  <data key="d30">28.53834</data>
+  <data key="d31">United States</data>
+  <data key="d32">63</data>
+  <data key="d33">-81.37924</data>
+  <data key="d34">n63</data>
+</node>
+<node id="n64">
+  <data key="d29">1</data>
+  <data key="d30">25.77427</data>
+  <data key="d31">United States</data>
+  <data key="d32">64</data>
+  <data key="d33">-80.19366</data>
+  <data key="d34">n64</data>
+</node>
+<node id="n65">
+  <data key="d29">1</data>
+  <data key="d30">26.62168</data>
+  <data key="d31">United States</data>
+  <data key="d32">65</data>
+  <data key="d33">-81.84059</data>
+  <data key="d34">n65</data>
+</node>
+<node id="n66">
+  <data key="d29">1</data>
+  <data key="d30">26.12231</data>
+  <data key="d31">United States</data>
+  <data key="d32">66</data>
+  <data key="d33">-80.14338</data>
+  <data key="d34">n66</data>
+</node>
+<node id="n67">
+  <data key="d29">1</data>
+  <data key="d30">26.0112</data>
+  <data key="d31">United States</data>
+  <data key="d32">67</data>
+  <data key="d33">-80.14949</data>
+  <data key="d34">n67</data>
+</node>
+<node id="n68">
+  <data key="d29">1</data>
+  <data key="d30">27.63864</data>
+  <data key="d31">United States</data>
+  <data key="d32">68</data>
+  <data key="d33">-80.39727</data>
+  <data key="d34">n68</data>
+</node>
+<node id="n69">
+  <data key="d29">1</data>
+  <data key="d30">26.71534</data>
+  <data key="d31">United States</data>
+  <data key="d32">69</data>
+  <data key="d33">-80.05337</data>
+  <data key="d34">n69</data>
+</node>
+<node id="n70">
+  <data key="d29">1</data>
+  <data key="d30">28.32001</data>
+  <data key="d31">United States</data>
+  <data key="d32">70</data>
+  <data key="d33">-80.60755</data>
+  <data key="d34">n70</data>
+</node>
+<node id="n71">
+  <data key="d29">1</data>
+  <data key="d30">28.08363</data>
+  <data key="d31">United States</data>
+  <data key="d32">71</data>
+  <data key="d33">-80.60811</data>
+  <data key="d34">n71</data>
+</node>
+<node id="n72">
+  <data key="d35">GA</data>
+  <data key="d29">1</data>
+  <data key="d30">33.47097</data>
+  <data key="d31">United States</data>
+  <data key="d32">72</data>
+  <data key="d33">-81.97484</data>
+  <data key="d34">n72</data>
+</node>
+<node id="n73">
+  <data key="d29">1</data>
+  <data key="d30">33.96095</data>
+  <data key="d31">United States</data>
+  <data key="d32">73</data>
+  <data key="d33">-83.37794</data>
+  <data key="d34">n73</data>
+</node>
+<node id="n74">
+  <data key="d29">1</data>
+  <data key="d30">33.92044</data>
+  <data key="d31">United States</data>
+  <data key="d32">74</data>
+  <data key="d33">-80.34147</data>
+  <data key="d34">n74</data>
+</node>
+<node id="n75">
+  <data key="d29">1</data>
+  <data key="d30">34.00071</data>
+  <data key="d31">United States</data>
+  <data key="d32">75</data>
+  <data key="d33">-81.03481</data>
+  <data key="d34">n75</data>
+</node>
+<node id="n76">
+  <data key="d29">1</data>
+  <data key="d30">33.49182</data>
+  <data key="d31">United States</data>
+  <data key="d32">76</data>
+  <data key="d33">-80.85565</data>
+  <data key="d34">n76</data>
+</node>
+<node id="n77">
+  <data key="d35">SC</data>
+  <data key="d29">1</data>
+  <data key="d30">32.77657</data>
+  <data key="d31">United States</data>
+  <data key="d32">77</data>
+  <data key="d33">-79.93092</data>
+  <data key="d34">n77</data>
+</node>
+<node id="n78">
+  <data key="d29">1</data>
+  <data key="d30">32.21632</data>
+  <data key="d31">United States</data>
+  <data key="d32">78</data>
+  <data key="d33">-80.75261</data>
+  <data key="d34">n78</data>
+</node>
+<node id="n79">
+  <data key="d29">1</data>
+  <data key="d30">32.43158</data>
+  <data key="d31">United States</data>
+  <data key="d32">79</data>
+  <data key="d33">-80.66983</data>
+  <data key="d34">n79</data>
+</node>
+<node id="n80">
+  <data key="d29">1</data>
+  <data key="d30">29.89469</data>
+  <data key="d31">United States</data>
+  <data key="d32">80</data>
+  <data key="d33">-81.31452</data>
+  <data key="d34">n80</data>
+</node>
+<node id="n81">
+  <data key="d29">1</data>
+  <data key="d30">32.08354</data>
+  <data key="d31">United States</data>
+  <data key="d32">81</data>
+  <data key="d33">-81.09983</data>
+  <data key="d34">n81</data>
+</node>
+<node id="n82">
+  <data key="d29">1</data>
+  <data key="d30">30.21309</data>
+  <data key="d31">United States</data>
+  <data key="d32">82</data>
+  <data key="d33">-93.2044</data>
+  <data key="d34">n82</data>
+</node>
+<node id="n83">
+  <data key="d29">1</data>
+  <data key="d30">30.22409</data>
+  <data key="d31">United States</data>
+  <data key="d32">83</data>
+  <data key="d33">-92.01984</data>
+  <data key="d34">n83</data>
+</node>
+<node id="n84">
+  <data key="d29">1</data>
+  <data key="d32">84</data>
+  <data key="d34">n84</data>
+</node>
+<node id="n85">
+  <data key="d29">1</data>
+  <data key="d32">85</data>
+  <data key="d34">n85</data>
+</node>
+<node id="n86">
+  <data key="d29">1</data>
+  <data key="d32">86</data>
+  <data key="d34">n86</data>
+</node>
+<node id="n87">
+  <data key="d29">1</data>
+  <data key="d30">30.15881</data>
+  <data key="d31">United States</data>
+  <data key="d32">87</data>
+  <data key="d33">-85.66021</data>
+  <data key="d34">n87</data>
+</node>
+<node id="n88">
+  <data key="d29">1</data>
+  <data key="d30">30.76213</data>
+  <data key="d31">United States</data>
+  <data key="d32">88</data>
+  <data key="d33">-86.57051</data>
+  <data key="d34">n88</data>
+</node>
+<node id="n89">
+  <data key="d29">1</data>
+  <data key="d30">32.36431</data>
+  <data key="d31">United States</data>
+  <data key="d32">89</data>
+  <data key="d33">-88.70366</data>
+  <data key="d34">n89</data>
+</node>
+<node id="n90">
+  <data key="d29">1</data>
+  <data key="d30">33.20984</data>
+  <data key="d31">United States</data>
+  <data key="d32">90</data>
+  <data key="d33">-87.56917</data>
+  <data key="d34">n90</data>
+</node>
+<node id="n91">
+  <data key="d35">TN</data>
+  <data key="d29">1</data>
+  <data key="d30">35.61452</data>
+  <data key="d31">United States</data>
+  <data key="d32">91</data>
+  <data key="d33">-88.81395</data>
+  <data key="d34">n91</data>
+</node>
+<node id="n92">
+  <data key="d29">1</data>
+  <data key="d30">35.14953</data>
+  <data key="d31">United States</data>
+  <data key="d32">92</data>
+  <data key="d33">-90.04898</data>
+  <data key="d34">n92</data>
+</node>
+<node id="n93">
+  <data key="d29">1</data>
+  <data key="d30">30.42131</data>
+  <data key="d31">United States</data>
+  <data key="d32">93</data>
+  <data key="d33">-87.21691</data>
+  <data key="d34">n93</data>
+</node>
+<node id="n94">
+  <data key="d29">1</data>
+  <data key="d30">30.69436</data>
+  <data key="d31">United States</data>
+  <data key="d32">94</data>
+  <data key="d33">-88.04305</data>
+  <data key="d34">n94</data>
+</node>
+<node id="n95">
+  <data key="d29">1</data>
+  <data key="d30">30.36742</data>
+  <data key="d31">United States</data>
+  <data key="d32">95</data>
+  <data key="d33">-89.09282</data>
+  <data key="d34">n95</data>
+</node>
+<node id="n96">
+  <data key="d29">1</data>
+  <data key="d30">31.32712</data>
+  <data key="d31">United States</data>
+  <data key="d32">96</data>
+  <data key="d33">-89.29034</data>
+  <data key="d34">n96</data>
+</node>
+<node id="n97">
+  <data key="d29">1</data>
+  <data key="d32">97</data>
+  <data key="d34">n97</data>
+</node>
+<node id="n98">
+  <data key="d29">1</data>
+  <data key="d32">98</data>
+  <data key="d34">n98</data>
+</node>
+<node id="n99">
+  <data key="d29">1</data>
+  <data key="d32">99</data>
+  <data key="d34">n99</data>
+</node>
+<node id="n100">
+  <data key="d29">1</data>
+  <data key="d32">100</data>
+  <data key="d34">n100</data>
+</node>
+<node id="n101">
+  <data key="d29">1</data>
+  <data key="d32">101</data>
+  <data key="d34">n101</data>
+</node>
+<node id="n102">
+  <data key="d29">1</data>
+  <data key="d32">102</data>
+  <data key="d34">n102</data>
+</node>
+<node id="n103">
+  <data key="d29">1</data>
+  <data key="d32">103</data>
+  <data key="d34">n103</data>
+</node>
+<node id="n104">
+  <data key="d29">1</data>
+  <data key="d30">35.22709</data>
+  <data key="d31">United States</data>
+  <data key="d32">104</data>
+  <data key="d33">-80.84313</data>
+  <data key="d34">n104</data>
+</node>
+<node id="n105">
+  <data key="d29">1</data>
+  <data key="d30">32.78306</data>
+  <data key="d31">United States</data>
+  <data key="d32">105</data>
+  <data key="d33">-96.80667</data>
+  <data key="d34">n105</data>
+</node>
+<node id="n106">
+  <data key="d29">1</data>
+  <data key="d30">31.54933</data>
+  <data key="d31">United States</data>
+  <data key="d32">106</data>
+  <data key="d33">-97.14667</data>
+  <data key="d34">n106</data>
+</node>
+<node id="n107">
+  <data key="d29">1</data>
+  <data key="d30">30.67436</data>
+  <data key="d31">United States</data>
+  <data key="d32">107</data>
+  <data key="d33">-96.36996</data>
+  <data key="d34">n107</data>
+</node>
+<node id="n108">
+  <data key="d29">1</data>
+  <data key="d30">30.26715</data>
+  <data key="d31">United States</data>
+  <data key="d32">108</data>
+  <data key="d33">-97.74306</data>
+  <data key="d34">n108</data>
+</node>
+<node id="n109">
+  <data key="d35">Texas</data>
+  <data key="d29">1</data>
+  <data key="d30">29.88327</data>
+  <data key="d31">United States</data>
+  <data key="d32">109</data>
+  <data key="d33">-97.94139</data>
+  <data key="d34">n109</data>
+</node>
+<node id="n110">
+  <data key="d29">1</data>
+  <data key="d30">29.42412</data>
+  <data key="d31">United States</data>
+  <data key="d32">110</data>
+  <data key="d33">-98.49363</data>
+  <data key="d34">n110</data>
+</node>
+<node id="n111">
+  <data key="d29">1</data>
+  <data key="d32">111</data>
+  <data key="d34">n111</data>
+</node>
+<node id="n112">
+  <data key="d29">1</data>
+  <data key="d32">112</data>
+  <data key="d34">n112</data>
+</node>
+<edge source="n0" target="n64">
+  <data key="d36">e65</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n0" target="n1">
+  <data key="d36">e66</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n0" target="n63">
+  <data key="d36">e63</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n0" target="n8">
+  <data key="d36">e59</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n0" target="n9">
+  <data key="d36">e61</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n1" target="n65">
+  <data key="d36">e67</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n2" target="n87">
+  <data key="d36">e39</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n2" target="n55">
+  <data key="d36">e40</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n3" target="n88">
+  <data key="d36">e38</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n3" target="n4">
+  <data key="d36">e41</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n3" target="n45">
+  <data key="d36">e44</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n3" target="n86">
+  <data key="d36">e43</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n3" target="n47">
+  <data key="d36">e45</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n4" target="n6">
+  <data key="d36">e49</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n4" target="n5">
+  <data key="d36">e47</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n4" target="n86">
+  <data key="d36">e46</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n4" target="n7">
+  <data key="d36">e50</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n5" target="n46">
+  <data key="d36">e51</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n6" target="n80">
+  <data key="d36">e53</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n6" target="n81">
+  <data key="d36">e54</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n6" target="n62">
+  <data key="d36">e52</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n7" target="n8">
+  <data key="d36">e55</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n8" target="n63">
+  <data key="d36">e56</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n8" target="n86">
+  <data key="d36">e58</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n9" target="n63">
+  <data key="d36">e60</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n10" target="n16">
+  <data key="d36">e149</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n10" target="n104">
+  <data key="d36">e153</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n10" target="n11">
+  <data key="d36">e151</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n10" target="n13">
+  <data key="d36">e154</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n11" target="n16">
+  <data key="d36">e147</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n11" target="n104">
+  <data key="d36">e150</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n11" target="n13">
+  <data key="d36">e152</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n12" target="n19">
+  <data key="d36">e156</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n12" target="n13">
+  <data key="d36">e155</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n14" target="n17">
+  <data key="d36">e145</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n14" target="n84">
+  <data key="d36">e146</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n15" target="n97">
+  <data key="d36">e144</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n15" target="n47">
+  <data key="d36">e115</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n16" target="n104">
+  <data key="d36">e148</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n17" target="n43">
+  <data key="d36">e120</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n18" target="n35">
+  <data key="d36">e162</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n18" target="n19">
+  <data key="d36">e161</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n19" target="n104">
+  <data key="d36">e160</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n19" target="n36">
+  <data key="d36">e157</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n19" target="n37">
+  <data key="d36">e158</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n20" target="n21">
+  <data key="d36">e16</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n20" target="n22">
+  <data key="d36">e14</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n20" target="n23">
+  <data key="d36">e15</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n21" target="n26">
+  <data key="d36">e17</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n22" target="n83">
+  <data key="d36">e12</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n23" target="n105">
+  <data key="d36">e1</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n24" target="n25">
+  <data key="d36">e21</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n24" target="n27">
+  <data key="d36">e19</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n24" target="n95">
+  <data key="d36">e20</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n25" target="n89">
+  <data key="d36">e24</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n25" target="n26">
+  <data key="d36">e18</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n25" target="n28">
+  <data key="d36">e22</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n25" target="n92">
+  <data key="d36">e23</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n27" target="n83">
+  <data key="d36">e13</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n28" target="n29">
+  <data key="d36">e25</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n29" target="n92">
+  <data key="d36">e26</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n30" target="n31">
+  <data key="d36">e174</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n30" target="n36">
+  <data key="d36">e170</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n30" target="n77">
+  <data key="d36">e97</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n30" target="n103">
+  <data key="d36">e175</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n31" target="n112">
+  <data key="d36">e176</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n31" target="n36">
+  <data key="d36">e172</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n31" target="n37">
+  <data key="d36">e173</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n32" target="n33">
+  <data key="d36">e165</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n32" target="n34">
+  <data key="d36">e164</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n33" target="n38">
+  <data key="d36">e166</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n34" target="n35">
+  <data key="d36">e163</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n36" target="n37">
+  <data key="d36">e169</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n38" target="n39">
+  <data key="d36">e167</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n40" target="n41">
+  <data key="d36">e122</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n40" target="n49">
+  <data key="d36">e123</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n41" target="n42">
+  <data key="d36">e121</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n42" target="n43">
+  <data key="d36">e119</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n43" target="n45">
+  <data key="d36">e118</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n44" target="n47">
+  <data key="d36">e117</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n46" target="n47">
+  <data key="d36">e116</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n47" target="n73">
+  <data key="d36">e108</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n47" target="n51">
+  <data key="d36">e110</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n47" target="n84">
+  <data key="d36">e112</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n47" target="n111">
+  <data key="d36">e111</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n47" target="n60">
+  <data key="d36">e113</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n48" target="n57">
+  <data key="d36">e127</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n48" target="n49">
+  <data key="d36">e125</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n49" target="n84">
+  <data key="d36">e124</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n49" target="n54">
+  <data key="d36">e126</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n50" target="n57">
+  <data key="d36">e133</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n50" target="n91">
+  <data key="d36">e28</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n50" target="n52">
+  <data key="d36">e135</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n50" target="n51">
+  <data key="d36">e134</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n52" target="n53">
+  <data key="d36">e136</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n53" target="n60">
+  <data key="d36">e138</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n53" target="n59">
+  <data key="d36">e137</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n54" target="n56">
+  <data key="d36">e128</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n54" target="n90">
+  <data key="d36">e29</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n54" target="n55">
+  <data key="d36">e130</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n54" target="n111">
+  <data key="d36">e129</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n55" target="n94">
+  <data key="d36">e35</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n55" target="n111">
+  <data key="d36">e131</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n56" target="n57">
+  <data key="d36">e132</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n58" target="n105">
+  <data key="d36">e2</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n58" target="n61">
+  <data key="d36">e9</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n58" target="n110">
+  <data key="d36">e8</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n59" target="n60">
+  <data key="d36">e139</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n60" target="n104">
+  <data key="d36">e141</data>
+  <data key="d37">2</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n60" target="n97">
+  <data key="d36">e143</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n61" target="n82">
+  <data key="d36">e10</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n62" target="n80">
+  <data key="d36">e82</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n62" target="n70">
+  <data key="d36">e79</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n62" target="n85">
+  <data key="d36">e81</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n63" target="n85">
+  <data key="d36">e80</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n63" target="n70">
+  <data key="d36">e78</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n64" target="n65">
+  <data key="d36">e68</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n64" target="n66">
+  <data key="d36">e70</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n64" target="n67">
+  <data key="d36">e69</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n66" target="n67">
+  <data key="d36">e72</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n66" target="n69">
+  <data key="d36">e73</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n66" target="n85">
+  <data key="d36">e74</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n68" target="n69">
+  <data key="d36">e75</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n68" target="n71">
+  <data key="d36">e76</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n70" target="n71">
+  <data key="d36">e77</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n72" target="n73">
+  <data key="d36">e107</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n72" target="n75">
+  <data key="d36">e104</data>
+  <data key="d37">2</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n72" target="n81">
+  <data key="d36">e89</data>
+  <data key="d37">2</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n73" target="n98">
+  <data key="d36">e109</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n74" target="n112">
+  <data key="d36">e100</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n74" target="n75">
+  <data key="d36">e99</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n74" target="n103">
+  <data key="d36">e101</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n75" target="n104">
+  <data key="d36">e105</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n75" target="n76">
+  <data key="d36">e95</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n76" target="n100">
+  <data key="d36">e94</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n77" target="n81">
+  <data key="d36">e83</data>
+  <data key="d37">3</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n77" target="n100">
+  <data key="d36">e96</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n77" target="n103">
+  <data key="d36">e98</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n78" target="n101">
+  <data key="d36">e91</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n79" target="n102">
+  <data key="d36">e92</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n81" target="n101">
+  <data key="d36">e90</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n82" target="n83">
+  <data key="d36">e11</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n87" target="n88">
+  <data key="d36">e37</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n88" target="n93">
+  <data key="d36">e36</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n89" target="n96">
+  <data key="d36">e31</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n89" target="n90">
+  <data key="d36">e30</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n91" target="n92">
+  <data key="d36">e27</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n93" target="n94">
+  <data key="d36">e34</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n94" target="n95">
+  <data key="d36">e33</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n95" target="n96">
+  <data key="d36">e32</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n97" target="n98">
+  <data key="d36">e182</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n98" target="n99">
+  <data key="d36">e181</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n99" target="n104">
+  <data key="d36">e177</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n99" target="n112">
+  <data key="d36">e180</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n100" target="n102">
+  <data key="d36">e178</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n101" target="n102">
+  <data key="d36">e179</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n105" target="n106">
+  <data key="d36">e0</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n106" target="n107">
+  <data key="d36">e3</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n107" target="n108">
+  <data key="d36">e4</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n108" target="n109">
+  <data key="d36">e6</data>
+  <data key="d37">1</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+<edge source="n109" target="n110">
+  <data key="d36">e7</data>
+  <data key="d37">0</data>
+  <data key="d38">10 Gbps</data>
+</edge>
+</graph></graphml>
