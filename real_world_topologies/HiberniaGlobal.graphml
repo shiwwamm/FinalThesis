@@ -1,0 +1,969 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d40" for="edge" attr.name="capacity" attr.type="string"/>
+<key id="d39" for="edge" attr.name="key" attr.type="long"/>
+<key id="d38" for="edge" attr.name="LinkLabel" attr.type="string"/>
+<key id="d37" for="node" attr.name="hyperedge" attr.type="long"/>
+<key id="d36" for="node" attr.name="geocode_append" attr.type="string"/>
+<key id="d35" for="node" attr.name="label" attr.type="string"/>
+<key id="d34" for="node" attr.name="Longitude" attr.type="double"/>
+<key id="d33" for="node" attr.name="id" attr.type="long"/>
+<key id="d32" for="node" attr.name="type" attr.type="string"/>
+<key id="d31" for="node" attr.name="Country" attr.type="string"/>
+<key id="d30" for="node" attr.name="Latitude" attr.type="double"/>
+<key id="d29" for="node" attr.name="Internal" attr.type="long"/>
+<key id="d28" for="graph" attr.name="Testbed" attr.type="long"/>
+<key id="d27" for="graph" attr.name="LastProcessed" attr.type="string"/>
+<key id="d26" for="graph" attr.name="DateYear" attr.type="string"/>
+<key id="d25" for="graph" attr.name="NetworkDate" attr.type="string"/>
+<key id="d24" for="graph" attr.name="Transit" attr.type="long"/>
+<key id="d23" for="graph" attr.name="Developed" attr.type="long"/>
+<key id="d22" for="graph" attr.name="Creator" attr.type="string"/>
+<key id="d21" for="graph" attr.name="Layer" attr.type="string"/>
+<key id="d20" for="graph" attr.name="Access" attr.type="long"/>
+<key id="d19" for="graph" attr.name="LastAccess" attr.type="string"/>
+<key id="d18" for="graph" attr.name="DateMonth" attr.type="string"/>
+<key id="d17" for="graph" attr.name="DateModifier" attr.type="string"/>
+<key id="d16" for="graph" attr.name="SourceGitVersion" attr.type="string"/>
+<key id="d15" for="graph" attr.name="IX" attr.type="long"/>
+<key id="d14" for="graph" attr.name="Customer" attr.type="long"/>
+<key id="d13" for="graph" attr.name="ToolsetVersion" attr.type="string"/>
+<key id="d12" for="graph" attr.name="label" attr.type="string"/>
+<key id="d11" for="graph" attr.name="Commercial" attr.type="long"/>
+<key id="d10" for="graph" attr.name="Backbone" attr.type="long"/>
+<key id="d9" for="graph" attr.name="DateType" attr.type="string"/>
+<key id="d8" for="graph" attr.name="Type" attr.type="string"/>
+<key id="d7" for="graph" attr.name="Version" attr.type="string"/>
+<key id="d6" for="graph" attr.name="Source" attr.type="string"/>
+<key id="d5" for="graph" attr.name="Note" attr.type="string"/>
+<key id="d4" for="graph" attr.name="Provenance" attr.type="string"/>
+<key id="d3" for="graph" attr.name="Network" attr.type="string"/>
+<key id="d2" for="graph" attr.name="GeoExtent" attr.type="string"/>
+<key id="d1" for="graph" attr.name="GeoLocation" attr.type="string"/>
+<key id="d0" for="graph" attr.name="DateObtained" attr.type="string"/>
+<graph edgedefault="undirected"><data key="d0">23/03/11</data>
+<data key="d1">North America, Europe</data>
+<data key="d2">Continent+</data>
+<data key="d3">Hibernia Atlantic </data>
+<data key="d4">Primary</data>
+<data key="d5">Links unclear around Washington DC. Londonderry and Portrush have no node shown, only label. Missing Portrush node added in.</data>
+<data key="d6">http://www.hiberniaatlantic.com/documents/HA_NetworkPCard_0110.pdf</data>
+<data key="d7">1.0</data>
+<data key="d8">COM</data>
+<data key="d9">Current</data>
+<data key="d10">1</data>
+<data key="d11">0</data>
+<data key="d12">HiberniaGlobal</data>
+<data key="d13">0.3.34dev-20120328</data>
+<data key="d14">0</data>
+<data key="d15">0</data>
+<data key="d16">e278b1b</data>
+<data key="d17">=</data>
+<data key="d18">03</data>
+<data key="d19">23/03/11</data>
+<data key="d20">0</data>
+<data key="d21">IP</data>
+<data key="d22">Topology Zoo Toolset</data>
+<data key="d23">0</data>
+<data key="d24">1</data>
+<data key="d25">2011_03</data>
+<data key="d26">2011</data>
+<data key="d27">2011_09_01</data>
+<data key="d28">0</data>
+<node id="n0">
+  <data key="d29">1</data>
+  <data key="d30">35.7721</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">0</data>
+  <data key="d34">-78.63861</data>
+  <data key="d35">n0</data>
+</node>
+<node id="n1">
+  <data key="d29">1</data>
+  <data key="d30">25.77427</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">1</data>
+  <data key="d34">-80.19366</data>
+  <data key="d35">n1</data>
+</node>
+<node id="n2">
+  <data key="d29">1</data>
+  <data key="d30">33.749</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">2</data>
+  <data key="d34">-84.38798</data>
+  <data key="d35">n2</data>
+</node>
+<node id="n3">
+  <data key="d36">Atlanta</data>
+  <data key="d31">United States</data>
+  <data key="d34">-80.84313</data>
+  <data key="d35">n3</data>
+  <data key="d29">1</data>
+  <data key="d30">35.22709</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">3</data>
+</node>
+<node id="n4">
+  <data key="d29">1</data>
+  <data key="d30">42.88645</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">4</data>
+  <data key="d34">-78.87837</data>
+  <data key="d35">n4</data>
+</node>
+<node id="n5">
+  <data key="d29">1</data>
+  <data key="d30">41.4995</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">5</data>
+  <data key="d34">-81.69541</data>
+  <data key="d35">n5</data>
+</node>
+<node id="n6">
+  <data key="d29">1</data>
+  <data key="d30">41.85003</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">6</data>
+  <data key="d34">-87.65005</data>
+  <data key="d35">n6</data>
+</node>
+<node id="n7">
+  <data key="d29">1</data>
+  <data key="d30">43.70011</data>
+  <data key="d31">Canada</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">7</data>
+  <data key="d34">-79.4163</data>
+  <data key="d35">n7</data>
+</node>
+<node id="n8">
+  <data key="d29">1</data>
+  <data key="d30">45.50884</data>
+  <data key="d31">Canada</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">8</data>
+  <data key="d34">-73.58781</data>
+  <data key="d35">n8</data>
+</node>
+<node id="n9">
+  <data key="d29">1</data>
+  <data key="d30">42.65258</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">9</data>
+  <data key="d34">-73.75623</data>
+  <data key="d35">n9</data>
+</node>
+<node id="n10">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">10</data>
+  <data key="d35">n10</data>
+</node>
+<node id="n11">
+  <data key="d37">1</data>
+  <data key="d29">1</data>
+  <data key="d33">11</data>
+  <data key="d35">n11</data>
+</node>
+<node id="n12">
+  <data key="d29">1</data>
+  <data key="d30">37.55376</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">12</data>
+  <data key="d34">-77.46026</data>
+  <data key="d35">n12</data>
+</node>
+<node id="n13">
+  <data key="d29">1</data>
+  <data key="d30">40.71427</data>
+  <data key="d31">United States</data>
+  <data key="d32">Yellow Node</data>
+  <data key="d33">13</data>
+  <data key="d34">-74.00597</data>
+  <data key="d35">n13</data>
+</node>
+<node id="n14">
+  <data key="d29">1</data>
+  <data key="d30">52.37403</data>
+  <data key="d31">Netherlands</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">14</data>
+  <data key="d34">4.88969</data>
+  <data key="d35">n14</data>
+</node>
+<node id="n15">
+  <data key="d29">1</data>
+  <data key="d30">51.22172</data>
+  <data key="d31">Germany</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">15</data>
+  <data key="d34">6.77616</data>
+  <data key="d35">n15</data>
+</node>
+<node id="n16">
+  <data key="d29">1</data>
+  <data key="d30">53.64779</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">16</data>
+  <data key="d34">-3.00648</data>
+  <data key="d35">n16</data>
+</node>
+<node id="n17">
+  <data key="d29">1</data>
+  <data key="d30">53.48095</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">17</data>
+  <data key="d34">-2.23743</data>
+  <data key="d35">n17</data>
+</node>
+<node id="n18">
+  <data key="d29">1</data>
+  <data key="d30">51.45625</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">18</data>
+  <data key="d34">-0.97113</data>
+  <data key="d35">n18</data>
+</node>
+<node id="n19">
+  <data key="d29">1</data>
+  <data key="d30">51.50853</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">19</data>
+  <data key="d34">-0.12574</data>
+  <data key="d35">n19</data>
+</node>
+<node id="n20">
+  <data key="d29">1</data>
+  <data key="d30">51.43158</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">20</data>
+  <data key="d34">-0.55239</data>
+  <data key="d35">n20</data>
+</node>
+<node id="n21">
+  <data key="d29">1</data>
+  <data key="d30">50.30869</data>
+  <data key="d31">France</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">21</data>
+  <data key="d34">2.94777</data>
+  <data key="d35">n21</data>
+</node>
+<node id="n22">
+  <data key="d29">1</data>
+  <data key="d30">48.85341</data>
+  <data key="d31">France</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">22</data>
+  <data key="d34">2.3488</data>
+  <data key="d35">n22</data>
+</node>
+<node id="n23">
+  <data key="d29">1</data>
+  <data key="d30">50.85045</data>
+  <data key="d31">Belgium</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">23</data>
+  <data key="d34">4.34878</data>
+  <data key="d35">n23</data>
+</node>
+<node id="n24">
+  <data key="d29">1</data>
+  <data key="d30">55.19592</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">24</data>
+  <data key="d34">-6.6493</data>
+  <data key="d35">n24</data>
+</node>
+<node id="n25">
+  <data key="d29">1</data>
+  <data key="d30">39.29038</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">25</data>
+  <data key="d34">-76.61219</data>
+  <data key="d35">n25</data>
+</node>
+<node id="n26">
+  <data key="d29">1</data>
+  <data key="d30">38.89511</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">26</data>
+  <data key="d34">-77.03637</data>
+  <data key="d35">n26</data>
+</node>
+<node id="n27">
+  <data key="d29">1</data>
+  <data key="d30">49.48833</data>
+  <data key="d31">Germany</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">27</data>
+  <data key="d34">8.46472</data>
+  <data key="d35">n27</data>
+</node>
+<node id="n28">
+  <data key="d29">1</data>
+  <data key="d30">50.11667</data>
+  <data key="d31">Germany</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">28</data>
+  <data key="d34">8.68333</data>
+  <data key="d35">n28</data>
+</node>
+<node id="n29">
+  <data key="d29">1</data>
+  <data key="d30">40.73566</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">29</data>
+  <data key="d34">-74.17237</data>
+  <data key="d35">n29</data>
+</node>
+<node id="n30">
+  <data key="d29">1</data>
+  <data key="d30">48.58342</data>
+  <data key="d31">France</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">30</data>
+  <data key="d34">7.74296</data>
+  <data key="d35">n30</data>
+</node>
+<node id="n31">
+  <data key="d29">1</data>
+  <data key="d30">40.44062</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">31</data>
+  <data key="d34">-79.99589</data>
+  <data key="d35">n31</data>
+</node>
+<node id="n32">
+  <data key="d29">1</data>
+  <data key="d30">39.04372</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">32</data>
+  <data key="d34">-77.48749</data>
+  <data key="d35">n32</data>
+</node>
+<node id="n33">
+  <data key="d29">1</data>
+  <data key="d30">38.93428</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">33</data>
+  <data key="d34">-77.17748</data>
+  <data key="d35">n33</data>
+</node>
+<node id="n34">
+  <data key="d29">1</data>
+  <data key="d30">39.95234</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">34</data>
+  <data key="d34">-75.16379</data>
+  <data key="d35">n34</data>
+</node>
+<node id="n35">
+  <data key="d29">1</data>
+  <data key="d30">53.34399</data>
+  <data key="d31">Ireland</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">35</data>
+  <data key="d34">-6.26719</data>
+  <data key="d35">n35</data>
+</node>
+<node id="n36">
+  <data key="d29">1</data>
+  <data key="d30">54.58333</data>
+  <data key="d31">United Kingdom</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">36</data>
+  <data key="d34">-5.93333</data>
+  <data key="d35">n36</data>
+</node>
+<node id="n37">
+  <data key="d36">Canada</data>
+  <data key="d31">Canada</data>
+  <data key="d34">-71.29543</data>
+  <data key="d35">n37</data>
+  <data key="d29">1</data>
+  <data key="d30">46.75615</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">37</data>
+</node>
+<node id="n38">
+  <data key="d29">1</data>
+  <data key="d30">42.35843</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">38</data>
+  <data key="d34">-71.05977</data>
+  <data key="d35">n38</data>
+</node>
+<node id="n39">
+  <data key="d29">1</data>
+  <data key="d30">41.05343</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">39</data>
+  <data key="d34">-73.53873</data>
+  <data key="d35">n39</data>
+</node>
+<node id="n40">
+  <data key="d29">1</data>
+  <data key="d30">41.03399</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">40</data>
+  <data key="d34">-73.76291</data>
+  <data key="d35">n40</data>
+</node>
+<node id="n41">
+  <data key="d29">1</data>
+  <data key="d30">44.646</data>
+  <data key="d31">Canada</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">41</data>
+  <data key="d34">-63.57333</data>
+  <data key="d35">n41</data>
+</node>
+<node id="n42">
+  <data key="d36">Canada</data>
+  <data key="d31">Canada</data>
+  <data key="d34">-63.26538</data>
+  <data key="d35">n42</data>
+  <data key="d29">1</data>
+  <data key="d30">45.36685</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">42</data>
+</node>
+<node id="n43">
+  <data key="d29">1</data>
+  <data key="d30">46.11594</data>
+  <data key="d31">Canada</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">43</data>
+  <data key="d34">-64.80186</data>
+  <data key="d35">n43</data>
+</node>
+<node id="n44">
+  <data key="d29">1</data>
+  <data key="d30">47.3737</data>
+  <data key="d31">Canada</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">44</data>
+  <data key="d34">-68.32512</data>
+  <data key="d35">n44</data>
+</node>
+<node id="n45">
+  <data key="d29">1</data>
+  <data key="d30">29.76328</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">45</data>
+  <data key="d34">-95.36327</data>
+  <data key="d35">n45</data>
+</node>
+<node id="n46">
+  <data key="d29">1</data>
+  <data key="d30">27.94752</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">46</data>
+  <data key="d34">-82.45843</data>
+  <data key="d35">n46</data>
+</node>
+<node id="n47">
+  <data key="d29">1</data>
+  <data key="d30">47.60621</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">47</data>
+  <data key="d34">-122.33207</data>
+  <data key="d35">n47</data>
+</node>
+<node id="n48">
+  <data key="d29">1</data>
+  <data key="d30">39.73915</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">48</data>
+  <data key="d34">-104.9847</data>
+  <data key="d35">n48</data>
+</node>
+<node id="n49">
+  <data key="d29">1</data>
+  <data key="d30">37.77493</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">49</data>
+  <data key="d34">-122.41942</data>
+  <data key="d35">n49</data>
+</node>
+<node id="n50">
+  <data key="d29">1</data>
+  <data key="d30">34.05223</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">50</data>
+  <data key="d34">-118.24368</data>
+  <data key="d35">n50</data>
+</node>
+<node id="n51">
+  <data key="d29">1</data>
+  <data key="d30">32.71533</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">51</data>
+  <data key="d34">-117.15726</data>
+  <data key="d35">n51</data>
+</node>
+<node id="n52">
+  <data key="d29">1</data>
+  <data key="d30">36.17497</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">52</data>
+  <data key="d34">-115.13722</data>
+  <data key="d35">n52</data>
+</node>
+<node id="n53">
+  <data key="d29">1</data>
+  <data key="d30">33.44838</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">53</data>
+  <data key="d34">-112.07404</data>
+  <data key="d35">n53</data>
+</node>
+<node id="n54">
+  <data key="d29">1</data>
+  <data key="d30">32.78306</data>
+  <data key="d31">United States</data>
+  <data key="d32">Red Node</data>
+  <data key="d33">54</data>
+  <data key="d34">-96.80667</data>
+  <data key="d35">n54</data>
+</node>
+<edge source="n0" target="n25">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n0" target="n3">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n0" target="n12">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n1" target="n3">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n1" target="n46">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n2" target="n25">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n2" target="n3">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n2" target="n45">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n2" target="n46">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n4" target="n9">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n4" target="n5">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n4" target="n7">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n5" target="n6">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n5" target="n31">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n6" target="n48">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n6" target="n31">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n6" target="n54">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n6" target="n13">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n7" target="n8">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n8" target="n9">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n8" target="n37">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n9" target="n13">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n9" target="n38">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n10" target="n16">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n10" target="n11">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n10" target="n19">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n11" target="n19">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n11" target="n14">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n12" target="n26">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n13" target="n34">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n13" target="n38">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n13" target="n39">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n13" target="n50">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n13" target="n29">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n14" target="n23">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n14" target="n15">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n15" target="n28">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n16" target="n24">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n16" target="n17">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n16" target="n35">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n17" target="n18">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n18" target="n19">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n18" target="n20">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n19" target="n20">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n20" target="n21">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n21" target="n22">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n21" target="n23">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n22" target="n30">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n24" target="n41">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n24" target="n36">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n25" target="n33">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n25" target="n26">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n25" target="n31">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n26" target="n33">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n27" target="n28">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n27" target="n30">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n29" target="n40">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n29" target="n32">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n29" target="n34">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n31" target="n32">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n32" target="n33">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n32" target="n34">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n35" target="n41">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n35" target="n36">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n37" target="n44">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n38" target="n41">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n38" target="n39">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n39" target="n40">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n41" target="n42">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n42" target="n43">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n43" target="n44">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n45" target="n53">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n45" target="n54">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n47" target="n48">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n47" target="n49">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n48" target="n49">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n49" target="n50">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n50" target="n51">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n50" target="n52">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n50" target="n53">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+<edge source="n51" target="n53">
+  <data key="d38">Green Link</data>
+  <data key="d39">0</data>
+  <data key="d40">10 Gbps</data>
+</edge>
+</graph></graphml>

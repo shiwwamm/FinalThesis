@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d39" for="edge" attr.name="capacity" attr.type="string"/>
+<key id="d38" for="edge" attr.name="key" attr.type="long"/>
+<key id="d37" for="edge" attr.name="id" attr.type="string"/>
+<key id="d36" for="node" attr.name="id" attr.type="long"/>
+<key id="d35" for="node" attr.name="x" attr.type="string"/>
+<key id="d34" for="node" attr.name="y" attr.type="string"/>
+<key id="d33" for="node" attr.name="Internal" attr.type="long"/>
+<key id="d32" for="node" attr.name="Latitude" attr.type="double"/>
+<key id="d31" for="node" attr.name="label" attr.type="string"/>
+<key id="d30" for="node" attr.name="Longitude" attr.type="double"/>
+<key id="d29" for="node" attr.name="Country" attr.type="string"/>
+<key id="d28" for="graph" attr.name="Testbed" attr.type="long"/>
+<key id="d27" for="graph" attr.name="DateYear" attr.type="string"/>
+<key id="d26" for="graph" attr.name="NetworkDate" attr.type="string"/>
+<key id="d25" for="graph" attr.name="Creator" attr.type="string"/>
+<key id="d24" for="graph" attr.name="Transit" attr.type="long"/>
+<key id="d23" for="graph" attr.name="Developed" attr.type="long"/>
+<key id="d22" for="graph" attr.name="LastProcessed" attr.type="string"/>
+<key id="d21" for="graph" attr.name="Layer" attr.type="string"/>
+<key id="d20" for="graph" attr.name="Access" attr.type="long"/>
+<key id="d19" for="graph" attr.name="LastAccess" attr.type="string"/>
+<key id="d18" for="graph" attr.name="DateMonth" attr.type="string"/>
+<key id="d17" for="graph" attr.name="DateModifier" attr.type="string"/>
+<key id="d16" for="graph" attr.name="SourceGitVersion" attr.type="string"/>
+<key id="d15" for="graph" attr.name="IX" attr.type="long"/>
+<key id="d14" for="graph" attr.name="Customer" attr.type="long"/>
+<key id="d13" for="graph" attr.name="ToolsetVersion" attr.type="string"/>
+<key id="d12" for="graph" attr.name="label" attr.type="string"/>
+<key id="d11" for="graph" attr.name="Commercial" attr.type="long"/>
+<key id="d10" for="graph" attr.name="Backbone" attr.type="long"/>
+<key id="d9" for="graph" attr.name="Type" attr.type="string"/>
+<key id="d8" for="graph" attr.name="DateType" attr.type="string"/>
+<key id="d7" for="graph" attr.name="Version" attr.type="string"/>
+<key id="d6" for="graph" attr.name="Source" attr.type="string"/>
+<key id="d5" for="graph" attr.name="Note" attr.type="string"/>
+<key id="d4" for="graph" attr.name="Provenance" attr.type="string"/>
+<key id="d3" for="graph" attr.name="Network" attr.type="string"/>
+<key id="d2" for="graph" attr.name="GeoExtent" attr.type="string"/>
+<key id="d1" for="graph" attr.name="GeoLocation" attr.type="string"/>
+<key id="d0" for="graph" attr.name="DateObtained" attr.type="string"/>
+<graph edgedefault="undirected"><data key="d0">20/07/11</data>
+<data key="d1">Ireland</data>
+<data key="d2">Country</data>
+<data key="d3">Heanet</data>
+<data key="d4">Primary</data>
+<data key="d5">Main page at www.hea.net contains no useful topology information.</data>
+<data key="d6">http://www.hea.net/index_new.php</data>
+<data key="d7">1.0</data>
+<data key="d8">Current</data>
+<data key="d9">REN</data>
+<data key="d10">1</data>
+<data key="d11">0</data>
+<data key="d12">Heanet</data>
+<data key="d13">0.3.34dev-20120328</data>
+<data key="d14">1</data>
+<data key="d15">0</data>
+<data key="d16">e278b1b</data>
+<data key="d17">=</data>
+<data key="d18">07</data>
+<data key="d19">20/07/11</data>
+<data key="d20">0</data>
+<data key="d21">IP</data>
+<data key="d22">2011_09_01</data>
+<data key="d23">0</data>
+<data key="d24">0</data>
+<data key="d25">Topology Zoo Toolset</data>
+<data key="d26">2011_07</data>
+<data key="d27">2011</data>
+<data key="d28">0</data>
+<node id="n0">
+  <data key="d29">Ireland</data>
+  <data key="d30">-9.04889</data>
+  <data key="d31">n0</data>
+  <data key="d32">53.27194</data>
+  <data key="d33">1</data>
+  <data key="d34">104.0</data>
+  <data key="d35">119.0</data>
+  <data key="d36">0</data>
+</node>
+<node id="n1">
+  <data key="d29">Ireland</data>
+  <data key="d30">-8.62306</data>
+  <data key="d31">n1</data>
+  <data key="d32">52.66472</data>
+  <data key="d33">1</data>
+  <data key="d34">149.0</data>
+  <data key="d35">100.0</data>
+  <data key="d36">1</data>
+</node>
+<node id="n2">
+  <data key="d29">Ireland</data>
+  <data key="d30">-8.49583</data>
+  <data key="d31">n2</data>
+  <data key="d32">51.89861</data>
+  <data key="d33">1</data>
+  <data key="d34">273.0</data>
+  <data key="d35">90.0</data>
+  <data key="d36">2</data>
+</node>
+<node id="n3">
+  <data key="d29">Ireland</data>
+  <data key="d30">-6.26719</data>
+  <data key="d31">n3</data>
+  <data key="d32">53.34399</data>
+  <data key="d33">1</data>
+  <data key="d34">85.0</data>
+  <data key="d35">275.0</data>
+  <data key="d36">3</data>
+</node>
+<node id="n4">
+  <data key="d29">Ireland</data>
+  <data key="d30">-6.26719</data>
+  <data key="d31">n4</data>
+  <data key="d32">53.34399</data>
+  <data key="d33">1</data>
+  <data key="d34">114.0</data>
+  <data key="d35">372.0</data>
+  <data key="d36">4</data>
+</node>
+<node id="n5">
+  <data key="d29">Ireland</data>
+  <data key="d30">-6.26719</data>
+  <data key="d31">n5</data>
+  <data key="d32">53.34399</data>
+  <data key="d33">1</data>
+  <data key="d34">270.0</data>
+  <data key="d35">403.0</data>
+  <data key="d36">5</data>
+</node>
+<node id="n6">
+  <data key="d29">Ireland</data>
+  <data key="d30">-6.26719</data>
+  <data key="d31">n6</data>
+  <data key="d32">53.34399</data>
+  <data key="d33">1</data>
+  <data key="d34">269.0</data>
+  <data key="d35">270.0</data>
+  <data key="d36">6</data>
+</node>
+<edge source="n0" target="n3">
+  <data key="d37">e0</data>
+  <data key="d38">0</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n0" target="n6">
+  <data key="d37">e1</data>
+  <data key="d38">0</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n1" target="n2">
+  <data key="d37">e2</data>
+  <data key="d38">0</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n1" target="n3">
+  <data key="d37">e3</data>
+  <data key="d38">0</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n1" target="n6">
+  <data key="d37">e4</data>
+  <data key="d38">0</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n2" target="n3">
+  <data key="d37">e5</data>
+  <data key="d38">0</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n3" target="n4">
+  <data key="d37">e6</data>
+  <data key="d38">0</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n3" target="n5">
+  <data key="d37">e8</data>
+  <data key="d38">1</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n3" target="n6">
+  <data key="d37">e9</data>
+  <data key="d38">1</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n4" target="n6">
+  <data key="d37">e11</data>
+  <data key="d38">0</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+<edge source="n5" target="n6">
+  <data key="d37">e12</data>
+  <data key="d38">0</data>
+  <data key="d39">10 Gbps</data>
+</edge>
+</graph></graphml>
