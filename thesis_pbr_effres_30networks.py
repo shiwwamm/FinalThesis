@@ -37,14 +37,38 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(SEED)
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+# Check if output file already exists to prevent accidental re-runs
+import os
+OUTPUT_FILE_COLAB = "/content/drive/MyDrive/thesis_4rewards_30networks.csv"
+OUTPUT_FILE_LOCAL = "./thesis_4rewards_30networks.csv"
+
+if os.path.exists(OUTPUT_FILE_COLAB) or os.path.exists(OUTPUT_FILE_LOCAL):
+    print(f"\n{'='*80}")
+    print(f"⚠️  WARNING: Output file already exists!")
+    print(f"{'='*80}")
+    print(f"Found existing results file. To prevent accidental re-run:")
+    print(f"1. Rename or delete the existing file if you want to re-run")
+    print(f"2. Or modify the output filename in the script")
+    print(f"\nExisting file: {OUTPUT_FILE_COLAB if os.path.exists(OUTPUT_FILE_COLAB) else OUTPUT_FILE_LOCAL}")
+    print(f"{'='*80}\n")
+    
+    response = input("Do you want to OVERWRITE and re-run? (type 'YES' to confirm): ")
+    if response != "YES":
+        print("\n❌ Experiment cancelled. Exiting...")
+        import sys
+        sys.exit(0)
+    else:
+        print("\n✅ Confirmed. Starting experiment...\n")
+
 print(f"\n{'='*80}")
 print(f"THESIS EXPERIMENT: 4 Reward Functions on 30 Networks")
 print(f"{'='*80}")
 print(f"Device: {DEVICE} | Seed: {SEED}")
 
 # Graph directory - UPDATE THIS PATH
-GRAPH_DIR = "/content/drive/MyDrive/real_world_topologies"  # For Colab
-# GRAPH_DIR = "./real_world_topologies"  # For local
+# GRAPH_DIR = "/content/drive/MyDrive/real_world_topologies"  # For Colab
+GRAPH_DIR = "./real_world_topologies"  # For local
 
 # Network list - Jenks Natural Breaks: Small (≤40), Medium (41-93), Large (>93)
 topo = {
@@ -327,6 +351,7 @@ class ResilienceEnv(gym.Env):
         self.g = self.g_orig.copy()
         self.added_edges = set()
         self.steps = 0
+        self.successful_additions = 0  # Track only successful edge additions
 
         # Initialize baselines based on reward type
         self.prev_lambda2 = self._approx_lambda2(self.g)
@@ -367,10 +392,15 @@ class ResilienceEnv(gym.Env):
         else:
             self.g.add_edge(u, v)
             self.added_edges.add(edge)
+            self.successful_additions += 1  # Only count successful additions
             reward = self._compute_reward()
 
         self.steps += 1
-        done = self.steps >= self.budget
+        
+        # Done when budget edges added OR too many failed attempts (safety limit)
+        max_attempts = self.budget * 10  # Allow up to 10x budget in total attempts
+        done = self.successful_additions >= self.budget or self.steps >= max_attempts
+        
         obs = self._obs()
         return obs, float(reward), done, False, {}
 
@@ -449,15 +479,12 @@ class ResilienceEnv(gym.Env):
     def _reward_ivi(self, d_lambda2):
         """
         IVI-based reward: Reduce maximum IVI (target high-influence nodes)
-        r = ΔIVI - γ * max(0, -Δλ₂)
+        r = ΔIVI (pure IVI optimization, no λ₂ shaping)
         """
         curr_max_ivi = self._ivi_scores(self.g).max()
         d_ivi = self.prev_max_ivi - curr_max_ivi  # >0 => IVI reduced (good)
         
-        # λ₂ penalty to maintain connectivity
-        lambda_penalty = self.gamma * max(0.0, -d_lambda2)
-        
-        r = d_ivi - lambda_penalty
+        r = d_ivi  # Pure IVI reward, no connectivity penalty
         
         # Update baseline
         self.prev_max_ivi = curr_max_ivi
@@ -467,15 +494,12 @@ class ResilienceEnv(gym.Env):
     def _reward_nnsi(self, d_lambda2):
         """
         NNSI-based reward: Reduce maximum NNSI (target structurally significant nodes)
-        r = ΔNNSI - γ * max(0, -Δλ₂)
+        r = ΔNNSI (pure NNSI optimization, no λ₂ shaping)
         """
         curr_max_nnsi = self._nnsi_scores(self.g).max()
         d_nnsi = self.prev_max_nnsi - curr_max_nnsi  # >0 => NNSI reduced (good)
         
-        # λ₂ penalty to maintain connectivity
-        lambda_penalty = self.gamma * max(0.0, -d_lambda2)
-        
-        r = d_nnsi - lambda_penalty
+        r = d_nnsi  # Pure NNSI reward, no connectivity penalty
         
         # Update baseline
         self.prev_max_nnsi = curr_max_nnsi
@@ -519,18 +543,38 @@ def exact_metrics(g: ig.Graph):
     n = g.vcount()
     if n < 2:
         return {
-            "λ₂": 0.0, "MinCut": 0.0, "GCC_5%": 1.0, "ASPL": 0.0,
+            "λ₂": 0.0, "AvgNodeConn": 0.0, "GCC_5%": 1.0, "ASPL": 0.0,
             "Diameter": 0.0, "ArticulationPoints": 0, "Bridges": 0,
             "BetCentralization": 0.0, "NatConnectivity": 0.0,
+            "EffResistance": 0.0, "Assortativity": 0.0, "AvgClustering": 0.0,
         }
 
-    # λ₂
+    # λ₂ (Algebraic Connectivity)
     L = np.array(g.laplacian(normalized=True))
     eigs = np.sort(np.linalg.eigvalsh(L))
     lambda2 = eigs[1] if len(eigs) > 1 else 0.0
 
-    # MinCut
-    mincut = g.mincut_value()
+    # Average Node Connectivity (sample-based for large graphs)
+    # More discriminative than min-cut
+    if n <= 50:
+        # Exact for small graphs
+        try:
+            avg_node_conn = g.vertex_connectivity()
+        except:
+            avg_node_conn = 0.0
+    else:
+        # Sample-based approximation for large graphs
+        sample_size = min(50, n)
+        sample_nodes = np.random.choice(n, size=sample_size, replace=False)
+        connectivities = []
+        for i in range(len(sample_nodes)):
+            for j in range(i + 1, min(i + 6, len(sample_nodes))):  # Limit pairs
+                try:
+                    conn = g.vertex_connectivity(sample_nodes[i], sample_nodes[j])
+                    connectivities.append(conn)
+                except:
+                    pass
+        avg_node_conn = float(np.mean(connectivities)) if connectivities else 0.0
 
     # GCC after attack
     k = max(1, int(0.05 * n))
@@ -565,11 +609,50 @@ def exact_metrics(g: ig.Graph):
     eigA = np.linalg.eigvals(A)
     natconn = float(np.log(np.mean(np.exp(eigA.real)) + 1e-12))
 
+    # Effective Graph Resistance (Kirchhoff Index)
+    # Klein & Randić (1993) - lower is better for resilience
+    try:
+        if g.is_connected():
+            L_unnorm = np.array(g.laplacian())
+            evals = np.linalg.eigvalsh(L_unnorm)
+            evals.sort()
+            nonzero = evals[1:]  # Skip first eigenvalue (≈0)
+            nonzero = nonzero[nonzero > 1e-12]
+            if nonzero.size > 0:
+                eff_res = float(n * np.sum(1.0 / nonzero))
+            else:
+                eff_res = 1e9
+        else:
+            eff_res = 1e9
+    except:
+        eff_res = 1e9
+
+    # Assortativity (degree correlation)
+    # Negative values indicate resilient "onion-like" structure
+    try:
+        assort = g.assortativity_degree()
+    except:
+        assort = 0.0
+
+    # Average Clustering Coefficient
+    try:
+        avg_clust = g.transitivity_avglocal_undirected(mode="zero")
+    except:
+        avg_clust = 0.0
+
     return {
-        "λ₂": float(lambda2), "MinCut": float(mincut), "GCC_5%": float(gcc),
-        "ASPL": float(aspl), "Diameter": float(diam),
-        "ArticulationPoints": int(art_pts), "Bridges": int(bridges),
-        "BetCentralization": float(bet_central), "NatConnectivity": float(natconn),
+        "λ₂": float(lambda2), 
+        "AvgNodeConn": float(avg_node_conn),
+        "GCC_5%": float(gcc),
+        "ASPL": float(aspl), 
+        "Diameter": float(diam),
+        "ArticulationPoints": int(art_pts), 
+        "Bridges": int(bridges),
+        "BetCentralization": float(bet_central), 
+        "NatConnectivity": float(natconn),
+        "EffResistance": float(eff_res),
+        "Assortativity": float(assort),
+        "AvgClustering": float(avg_clust),
     }
 
 # ============================================================================
@@ -580,9 +663,11 @@ print(f"Total experiments: {len(GRAPH_FILES) * 4} (30 networks × 4 reward funct
 print(f"{'='*80}\n")
 
 results = []
+edge_records = []  # Track added edges per rollout
 network_times = []
-metrics = ["λ₂", "MinCut", "GCC_5%", "ASPL", "Diameter",
-           "ArticulationPoints", "Bridges", "BetCentralization", "NatConnectivity"]
+metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "ASPL", "Diameter",
+           "ArticulationPoints", "Bridges", "BetCentralization", "NatConnectivity",
+           "EffResistance", "Assortativity", "AvgClustering"]
 
 for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
     network_start = time.time()
@@ -632,13 +717,37 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
             model.learn(total_timesteps=25000)
             print("Evaluating...", end=" ", flush=True)
             
-            # Final rollout
+            # Final rollout - track added edges
             obs, _ = env.reset()
-            for _ in range(env.budget):
+            rollout_edges = []
+            successful_count = 0
+            max_rollout_steps = env.budget * 10  # Safety limit
+            
+            for step_num in range(max_rollout_steps):
                 action, _ = model.predict(obs, deterministic=True)
-                obs, _, done, _, _ = env.step(action)
+                u, v = env.candidates[action]
+                edge = tuple(sorted((u, v)))
+                
+                obs, reward, done, _, _ = env.step(action)
+                
+                # Record edge if it was actually added (not a duplicate/invalid)
+                if edge in env.added_edges and reward > 0:  # Only count successful additions
+                    successful_count += 1
+                    rollout_edges.append({
+                        "Graph": name,
+                        "Reward": reward_type.upper(),
+                        "Step": successful_count,  # Use successful count, not attempt count
+                        "Node_U": u,
+                        "Node_V": v,
+                        "Edge": f"{u}-{v}",
+                        "StepReward": reward
+                    })
+                
                 if done:
                     break
+            
+            # Store all edges for this rollout
+            edge_records.extend(rollout_edges)
             
             # Evaluate
             final_met = exact_metrics(env.g)
@@ -685,9 +794,23 @@ for k in metrics:
 # SAVE RESULTS
 # ============================================================================
 output_file = "/content/drive/MyDrive/thesis_4rewards_30networks.csv"  # For Colab
-# output_file = "./thesis_4rewards_30networks.csv"  # For local
+# output_file = "./thesis_4rewards_1networks.csv"  # For local
+
+output_edges_file = "/content/drive/MyDrive/thesis_4rewards_30networks_edges.csv"  # For Colab
+# output_edges_file = "./thesis_4rewards_1networks_edges.csv"  # For local
 
 df.to_csv(output_file, index=False)
+
+# Save edge records
+df_edges = pd.DataFrame(edge_records)
+df_edges.to_csv(output_edges_file, index=False)
+
+print(f"\n{'='*80}")
+print(f"FILES SAVED:")
+print(f"{'='*80}")
+print(f"📊 Metrics: {output_file}")
+print(f"🔗 Edges:   {output_edges_file}")
+print(f"{'='*80}")
 
 # ============================================================================
 # DISPLAY RESULTS
@@ -701,20 +824,28 @@ print(f"\n{'='*80}")
 print(f"EXPERIMENT COMPLETE!")
 print(f"{'='*80}")
 print(f"\n✅ Results saved to: {output_file}")
+print(f"✅ Edges saved to: {output_edges_file}")
 print(f"⏱️  Total time: {hours}h {minutes}m")
 print(f"📊 Networks: {len(df)}")
-print(f"📈 Experiments: {len(df) * 2}")
+print(f"📈 Experiments: {len(df) * 4}")  # Updated to 4 reward functions
+print(f"🔗 Total edges tracked: {len(df_edges)}")
 
 # Display sample results
 print(f"\n{'='*80}")
 print(f"SAMPLE RESULTS (first 5 networks)")
 print(f"{'='*80}\n")
 display_cols = ["Graph", "N", "M", "BudgetEdges"]
-for k in ["λ₂", "MinCut", "GCC_5%", "NatConnectivity"]:
-    display_cols += [f"PBR_{k}", f"EFFRES_{k}", f"%Δ_PBR_vs_Orig_{k}", f"%Δ_EFFRES_vs_Orig_{k}"]
+for k in ["λ₂", "AvgNodeConn", "GCC_5%", "NatConnectivity", "EffResistance"]:
+    display_cols += [f"PBR_{k}", f"EFFRES_{k}", f"IVI_{k}", f"NNSI_{k}"]
 
 print(df[display_cols].head().to_string(index=False))
 
 print(f"\n{'='*80}")
 print(f"Full results in: {output_file}")
+print(f"{'='*80}")
+print(f"\n🎉 EXPERIMENT FINISHED - Script will now exit")
 print(f"{'='*80}\n")
+
+# Explicitly exit to prevent re-running
+import sys
+sys.exit(0)
