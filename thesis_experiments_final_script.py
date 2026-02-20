@@ -1,5 +1,3 @@
-
-
 ### IMPORTS
 import os, numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
 import igraph as ig, gymnasium as gym, torch, torch.nn as nn, torch_geometric.nn as pyg_nn
@@ -634,7 +632,7 @@ def exact_metrics(g: ig.Graph):
 # ============================================================================
 # MAIN EXPERIMENT LOOP
 # ============================================================================
-print(f"\nTesting 2 reward functions on {len(GRAPH_FILES)} networks")
+print(f"\nTesting reward functions on {len(GRAPH_FILES)} networks")
 print(f"Total experiments: {len(GRAPH_FILES) * 4} (30 networks × 4 reward functions)")
 print(f"{'='*80}\n")
 
@@ -652,9 +650,54 @@ metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "ASPL", "Diameter",
            "ArticulationPoints", "Bridges", "BetCentralization", "NatConnectivity",
            "EffResistance", "Assortativity", "AvgClustering"]
 
+# ============================================================================
+# CHECKPOINT SYSTEM - Load previous progress if exists
+# ============================================================================
+checkpoint_file = "./checkpoint_progress.csv"
+output_file = "./test_thesis_4rewards_30networks_metrics.csv"
+output_edges_file = "./test_thesis_4rewards_30networks_edges_all_attempts.csv"
+output_edges_added_file = "./test_thesis_4rewards_30networks_edges_added_only.csv"
+output_landscape_file = "./thesis_4rewards_30networks_reward_landscape.csv"
+
+processed_networks = set()
+
+if os.path.exists(checkpoint_file):
+    print(f"{'='*80}")
+    print(f"CHECKPOINT FOUND - Loading previous progress...")
+    print(f"{'='*80}\n")
+    
+    # Load checkpoint
+    checkpoint_df = pd.read_csv(checkpoint_file)
+    processed_networks = set(checkpoint_df['Graph'].values)
+    
+    print(f"✓ Found {len(processed_networks)} already processed networks:")
+    for net in sorted(processed_networks):
+        print(f"  - {net}")
+    print(f"\nResuming from network {len(processed_networks) + 1}/{len(GRAPH_FILES)}\n")
+    
+    # Load existing results
+    if os.path.exists(output_file):
+        results = pd.read_csv(output_file).to_dict('records')
+    if os.path.exists(output_edges_file):
+        attempt_records = pd.read_csv(output_edges_file).to_dict('records')
+    if os.path.exists(output_landscape_file):
+        all_reward_landscapes = pd.read_csv(output_landscape_file).to_dict('records')
+else:
+    print(f"No checkpoint found - Starting fresh\n")
+
 for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
     network_start = time.time()
     name = os.path.basename(path).split(".")[0]
+    
+    # ============================================================================
+    # CHECKPOINT: Skip if already processed
+    # ============================================================================
+    if name in processed_networks:
+        print(f"\n{'='*80}")
+        print(f"Network {idx}/{len(GRAPH_FILES)}: {name} - SKIPPING (already processed)")
+        print(f"{'='*80}")
+        continue
+    
     orig_g = ig.Graph.Read_GraphML(path).as_undirected()
     n, m = orig_g.vcount(), orig_g.ecount()
 
@@ -877,8 +920,16 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
             print(f"✓ ({len(reward_landscape)} landscape entries)")
         except Exception as e:
             print(f"✗ Error: {e}")
+            import traceback
+            traceback.print_exc()
             for k in metrics:
                 row[f"{reward_type.upper()}_{k}"] = np.nan
+            
+            # Save checkpoint even on error
+            print(f"  💾 Saving checkpoint after error...", end=" ", flush=True)
+            df_temp = pd.DataFrame(results + [row])
+            df_temp.to_csv(output_file, index=False)
+            print(f"✓")
 
     network_time = time.time() - network_start
     network_times.append(network_time)
@@ -888,6 +939,42 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
     
     print(f"  Network completed in {network_time/60:.1f} min | Avg: {avg_time/60:.1f} min | ETA: {eta_minutes:.1f} min ({eta_minutes/60:.1f}h)")
     results.append(row)
+    
+    # ============================================================================
+    # CHECKPOINT: Save progress after each network
+    # ============================================================================
+    print(f"  💾 Saving checkpoint...", end=" ", flush=True)
+    
+    # Save main results
+    df_temp = pd.DataFrame(results)
+    df_temp.to_csv(output_file, index=False)
+    
+    # Save edges
+    if len(attempt_records) > 0:
+        df_edges_temp = pd.DataFrame(attempt_records)
+        df_edges_temp.to_csv(output_edges_file, index=False)
+        
+        # Save added-only edges
+        df_edges_added_temp = df_edges_temp[df_edges_temp["WasAdded"] == True].copy()
+        df_edges_added_temp.to_csv(output_edges_added_file, index=False)
+    
+    # Save reward landscape
+    if len(all_reward_landscapes) > 0:
+        df_landscape_temp = pd.DataFrame(all_reward_landscapes)
+        df_landscape_temp.to_csv(output_landscape_file, index=False)
+    
+    # Update checkpoint file
+    processed_networks.add(name)
+    checkpoint_df = pd.DataFrame({'Graph': list(processed_networks)})
+    checkpoint_df.to_csv(checkpoint_file, index=False)
+    
+    print(f"✓ Checkpoint saved ({len(processed_networks)}/{len(GRAPH_FILES)} networks)")
+    
+    # Force garbage collection to free memory
+    import gc
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
 df = pd.DataFrame(results)
 
@@ -910,13 +997,9 @@ for k in metrics:
     ).round(2)
 
 # ============================================================================
-# SAVE RESULTS
+# SAVE RESULTS (Final)
 # ============================================================================
-output_file = "./test_thesis_4rewards_30networks_metrics.csv"  # For local
-
-output_edges_file = "./test_thesis_4rewards_30networks_edges_all_attempts.csv"  # For local
-
-output_edges_added_file = "./test_thesis_4rewards_30networks_edges_added_only.csv"  # For local
+# File paths already defined in checkpoint section above
 
 df.to_csv(output_file, index=False)
 
@@ -929,7 +1012,6 @@ print(f">>> Saved to: {output_edges_file}")
 
 # Save reward landscape (all candidate edges with their potential rewards)
 if len(all_reward_landscapes) > 0:
-    output_landscape_file = "./thesis_4rewards_30networks_reward_landscape.csv"
     print(f"\n>>> Saving reward landscape... ({len(all_reward_landscapes)} candidate edges)")
     df_landscape = pd.DataFrame(all_reward_landscapes)
     print(f">>> Created DataFrame with {len(df_landscape)} rows")
@@ -953,6 +1035,13 @@ print(f"📊 Metrics: {output_file}")
 print(f"🔗 Edges:   {output_edges_file}")
 print(f"➕ Added-only edges: {output_edges_added_file}")
 print(f"{'='*80}")
+
+# ============================================================================
+# CLEANUP: Remove checkpoint file on successful completion
+# ============================================================================
+if os.path.exists(checkpoint_file):
+    os.remove(checkpoint_file)
+    print(f"\n✓ Checkpoint file removed (all networks processed successfully)")
 
 # ============================================================================
 # DISPLAY RESULTS
