@@ -24,8 +24,7 @@ print(f"\n{'='*80}")
 print(f"THESIS EXPERIMENT: 4 Reward Functions on 30 Networks")
 print(f"{'='*80}")
 print(f"Device: {DEVICE} | Seed: {SEED}")
-print(f">>> SCRIPT START - PID: {os.getpid()} <<<")
-print(f">>> If you see this PID twice, the script is being run multiple times <<<\n")
+print(f"Script PID: {os.getpid()}\n")
 
 # Graph directory
 GRAPH_DIR = "./real_world_topologies"  # For local
@@ -654,32 +653,32 @@ metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "ASPL", "Diameter",
 # CHECKPOINT SYSTEM - Load previous progress if exists
 # ============================================================================
 checkpoint_file = "./checkpoint_progress.csv"
-output_file = "./test_thesis_4rewards_30networks_metrics.csv"
-output_edges_file = "./test_thesis_4rewards_30networks_edges_all_attempts.csv"
-output_edges_added_file = "./test_thesis_4rewards_30networks_edges_added_only.csv"
-output_landscape_file = "./thesis_4rewards_30networks_reward_landscape.csv"
+output_metrics_file = "./results_network_metrics.csv"
+output_edges_all_file = "./results_edge_attempts_all.csv"
+output_edges_added_file = "./results_edge_attempts_successful.csv"
+output_landscape_file = "./results_reward_landscape.csv"
 
 processed_networks = set()
 
 if os.path.exists(checkpoint_file):
     print(f"{'='*80}")
-    print(f"CHECKPOINT FOUND - Loading previous progress...")
+    print(f"CHECKPOINT FOUND - Loading previous progress")
     print(f"{'='*80}\n")
     
     # Load checkpoint
     checkpoint_df = pd.read_csv(checkpoint_file)
     processed_networks = set(checkpoint_df['Graph'].values)
     
-    print(f"✓ Found {len(processed_networks)} already processed networks:")
+    print(f"Found {len(processed_networks)} already processed networks:")
     for net in sorted(processed_networks):
         print(f"  - {net}")
     print(f"\nResuming from network {len(processed_networks) + 1}/{len(GRAPH_FILES)}\n")
     
     # Load existing results
-    if os.path.exists(output_file):
-        results = pd.read_csv(output_file).to_dict('records')
-    if os.path.exists(output_edges_file):
-        attempt_records = pd.read_csv(output_edges_file).to_dict('records')
+    if os.path.exists(output_metrics_file):
+        results = pd.read_csv(output_metrics_file).to_dict('records')
+    if os.path.exists(output_edges_all_file):
+        attempt_records = pd.read_csv(output_edges_all_file).to_dict('records')
     if os.path.exists(output_landscape_file):
         all_reward_landscapes = pd.read_csv(output_landscape_file).to_dict('records')
 else:
@@ -926,10 +925,10 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 row[f"{reward_type.upper()}_{k}"] = np.nan
             
             # Save checkpoint even on error
-            print(f"  💾 Saving checkpoint after error...", end=" ", flush=True)
+            print(f"  Saving checkpoint after error...", end=" ", flush=True)
             df_temp = pd.DataFrame(results + [row])
-            df_temp.to_csv(output_file, index=False)
-            print(f"✓")
+            df_temp.to_csv(output_metrics_file, index=False)
+            print(f"Done")
 
     network_time = time.time() - network_start
     network_times.append(network_time)
@@ -943,16 +942,16 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
     # ============================================================================
     # CHECKPOINT: Save progress after each network
     # ============================================================================
-    print(f"  💾 Saving checkpoint...", end=" ", flush=True)
+    print(f"  Saving checkpoint...", end=" ", flush=True)
     
     # Save main results
     df_temp = pd.DataFrame(results)
-    df_temp.to_csv(output_file, index=False)
+    df_temp.to_csv(output_metrics_file, index=False)
     
     # Save edges
     if len(attempt_records) > 0:
         df_edges_temp = pd.DataFrame(attempt_records)
-        df_edges_temp.to_csv(output_edges_file, index=False)
+        df_edges_temp.to_csv(output_edges_all_file, index=False)
         
         # Save added-only edges
         df_edges_added_temp = df_edges_temp[df_edges_temp["WasAdded"] == True].copy()
@@ -968,7 +967,7 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
     checkpoint_df = pd.DataFrame({'Graph': list(processed_networks)})
     checkpoint_df.to_csv(checkpoint_file, index=False)
     
-    print(f"✓ Checkpoint saved ({len(processed_networks)}/{len(GRAPH_FILES)} networks)")
+    print(f"Done ({len(processed_networks)}/{len(GRAPH_FILES)} networks)")
     
     # Force garbage collection to free memory
     import gc
@@ -1001,39 +1000,40 @@ for k in metrics:
 # ============================================================================
 # File paths already defined in checkpoint section above
 
-df.to_csv(output_file, index=False)
+df.to_csv(output_metrics_file, index=False)
 
 # Save attempt trace
-print(f"\n>>> Saving attempt records... ({len(attempt_records)} records)")
+print(f"\nSaving attempt records... ({len(attempt_records)} records)")
 df_edges = pd.DataFrame(attempt_records)
-print(f">>> Created DataFrame with {len(df_edges)} rows")
-df_edges.to_csv(output_edges_file, index=False)
-print(f">>> Saved to: {output_edges_file}")
+print(f"Created DataFrame with {len(df_edges)} rows")
+df_edges.to_csv(output_edges_all_file, index=False)
+print(f"Saved to: {output_edges_all_file}")
 
 # Save reward landscape (all candidate edges with their potential rewards)
 if len(all_reward_landscapes) > 0:
-    print(f"\n>>> Saving reward landscape... ({len(all_reward_landscapes)} candidate edges)")
+    print(f"\nSaving reward landscape... ({len(all_reward_landscapes)} candidate edges)")
     df_landscape = pd.DataFrame(all_reward_landscapes)
-    print(f">>> Created DataFrame with {len(df_landscape)} rows")
+    print(f"Created DataFrame with {len(df_landscape)} rows")
     df_landscape.to_csv(output_landscape_file, index=False)
-    print(f">>> Saved to: {output_landscape_file}")
-    print(f">>> This file contains the potential reward for EVERY candidate edge at EACH step (0 to budget-1)")
-    print(f">>> Step 0 = initial state, Step 1 = after 1st edge added, etc.")
+    print(f"Saved to: {output_landscape_file}")
+    print(f"This file contains the potential reward for EVERY candidate edge at EACH step (0 to budget-1)")
+    print(f"Step 0 = initial state, Step 1 = after 1st edge added, etc.")
 
 
 # Save added-only subset (one row per edge actually added)
-print(f">>> Filtering for added edges only...")
+print(f"Filtering for added edges only...")
 df_edges_added = df_edges[df_edges["WasAdded"] == True].copy()
-print(f">>> Found {len(df_edges_added)} added edges")
+print(f"Found {len(df_edges_added)} added edges")
 df_edges_added.to_csv(output_edges_added_file, index=False)
-print(f">>> Saved to: {output_edges_added_file}")
+print(f"Saved to: {output_edges_added_file}")
 
 print(f"\n{'='*80}")
 print(f"FILES SAVED:")
 print(f"{'='*80}")
-print(f"📊 Metrics: {output_file}")
-print(f"🔗 Edges:   {output_edges_file}")
-print(f"➕ Added-only edges: {output_edges_added_file}")
+print(f"Metrics: {output_metrics_file}")
+print(f"All edge attempts: {output_edges_all_file}")
+print(f"Successful edges: {output_edges_added_file}")
+print(f"Reward landscape: {output_landscape_file}")
 print(f"{'='*80}")
 
 # ============================================================================
@@ -1041,7 +1041,7 @@ print(f"{'='*80}")
 # ============================================================================
 if os.path.exists(checkpoint_file):
     os.remove(checkpoint_file)
-    print(f"\n✓ Checkpoint file removed (all networks processed successfully)")
+    print(f"\nCheckpoint file removed (all networks processed successfully)")
 
 # ============================================================================
 # DISPLAY RESULTS
@@ -1052,19 +1052,18 @@ hours = int(total_time // 3600)
 minutes = int((total_time % 3600) // 60)
 
 print(f"\n{'='*80}")
-print(f"EXPERIMENT COMPLETE!")
+print(f"EXPERIMENT COMPLETE")
 print(f"{'='*80}")
-print(f"\n✅ Results saved to: {output_file}")
-print(f"✅ Edges saved to: {output_edges_file}")
-print(f"✅ Added-only edges saved to: {output_edges_added_file}")
-print(f"⏱️  Total time: {hours}h {minutes}m")
-print(f"📊 Networks: {len(df)}")
-print(f"📈 Experiments: {len(df) * 4}")  # Updated to 4 reward functions
-print(f"🔁 Total attempts tracked: {len(df_edges)}")
-print(f"➕ Total edges added tracked: {len(df_edges_added)}")
+print(f"\nResults saved to: {output_metrics_file}")
+print(f"Edges saved to: {output_edges_all_file}")
+print(f"Added-only edges saved to: {output_edges_added_file}")
+print(f"Total time: {hours}h {minutes}m")
+print(f"Networks: {len(df)}")
+print(f"Experiments: {len(df) * 4}")
+print(f"Total attempts tracked: {len(df_edges)}")
+print(f"Total edges added tracked: {len(df_edges_added)}")
 
 # Display sample results
-print(f"\n>>> About to display sample results...")
 print(f"\n{'='*80}")
 print(f"SAMPLE RESULTS (first 5 networks)")
 print(f"{'='*80}\n")
@@ -1075,15 +1074,13 @@ for k in ["λ₂", "AvgNodeConn", "GCC_5%", "NatConnectivity", "EffResistance"]:
 print(df[display_cols].head().to_string(index=False))
 
 print(f"\n{'='*80}")
-print(f"Full results in: {output_file}")
+print(f"Full results in: {output_metrics_file}")
 print(f"{'='*80}")
-print(f"\n🎉 EXPERIMENT FINISHED - Script will now exit")
+print(f"\nEXPERIMENT FINISHED")
 print(f"{'='*80}\n")
 
 # Explicitly exit to prevent re-running
-print(">>> EXITING NOW - If you see this message twice, something is wrong <<<")
-print(f">>> Final PID: {os.getpid()} <<<")
+print("Exiting script")
+print(f"Final PID: {os.getpid()}")
 import sys
-print(">>> Calling sys.exit(0) now...")
 sys.exit(0)
-print(">>> THIS LINE SHOULD NEVER PRINT - IF YOU SEE THIS, sys.exit() FAILED <<<")
