@@ -643,8 +643,8 @@ results = []
 # This enables post-hoc diagnosis of *why* each reward leads to the observed final metrics.
 attempt_records = []
 
-# Reward landscape: potential reward for ALL candidate edges at initial state
-all_reward_landscapes = []
+# Reward landscape: DISABLED to prevent memory issues on large networks
+# all_reward_landscapes = []
 
 network_times = []
 metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "ASPL", "Diameter",
@@ -658,7 +658,7 @@ checkpoint_file = "./checkpoint_progress.csv"
 output_metrics_file = "./results_network_metrics.csv"
 output_edges_all_file = "./results_edge_attempts_all.csv"
 output_edges_added_file = "./results_edge_attempts_successful.csv"
-output_landscape_file = "./results_reward_landscape.csv"
+# output_landscape_file = "./results_reward_landscape.csv"  # DISABLED
 
 processed_networks = set()
 
@@ -735,31 +735,7 @@ if os.path.exists(checkpoint_file):
             print(f"{output_edges_all_file} does not exist, will create new")
             attempt_records = []
         
-        if os.path.exists(output_landscape_file):
-            try:
-                file_size = os.path.getsize(output_landscape_file)
-                print(f"Checking {output_landscape_file} (size: {file_size} bytes)")
-                
-                if file_size == 0:
-                    print(f"Warning: {output_landscape_file} is empty, starting fresh")
-                    all_reward_landscapes = []
-                else:
-                    df_temp = pd.read_csv(output_landscape_file)
-                    if len(df_temp) > 0 and len(df_temp.columns) > 0:
-                        all_reward_landscapes = df_temp.to_dict('records')
-                        print(f"Loaded {len(all_reward_landscapes)} existing landscape entries")
-                    else:
-                        print(f"Warning: {output_landscape_file} is empty, starting fresh")
-                        all_reward_landscapes = []
-            except pd.errors.EmptyDataError:
-                print(f"Warning: {output_landscape_file} is empty, starting fresh")
-                all_reward_landscapes = []
-            except Exception as e:
-                print(f"Warning: Could not load {output_landscape_file}: {e}")
-                all_reward_landscapes = []
-        else:
-            print(f"{output_landscape_file} does not exist, will create new")
-            all_reward_landscapes = []
+        # Reward landscape loading DISABLED (feature removed to prevent memory issues)
                 
     except Exception as e:
         print(f"Error loading checkpoint: {e}")
@@ -767,7 +743,6 @@ if os.path.exists(checkpoint_file):
         processed_networks = set()
         results = []
         attempt_records = []
-        all_reward_landscapes = []
 else:
     print(f"No checkpoint found - Starting fresh\n")
 
@@ -832,7 +807,7 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
             obs, _ = env.reset()
             rollout_attempts = []
             successful_count = 0
-            reward_landscape = []
+            # reward_landscape = []  # DISABLED to prevent memory issues
             
             # Helper function to compute reward landscape at current state
             def compute_reward_landscape_at_step(current_g, step_num):
@@ -925,14 +900,10 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 max_entry = max(landscape_at_step, key=lambda x: x['PotentialReward'])
                 return max_entry['CandidateIndex'], max_entry['PotentialReward'], max_entry['Edge']
             
-            # Compute initial reward landscape (Step 0)
-            print("Computing reward landscape...", end=" ", flush=True)
-            initial_landscape = compute_reward_landscape_at_step(env.g.copy(), step_num=0)
-            reward_landscape.extend(initial_landscape)
-            
-            # Get greedy baseline for step 0
-            greedy_action_0, greedy_reward_0, greedy_edge_0 = get_greedy_action(initial_landscape)
-            print(f"Step 0: {len(initial_landscape)} candidates (greedy={greedy_edge_0}, r={greedy_reward_0:.4f})...", end=" ", flush=True)
+            # REWARD LANDSCAPE COMPUTATION DISABLED to prevent memory issues on large networks
+            # For large networks (>10k candidates), computing reward landscape causes segfaults
+            greedy_action_0, greedy_reward_0, greedy_edge_0 = None, 0.0, "N/A"
+            print(f"Step 0: {len(env.candidates)} candidates (landscape disabled)...", end=" ", flush=True)
 
             for step_num in range(env.budget):  # Only need budget steps now!
                 # Get valid action mask
@@ -953,14 +924,8 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 u, v = env.candidates[action]
                 edge = tuple(sorted((u, v)))
                 
-                # Get greedy choice for comparison
-                current_landscape = [entry for entry in initial_landscape if entry['Step'] == successful_count]
-                if not current_landscape:
-                    # Recompute if not available
-                    current_landscape = compute_reward_landscape_at_step(env.g.copy(), step_num=successful_count)
-                
-                greedy_info = get_greedy_action(current_landscape)
-                greedy_action, greedy_reward, greedy_edge = greedy_info if greedy_info else (None, None, None)
+                # Greedy choice comparison DISABLED (landscape computation removed)
+                greedy_action, greedy_reward, greedy_edge = None, None, None
                 
                 obs, reward, done, _, _ = env.step(action)
                 
@@ -983,10 +948,7 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 
                 successful_count += 1
                 
-                # Compute reward landscape after this edge addition
-                if successful_count < env.budget:  # Only compute if more edges to add
-                    step_landscape = compute_reward_landscape_at_step(env.g.copy(), step_num=successful_count)
-                    reward_landscape.extend(step_landscape)
+                # Reward landscape computation DISABLED (causes memory issues)
                 
                 if done:
                     break
@@ -994,8 +956,7 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
             # Store attempt trace for this rollout
             attempt_records.extend(rollout_attempts)
             
-            # Store reward landscape for this network/reward combination
-            all_reward_landscapes.extend(reward_landscape)
+            # Reward landscape storage DISABLED
             
             # Evaluate
             final_met = exact_metrics(env.g)
@@ -1003,7 +964,7 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
             for k, v in final_met.items():
                 row[f"{prefix}_{k}"] = v
             
-            print(f"✓ ({len(reward_landscape)} landscape entries)")
+            print(f"✓")
         except Exception as e:
             print(f"✗ Error: {e}")
             import traceback
@@ -1044,10 +1005,7 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
         df_edges_added_temp = df_edges_temp[df_edges_temp["WasAdded"] == True].copy()
         df_edges_added_temp.to_csv(output_edges_added_file, index=False)
     
-    # Save reward landscape
-    if len(all_reward_landscapes) > 0:
-        df_landscape_temp = pd.DataFrame(all_reward_landscapes)
-        df_landscape_temp.to_csv(output_landscape_file, index=False)
+    # Reward landscape saving DISABLED (feature removed)
     
     # Update checkpoint file
     processed_networks.add(name)
@@ -1096,16 +1054,7 @@ print(f"Created DataFrame with {len(df_edges)} rows")
 df_edges.to_csv(output_edges_all_file, index=False)
 print(f"Saved to: {output_edges_all_file}")
 
-# Save reward landscape (all candidate edges with their potential rewards)
-if len(all_reward_landscapes) > 0:
-    print(f"\nSaving reward landscape... ({len(all_reward_landscapes)} candidate edges)")
-    df_landscape = pd.DataFrame(all_reward_landscapes)
-    print(f"Created DataFrame with {len(df_landscape)} rows")
-    df_landscape.to_csv(output_landscape_file, index=False)
-    print(f"Saved to: {output_landscape_file}")
-    print(f"This file contains the potential reward for EVERY candidate edge at EACH step (0 to budget-1)")
-    print(f"Step 0 = initial state, Step 1 = after 1st edge added, etc.")
-
+# Reward landscape saving DISABLED (feature removed to prevent memory issues)
 
 # Save added-only subset (one row per edge actually added)
 print(f"Filtering for added edges only...")
