@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
-OUTPUTS:
+OUTPUT:
 
 1) graph_metrics_summary.csv
 2) node_feature_summary.csv
+
+node_feature_summary.csv includes per-graph summaries for each node feature:
+min, median, max, mean, std, p90
 """
 
 from __future__ import annotations
@@ -81,7 +84,6 @@ SAMPLED_PAIRS_MAX = 400
 # Helpers
 # ----------------------------
 def find_dataset_folder() -> str:
-    """Find dataset folder, supporting both correct and typo names."""
     candidates = ["real_world_topologies", "real_worl_topologies"]
     for c in candidates:
         if os.path.isdir(c):
@@ -90,13 +92,11 @@ def find_dataset_folder() -> str:
 
 
 def read_graph_graphml(path: str) -> ig.Graph:
-    """Read GraphML and convert to simple undirected graph."""
     g = ig.Graph.Read_GraphML(path)
 
     if g.is_directed():
         g = g.as_undirected(combine_edges=None)
 
-    # Simplify to simple graph
     if g.has_multiple():
         g.simplify(multiple=True, loops=False)
     else:
@@ -104,12 +104,10 @@ def read_graph_graphml(path: str) -> ig.Graph:
 
     if "name" not in g.vs.attributes():
         g.vs["name"] = [str(i) for i in range(g.vcount())]
-
     return g
 
 
 def gcc_subgraph(g: ig.Graph) -> ig.Graph:
-    """Return giant connected component as induced subgraph."""
     if g.vcount() == 0:
         return g
     comps = g.components(mode="weak")
@@ -117,12 +115,6 @@ def gcc_subgraph(g: ig.Graph) -> ig.Graph:
         return g
     giant = max(comps, key=len)
     return g.induced_subgraph(giant)
-
-
-def safe_percentile(x: np.ndarray, q: float) -> float:
-    if x.size == 0:
-        return float("nan")
-    return float(np.percentile(x, q))
 
 
 def degree_gini(deg: np.ndarray) -> float:
@@ -137,7 +129,6 @@ def degree_gini(deg: np.ndarray) -> float:
 
 
 def normalized_laplacian_eigs(g: ig.Graph) -> Optional[np.ndarray]:
-    """Eigenvalues of normalized Laplacian via dense adjacency."""
     n = g.vcount()
     if n == 0:
         return np.array([], dtype=float)
@@ -163,10 +154,6 @@ def algebraic_connectivity_lambda2(g: ig.Graph) -> float:
 
 
 def effective_resistance_kirchhoff(g: ig.Graph) -> float:
-    """
-    Kirchhoff-like effective resistance using normalized Laplacian eigenvalues.
-    Returns BIG_PENALTY for disconnected graphs (matches thesis-script style).
-    """
     n = g.vcount()
     if n <= 1:
         return 0.0
@@ -174,11 +161,9 @@ def effective_resistance_kirchhoff(g: ig.Graph) -> float:
         return float(BIG_PENALTY)
     if n > EFFRES_N_MAX:
         return float("nan")
-
     eigs = normalized_laplacian_eigs(g)
     if eigs is None or eigs.size != n:
         return float("nan")
-
     lam = eigs[1:]
     if np.any(lam <= 1e-12):
         return float(BIG_PENALTY)
@@ -200,11 +185,6 @@ def natural_connectivity(g: ig.Graph) -> float:
 
 
 def avg_pairwise_vertex_connectivity(g: ig.Graph) -> float:
-    """
-    Average pairwise vertex connectivity.
-    Exact over all unordered pairs if N <= EXACT_CONN_N_MAX,
-    else approximate by sampling nodes and node pairs on the GCC.
-    """
     n = g.vcount()
     if n <= 1:
         return 0.0
@@ -229,7 +209,6 @@ def avg_pairwise_vertex_connectivity(g: ig.Graph) -> float:
             u, v = random.sample(sample_nodes, 2)
             vals.append(gg.vertex_connectivity(u, v))
         return float(np.mean(vals)) if vals else 0.0
-
     except Exception:
         return float("nan")
 
@@ -273,15 +252,21 @@ def compute_node_features(g: ig.Graph) -> Dict[str, np.ndarray]:
 
 
 def summarize_feature(x: np.ndarray) -> Dict[str, float]:
+    """
+    Return min/median/max/mean/std/p90 for an array, ignoring NaNs.
+    """
     if x.size == 0:
-        return {"mean": float("nan"), "std": float("nan"), "max": float("nan"), "p90": float("nan")}
+        return {k: float("nan") for k in ["min", "median", "max", "mean", "std", "p90"]}
     x2 = x[np.isfinite(x)]
     if x2.size == 0:
-        return {"mean": float("nan"), "std": float("nan"), "max": float("nan"), "p90": float("nan")}
+        return {k: float("nan") for k in ["min", "median", "max", "mean", "std", "p90"]}
+
     return {
+        "min": float(np.min(x2)),
+        "median": float(np.median(x2)),
+        "max": float(np.max(x2)),
         "mean": float(np.mean(x2)),
         "std": float(np.std(x2)),
-        "max": float(np.max(x2)),
         "p90": float(np.percentile(x2, 90)),
     }
 
@@ -393,10 +378,8 @@ def main() -> None:
         feat_row: Dict[str, object] = {"graph": graph_name, "file": filename, "N": g.vcount(), "M": g.ecount()}
         for k, arr in feats.items():
             s = summarize_feature(arr)
-            feat_row[f"{k}_mean"] = s["mean"]
-            feat_row[f"{k}_std"] = s["std"]
-            feat_row[f"{k}_max"] = s["max"]
-            feat_row[f"{k}_p90"] = s["p90"]
+            for stat, val in s.items():
+                feat_row[f"{k}_{stat}"] = val
         feat_rows.append(feat_row)
 
         print(f"[OK] {graph_name}: N={g.vcount()}, M={g.ecount()}")
@@ -410,7 +393,6 @@ def main() -> None:
     df_graph = pd.DataFrame(graph_rows)
     df_feat = pd.DataFrame(feat_rows)
 
-    # Sort in a meaningful way
     if not df_graph.empty:
         df_graph = df_graph.sort_values(by=["N", "M", "graph"], ascending=[True, True, True])
     if not df_feat.empty:
