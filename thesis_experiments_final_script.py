@@ -22,8 +22,15 @@ if torch.cuda.is_available():
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
+# Check for run information from environment
+run_number = os.environ.get('RUN_NUMBER', None)
+total_runs = os.environ.get('TOTAL_RUNS', None)
+
 print(f"\n{'='*80}")
-print(f"THESIS EXPERIMENT: 4 Reward Functions on 30 Networks")
+if run_number and total_runs:
+    print(f"THESIS EXPERIMENT RUN {run_number}/{total_runs}")
+else:
+    print(f"THESIS EXPERIMENT: 4 Reward Functions on Networks")
 print(f"{'='*80}")
 print(f"Device: {DEVICE} | Seed: {SEED}")
 print(f"Script PID: {os.getpid()}\n")
@@ -31,42 +38,28 @@ print(f"Script PID: {os.getpid()}\n")
 # Graph directory
 GRAPH_DIR = "./real_world_topologies"  # For local
 
-# Network list - Jenks Natural Breaks: Small (≤40), Medium (41-93), Large (>93)
-topo = {
-    # Small networks (≤ 40 nodes) - 10 networks
-    "Arpanet19706": "Arpanet19706.graphml",        # 9 nodes
-    "Abilene": "Abilene.graphml",                  # 11 nodes
-    "Cesnet1997": "Cesnet1997.graphml",            # 13 nodes
-    "Eenet": "Eenet.graphml",                      # 13 nodes
-    "Claranet": "Claranet.graphml",                # 15 nodes
-    "Atmnet": "Atmnet.graphml",                    # 21 nodes
-    "Belnet2005": "Belnet2005.graphml",            # 23 nodes
-    "Bbnplanet": "Bbnplanet.graphml",              # 27 nodes
-    "Arpanet19728": "Arpanet19728.graphml",        # 29 nodes
-    "Bics": "Bics.graphml",                        # 33 nodes
-    # Medium networks (41-93 nodes) - 10 networks
-    "Cernet": "Cernet.graphml",                    # 41 nodes
-    "Chinanet": "Chinanet.graphml",                # 42 nodes
-    "Cesnet200706": "Cesnet200706.graphml",        # 44 nodes
-    "Surfnet": "Surfnet.graphml",                  # 50 nodes
-    "Garr200902": "Garr200902.graphml",            # 54 nodes
-    "Dfn": "Dfn.graphml",                          # 58 nodes
-    "Internode": "Internode.graphml",              # 66 nodes
-    "Esnet": "Esnet.graphml",                      # 68 nodes
-    "Tw": "Tw.graphml",                            # 76 nodes
-    "VtlWavenet2011": "VtlWavenet2011.graphml",    # 92 nodes
-    # Large networks (> 93 nodes) - 10 networks
-    "Interoute": "Interoute.graphml",              # 110 nodes
-    "Deltacom": "Deltacom.graphml",                # 113 nodes
-    "Ion": "Ion.graphml",                          # 125 nodes
-    "Pern": "Pern.graphml",                        # 127 nodes
-    "TataNld": "TataNld.graphml",                  # 145 nodes
-    "GtsCe": "GtsCe.graphml",                      # 149 nodes
-    "Colt": "Colt.graphml",                        # 153 nodes
-    "UsCarrier": "UsCarrier.graphml",              # 158 nodes
-    "DialtelecomCz": "DialtelecomCz.graphml",      # 193 nodes
-    "Cogentco": "Cogentco.graphml",                # 197 nodes
-}
+# Check if custom graph list is provided via environment variable
+import sys
+if len(sys.argv) > 1 and sys.argv[1] == "--graph-list":
+    # Load graph list from file specified in second argument
+    graph_list_file = sys.argv[2]
+    print(f"Loading custom graph list from: {graph_list_file}")
+    
+    # Import the graph list
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("graph_list", graph_list_file)
+    graph_list_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(graph_list_module)
+    topo = graph_list_module.topo
+    
+    print(f"Loaded {len(topo)} graphs from custom list")
+else:
+    # Default network list - Jenks Natural Breaks: Small (≤40), Medium (41-93), Large (>93)
+    topo = {
+        # Small networks (≤ 40 nodes) - 10 networks
+        "Arpanet19706": "Arpanet19706.graphml",        # 9 nodes
+    }
+
 GRAPH_FILES = [os.path.join(GRAPH_DIR, fname) for fname in topo.values()]
 
 start_time = time.time()
@@ -654,10 +647,11 @@ metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "ASPL", "Diameter",
 # ============================================================================
 # CHECKPOINT SYSTEM - Load previous progress if exists
 # ============================================================================
-checkpoint_file = "./checkpoint_progress.csv"
-output_metrics_file = "./results_network_metrics.csv"
-output_edges_all_file = "./results_edge_attempts_all.csv"
-output_edges_added_file = "./results_edge_attempts_successful.csv"
+# Allow output filenames to be overridden via environment variables
+checkpoint_file = os.environ.get('CHECKPOINT_FILE', "./checkpoint_progress.csv")
+output_metrics_file = os.environ.get('OUTPUT_METRICS_FILE', "./results_network_metrics.csv")
+output_edges_all_file = os.environ.get('OUTPUT_EDGES_ALL_FILE', "./results_edge_attempts_all.csv")
+output_edges_added_file = os.environ.get('OUTPUT_EDGES_ADDED_FILE', "./results_edge_attempts_successful.csv")
 # output_landscape_file = "./results_reward_landscape.csv"  # DISABLED
 
 processed_networks = set()
@@ -1069,7 +1063,7 @@ print(f"{'='*80}")
 print(f"Metrics: {output_metrics_file}")
 print(f"All edge attempts: {output_edges_all_file}")
 print(f"Successful edges: {output_edges_added_file}")
-print(f"Reward landscape: {output_landscape_file}")
+# print(f"Reward landscape: {output_landscape_file}")
 print(f"{'='*80}")
 
 # ============================================================================

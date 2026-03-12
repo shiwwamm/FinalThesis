@@ -120,74 +120,58 @@ for run_num in range(1, N_RUNS + 1):
     print(f"  Large: {[name for name, _, _ in sampled_large]}")
     print(f"  Total: {len(sampled_graphs)} graphs\n")
     
-    # Create modified script for this run
-    script_name = f"thesis_experiments_run{run_num}.py"
+    # Create graph list file for this run
+    graph_list_file = f"graph_list_run{run_num}.py"
     
-    # Read original script
-    with open("thesis_experiments_final_script.py", 'r') as f:
-        original_script = f.read()
+    with open(graph_list_file, 'w') as f:
+        f.write(f"# Auto-generated graph list for run {run_num}\n")
+        f.write("# This file is imported by thesis_experiments_final_script.py\n\n")
+        f.write("topo = {\n")
+        for name, path, n in sampled_graphs:
+            basename = os.path.basename(path)
+            # Determine size bucket
+            if n <= SIZE_SMALL_MAX:
+                size = "Small"
+            elif SIZE_MEDIUM_MIN <= n <= SIZE_MEDIUM_MAX:
+                size = "Medium"
+            else:
+                size = "Large"
+            f.write(f'    "{name}": "{basename}",  # {n} nodes ({size})\n')
+        f.write("}\n")
     
-    # Replace the topo dictionary
-    topo_dict = "topo = {\n"
-    for name, path, n in sampled_graphs:
-        basename = os.path.basename(path)
-        # Determine size bucket
-        if n <= SIZE_SMALL_MAX:
-            size = "Small"
-        elif SIZE_MEDIUM_MIN <= n <= SIZE_MEDIUM_MAX:
-            size = "Medium"
-        else:
-            size = "Large"
-        topo_dict += f'    "{name}": "{basename}",  # {n} nodes ({size})\n'
-    topo_dict += "}"
+    print(f"Created graph list file: {graph_list_file}")
     
-    # Find and replace the topo dictionary in the script
-    import re
-    pattern = r'topo = \{[^}]+\}'
-    modified_script = re.sub(pattern, topo_dict, original_script, flags=re.DOTALL)
+    # Create a wrapper script that sets environment variables and runs the experiment
+    wrapper_script = f"run_experiment_{run_num}.py"
     
-    # Update output filenames to include run number
-    modified_script = modified_script.replace(
-        'output_metrics_file = "./results_network_metrics.csv"',
-        f'output_metrics_file = "./results_run{run_num}_metrics.csv"'
-    )
-    modified_script = modified_script.replace(
-        'output_edges_all_file = "./results_edge_attempts_all.csv"',
-        f'output_edges_all_file = "./results_run{run_num}_edges_all.csv"'
-    )
-    modified_script = modified_script.replace(
-        'output_edges_added_file = "./results_edge_attempts_successful.csv"',
-        f'output_edges_added_file = "./results_run{run_num}_edges_added.csv"'
-    )
-    modified_script = modified_script.replace(
-        'checkpoint_file = "./checkpoint_progress.csv"',
-        f'checkpoint_file = "./checkpoint_run{run_num}.csv"'
-    )
+    with open(wrapper_script, 'w') as f:
+        f.write(f"""#!/usr/bin/env python3
+# Wrapper script for run {run_num}
+import os
+import sys
+
+# Set environment variables for output files
+os.environ['OUTPUT_METRICS_FILE'] = './results_run{run_num}_metrics.csv'
+os.environ['OUTPUT_EDGES_ALL_FILE'] = './results_run{run_num}_edges_all.csv'
+os.environ['OUTPUT_EDGES_ADDED_FILE'] = './results_run{run_num}_edges_added.csv'
+os.environ['CHECKPOINT_FILE'] = './checkpoint_run{run_num}.csv'
+
+# Update sys.argv to pass graph list argument
+sys.argv = ['thesis_experiments_final_script.py', '--graph-list', '{graph_list_file}']
+
+# Execute the original script
+with open('thesis_experiments_final_script.py', 'r') as script_file:
+    exec(script_file.read())
+""")
     
-    # Update seed
-    modified_script = modified_script.replace(
-        'SEED = 42',
-        f'SEED = {run_seed}'
-    )
-    
-    # Update title
-    modified_script = modified_script.replace(
-        'print(f"THESIS EXPERIMENT: 4 Reward Functions on 30 Networks")',
-        f'print(f"THESIS EXPERIMENT RUN {run_num}/{N_RUNS}: 4 Reward Functions on {len(sampled_graphs)} Networks")'
-    )
-    
-    # Write modified script
-    with open(script_name, 'w') as f:
-        f.write(modified_script)
-    
-    print(f"Created modified script: {script_name}")
+    print(f"Created wrapper script: {wrapper_script}")
     
     # Run the experiment
     print(f"\n{'='*80}")
     print(f"RUNNING EXPERIMENT {run_num}/{N_RUNS}")
     print(f"{'='*80}\n")
     
-    result = subprocess.run(['python', script_name], capture_output=False)
+    result = subprocess.run(['python', wrapper_script], capture_output=False)
     
     if result.returncode != 0:
         print(f"\n⚠️  Warning: Run {run_num} exited with code {result.returncode}")
