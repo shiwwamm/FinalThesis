@@ -16,8 +16,8 @@ import igraph as ig
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
-N_RUNS = 5
-SAMPLE_PER_SIZE = 5
+N_RUNS = 10
+SAMPLE_PER_SIZE = 10
 GRAPH_DIR = "./real_world_topologies"
 SEED = 42
 
@@ -209,10 +209,10 @@ for run_num in range(1, N_RUNS + 1):
         all_dfs.append(df)
         print(f"Loaded Run {run_num}: {len(df)} graphs")
     else:
-        print(f"⚠️  Warning: {metrics_file} not found")
+        print(f"Warning: {metrics_file} not found")
 
 if not all_dfs:
-    print("❌ Error: No result files found!")
+    print("Error: No result files found!")
     exit(1)
 
 # Combine all runs
@@ -231,9 +231,12 @@ print(f"\n{'='*80}")
 print(f"COMPUTING AGGREGATED STATISTICS")
 print(f"{'='*80}\n")
 
-metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "ASPL", "Diameter",
+metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "AttackCurveAUC", "ASPL", "Diameter",
            "ArticulationPoints", "Bridges", "BetCentralization", "NatConnectivity",
            "EffResistance", "Assortativity", "AvgClustering"]
+
+# Metrics that can be 0 - use absolute change instead of percentage
+absolute_change_metrics = ["AvgClustering", "Assortativity", "BetCentralization"]
 
 def compute_ci_95(data):
     """Compute 95% confidence interval"""
@@ -244,18 +247,31 @@ def compute_ci_95(data):
     ci = stats.t.interval(0.95, len(data)-1, loc=mean, scale=sem)
     return ci[0], ci[1]
 
+# Step 1: Compute mean per (Run, SizeBucket) for each reward and metric
+print("Step 1: Computing run-level means per size bucket...")
+run_level_means = df_all.groupby(["Run", "SizeBucket"]).mean(numeric_only=True).reset_index()
+
+print(f"  Run-level means computed: {len(run_level_means)} rows")
+print(f"  Runs per size bucket: {run_level_means.groupby('SizeBucket')['Run'].nunique().to_dict()}")
+
+# Step 2: Compute statistics across the run means
+print("\nStep 2: Computing statistics across run means...")
+
 aggregated_stats = []
 
 for size_bucket in ["Small", "Medium", "Large"]:
-    df_size = df_all[df_all["SizeBucket"] == size_bucket]
+    df_size = run_level_means[run_level_means["SizeBucket"] == size_bucket]
     
     if len(df_size) == 0:
         print(f"⚠️  No data for {size_bucket} bucket")
         continue
     
-    print(f"\n{size_bucket} bucket: {len(df_size)} graphs across {N_RUNS} runs")
+    print(f"\n{size_bucket} bucket: {len(df_size)} run-level means")
     
-    for reward_type in ["PBR", "EFFRES", "IVI", "NNSI"]:
+    # Process all reward types including greedy baselines
+    reward_types = ["PBR", "EFFRES", "IVI", "NNSI", "GREEDY_DEG", "GREEDY_BET", "GREEDY_ALG"]
+    
+    for reward_type in reward_types:
         for metric in metrics:
             orig_col = f"Orig_{metric}"
             reward_col = f"{reward_type}_{metric}"
@@ -263,14 +279,14 @@ for size_bucket in ["Small", "Medium", "Large"]:
             if reward_col not in df_size.columns or orig_col not in df_size.columns:
                 continue
             
-            # Get values (drop NaN)
+            # Get run-level mean values (one per run)
             orig_values = df_size[orig_col].dropna()
             reward_values = df_size[reward_col].dropna()
             
             if len(reward_values) == 0:
                 continue
             
-            # Compute statistics
+            # Compute statistics across run means
             mean_val = reward_values.mean()
             min_val = reward_values.min()
             max_val = reward_values.max()
@@ -279,7 +295,14 @@ for size_bucket in ["Small", "Medium", "Large"]:
             
             # Compute improvement statistics
             if len(orig_values) > 0 and len(orig_values) == len(reward_values):
-                improvements = ((reward_values.values - orig_values.values) / (np.abs(orig_values.values) + 1e-8) * 100)
+                # Use absolute change for metrics that can be 0
+                if metric in absolute_change_metrics:
+                    improvements = reward_values.values - orig_values.values
+                    improvement_type = "Absolute"
+                else:
+                    improvements = ((reward_values.values - orig_values.values) / (np.abs(orig_values.values) + 1e-8) * 100)
+                    improvement_type = "Percentage"
+                
                 improvements = improvements[~np.isnan(improvements)]
                 
                 if len(improvements) > 0:
@@ -294,6 +317,7 @@ for size_bucket in ["Small", "Medium", "Large"]:
                 mean_improvement = np.nan
                 std_improvement = np.nan
                 ci_imp_low, ci_imp_high = np.nan, np.nan
+                improvement_type = "N/A"
             
             aggregated_stats.append({
                 "SizeBucket": size_bucket,
@@ -305,11 +329,12 @@ for size_bucket in ["Small", "Medium", "Large"]:
                 "Max": max_val,
                 "CI_95_Low": ci_low,
                 "CI_95_High": ci_high,
-                "Mean_Improvement_%": mean_improvement,
-                "Std_Improvement_%": std_improvement,
+                "Mean_Improvement": mean_improvement,
+                "Std_Improvement": std_improvement,
                 "CI_95_Improvement_Low": ci_imp_low,
                 "CI_95_Improvement_High": ci_imp_high,
-                "N_Samples": len(reward_values),
+                "Improvement_Type": improvement_type,
+                "N_Runs": len(reward_values),
             })
 
 df_aggregated = pd.DataFrame(aggregated_stats)
