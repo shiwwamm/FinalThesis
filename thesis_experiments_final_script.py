@@ -62,7 +62,7 @@ else:
 
 GRAPH_FILES = [os.path.join(GRAPH_DIR, fname) for fname in topo.values()]
 
-start_time = time.time()
+start_time = time.time(  )
 
 # ============================================================================
 # BUDGET FUNCTION
@@ -129,15 +129,19 @@ class ResilienceEnv(gym.Env):
         clust = np.array(g.transitivity_local_undirected(mode="zero"), dtype=float)
         return np.stack([deg, close, pr, core, clust], axis=1).astype(np.float32)
 
-    def _approx_lambda2(self, g: ig.Graph):
-        """Approximate λ₂ from degree statistics"""
-        d = np.array(g.degree(), dtype=float)
-        if d.size < 2:
+    def _exact_lambda2(self, g: ig.Graph):
+        """Exact λ₂ (Algebraic Connectivity) - same as evaluation"""
+        n = g.vcount()
+        if n < 2:
             return 0.0
-        d_mean = d.mean()
-        d2_mean = (d ** 2).mean()
-        var = max(0.0, d2_mean - d_mean ** 2)
-        return max(0.0, d_mean - np.sqrt(var))
+        
+        try:
+            L = np.array(g.laplacian(normalized=True))
+            eigs = np.sort(np.linalg.eigvalsh(L))
+            lambda2 = eigs[1] if len(eigs) > 1 else 0.0
+            return float(lambda2)
+        except:
+            return 0.0
     
     def action_masks(self):
         """Return boolean mask: True = valid action, False = invalid (already added)"""
@@ -314,7 +318,7 @@ class ResilienceEnv(gym.Env):
         self.successful_additions = 0  # Track only successful edge additions
 
         # Initialize baselines based on reward type
-        self.prev_lambda2 = self._approx_lambda2(self.g)
+        self.prev_lambda2 = self._exact_lambda2(self.g)
         
         if self.reward_type == "pbr":
             # PBR baselines
@@ -369,7 +373,7 @@ class ResilienceEnv(gym.Env):
         return obs, float(reward), done, False, {}
 
     def _compute_reward(self):
-        curr_lambda2 = self._approx_lambda2(self.g)
+        curr_lambda2 = self._exact_lambda2(self.g)
         d_lambda2 = curr_lambda2 - self.prev_lambda2
 
         if self.reward_type == "pbr":
@@ -506,12 +510,51 @@ class CleanGNNExtractor(BaseFeaturesExtractor):
 # ============================================================================
 # EVALUATION METRICS
 # ============================================================================
+def compute_attack_curve_auc(g: ig.Graph, attack_fractions=None):
+    """
+    Compute AUC of attack curve (targeted degree-based removal)
+    
+    Args:
+        g: Graph to attack
+        attack_fractions: List of fractions to remove (default: 1% to 20%)
+    
+    Returns:
+        AUC value (area under the GCC curve)
+    """
+    if attack_fractions is None:
+        attack_fractions = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10,
+                           0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.20]
+    
+    n = g.vcount()
+    if n < 2:
+        return 0.0
+    
+    gcc_values = [1.0]  # Start at 100% (no attack)
+    fractions = [0.0] + attack_fractions
+    
+    for frac in attack_fractions:
+        k = max(1, int(frac * n))
+        top_deg = np.argsort(-np.array(g.degree()))[:k]
+        gc = g.copy()
+        gc.delete_vertices(top_deg)
+        
+        try:
+            gcc = gc.clusters().giant().vcount() / max(1, (n - k))
+        except:
+            gcc = 0.0
+        
+        gcc_values.append(gcc)
+    
+    # Compute AUC using trapezoidal rule
+    auc = np.trapz(gcc_values, fractions)
+    return float(auc)
+
 def exact_metrics(g: ig.Graph):
     """Compute all evaluation metrics"""
     n = g.vcount()
     if n < 2:
         return {
-            "λ₂": 0.0, "AvgNodeConn": 0.0, "GCC_5%": 1.0, "ASPL": 0.0,
+            "λ₂": 0.0, "AvgNodeConn": 0.0, "GCC_5%": 1.0, "AttackCurveAUC": 0.0, "ASPL": 0.0,
             "Diameter": 0.0, "ArticulationPoints": 0, "Bridges": 0,
             "BetCentralization": 0.0, "NatConnectivity": 0.0,
             "EffResistance": 0.0, "Assortativity": 0.0, "AvgClustering": 0.0,
@@ -544,7 +587,7 @@ def exact_metrics(g: ig.Graph):
                     pass
         avg_node_conn = float(np.mean(connectivities)) if connectivities else 0.0
 
-    # GCC after attack
+    # GCC after attack (5% for backward compatibility)
     k = max(1, int(0.05 * n))
     top_deg = np.argsort(-np.array(g.degree()))[:k]
     gc = g.copy()
@@ -553,6 +596,9 @@ def exact_metrics(g: ig.Graph):
         gcc = gc.clusters().giant().vcount() / max(1, (n - k))
     except:
         gcc = 0.0
+    
+    # Attack curve AUC (1% to 20% targeted removals)
+    attack_auc = compute_attack_curve_auc(g)
 
     # ASPL & Diameter
     try:
@@ -612,6 +658,7 @@ def exact_metrics(g: ig.Graph):
         "λ₂": float(lambda2), 
         "AvgNodeConn": float(avg_node_conn),
         "GCC_5%": float(gcc),
+        "AttackCurveAUC": float(attack_auc),
         "ASPL": float(aspl), 
         "Diameter": float(diam),
         "ArticulationPoints": int(art_pts), 
@@ -640,9 +687,134 @@ attempt_records = []
 # all_reward_landscapes = []
 
 network_times = []
-metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "ASPL", "Diameter",
+metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "AttackCurveAUC", "ASPL", "Diameter",
            "ArticulationPoints", "Bridges", "BetCentralization", "NatConnectivity",
            "EffResistance", "Assortativity", "AvgClustering"]
+
+# ============================================================================
+# GREEDY BASELINE FUNCTIONS
+# ============================================================================
+def greedy_degree_baseline(g: ig.Graph, budget: int):
+    """Greedy baseline: Add edges between lowest-degree nodes"""
+    g_aug = g.copy()
+    existing = set(tuple(sorted(e)) for e in g.get_edgelist())
+    n = g.vcount()
+    
+    candidates = [
+        (i, j) for i in range(n) for j in range(i + 1, n)
+        if (i, j) not in existing
+    ]
+    
+    added_edges = []
+    for _ in range(budget):
+        if not candidates:
+            break
+        
+        # Get current degrees
+        degrees = np.array(g_aug.degree())
+        
+        # Find edge that connects lowest-degree nodes
+        best_edge = None
+        best_score = float('inf')
+        
+        for u, v in candidates:
+            score = degrees[u] + degrees[v]  # Lower is better
+            if score < best_score:
+                best_score = score
+                best_edge = (u, v)
+        
+        if best_edge:
+            u, v = best_edge
+            g_aug.add_edge(u, v)
+            added_edges.append(best_edge)
+            candidates.remove(best_edge)
+    
+    return g_aug, added_edges
+
+def greedy_betweenness_baseline(g: ig.Graph, budget: int):
+    """Greedy baseline: Add edges between highest-betweenness nodes"""
+    g_aug = g.copy()
+    existing = set(tuple(sorted(e)) for e in g.get_edgelist())
+    n = g.vcount()
+    
+    candidates = [
+        (i, j) for i in range(n) for j in range(i + 1, n)
+        if (i, j) not in existing
+    ]
+    
+    added_edges = []
+    for _ in range(budget):
+        if not candidates:
+            break
+        
+        # Get current betweenness
+        betweenness = np.array(g_aug.betweenness())
+        
+        # Find edge that connects highest-betweenness nodes
+        best_edge = None
+        best_score = -float('inf')
+        
+        for u, v in candidates:
+            score = betweenness[u] + betweenness[v]  # Higher is better
+            if score > best_score:
+                best_score = score
+                best_edge = (u, v)
+        
+        if best_edge:
+            u, v = best_edge
+            g_aug.add_edge(u, v)
+            added_edges.append(best_edge)
+            candidates.remove(best_edge)
+    
+    return g_aug, added_edges
+
+def greedy_algebraic_connectivity_baseline(g: ig.Graph, budget: int):
+    """Greedy baseline: Add edge that maximizes λ₂ increase"""
+    g_aug = g.copy()
+    existing = set(tuple(sorted(e)) for e in g.get_edgelist())
+    n = g.vcount()
+    
+    candidates = [
+        (i, j) for i in range(n) for j in range(i + 1, n)
+        if (i, j) not in existing
+    ]
+    
+    def compute_lambda2(graph):
+        try:
+            L = np.array(graph.laplacian(normalized=True))
+            eigs = np.sort(np.linalg.eigvalsh(L))
+            return eigs[1] if len(eigs) > 1 else 0.0
+        except:
+            return 0.0
+    
+    added_edges = []
+    for _ in range(budget):
+        if not candidates:
+            break
+        
+        current_lambda2 = compute_lambda2(g_aug)
+        
+        # Find edge that maximizes λ₂ increase
+        best_edge = None
+        best_improvement = -float('inf')
+        
+        for u, v in candidates:
+            g_temp = g_aug.copy()
+            g_temp.add_edge(u, v)
+            new_lambda2 = compute_lambda2(g_temp)
+            improvement = new_lambda2 - current_lambda2
+            
+            if improvement > best_improvement:
+                best_improvement = improvement
+                best_edge = (u, v)
+        
+        if best_edge:
+            u, v = best_edge
+            g_aug.add_edge(u, v)
+            added_edges.append(best_edge)
+            candidates.remove(best_edge)
+    
+    return g_aug, added_edges
 
 # ============================================================================
 # CHECKPOINT SYSTEM - Load previous progress if exists
@@ -770,6 +942,35 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
     B = edge_budget(n, m)
     row["BudgetEdges"] = B
     print(f"Budget: {B} edges")
+    
+    # ============================================================================
+    # GREEDY BASELINES
+    # ============================================================================
+    print(f"  Running greedy baselines...")
+    
+    # Greedy Degree
+    print(f"    [1/3] Greedy Degree...", end=" ", flush=True)
+    g_deg, _ = greedy_degree_baseline(orig_g, B)
+    deg_met = exact_metrics(g_deg)
+    for k, v in deg_met.items():
+        row[f"GREEDY_DEG_{k}"] = v
+    print(f"✓")
+    
+    # Greedy Betweenness
+    print(f"    [2/3] Greedy Betweenness...", end=" ", flush=True)
+    g_bet, _ = greedy_betweenness_baseline(orig_g, B)
+    bet_met = exact_metrics(g_bet)
+    for k, v in bet_met.items():
+        row[f"GREEDY_BET_{k}"] = v
+    print(f"✓")
+    
+    # Greedy Algebraic Connectivity
+    print(f"    [3/3] Greedy λ₂...", end=" ", flush=True)
+    g_alg, _ = greedy_algebraic_connectivity_baseline(orig_g, B)
+    alg_met = exact_metrics(g_alg)
+    for k, v in alg_met.items():
+        row[f"GREEDY_ALG_{k}"] = v
+    print(f"✓")
 
     # Test all four reward functions
     for reward_idx, reward_type in enumerate(["pbr", "effres", "ivi", "nnsi"], 1):
