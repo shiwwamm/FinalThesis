@@ -24,8 +24,8 @@ import igraph as ig
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
-N_RUNS = 10
-SAMPLE_PER_SIZE = 10
+N_RUNS = 1
+SAMPLE_PER_SIZE = 5
 GRAPH_DIR = "./real_world_topologies"
 SEED = 42
 
