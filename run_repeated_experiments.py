@@ -2,9 +2,17 @@
 """
 Wrapper script to run repeated experiments with random sampling.
 Calls the original thesis_experiments_final_script.py multiple times with different graph samples.
+
+Usage:
+    python run_repeated_experiments.py [folder_name]
+    
+    If folder_name is provided, creates:
+        <folder_name>/temp/    - Temporary files (graph lists, wrapper scripts)
+        <folder_name>/output/  - All result files
 """
 
 import os
+import sys
 import glob
 import random
 import subprocess
@@ -27,6 +35,26 @@ SIZE_MEDIUM_MIN = 41
 SIZE_MEDIUM_MAX = 93
 SIZE_LARGE_MIN = 94
 
+# Parse command line arguments
+if len(sys.argv) > 1:
+    BASE_FOLDER = sys.argv[1]
+    TEMP_DIR = os.path.join(BASE_FOLDER, "temp")
+    OUTPUT_DIR = os.path.join(BASE_FOLDER, "output")
+    
+    # Create directories
+    os.makedirs(TEMP_DIR, exist_ok=True)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    
+    print(f"\n{'='*80}")
+    print(f"ORGANIZING OUTPUT INTO FOLDER: {BASE_FOLDER}")
+    print(f"{'='*80}")
+    print(f"  Temporary files: {TEMP_DIR}/")
+    print(f"  Output files: {OUTPUT_DIR}/")
+else:
+    BASE_FOLDER = "."
+    TEMP_DIR = "."
+    OUTPUT_DIR = "."
+
 print(f"\n{'='*80}")
 print(f"REPEATED EXPERIMENTS WRAPPER")
 print(f"{'='*80}")
@@ -35,6 +63,8 @@ print(f"  Runs: {N_RUNS}")
 print(f"  Samples per size: {SAMPLE_PER_SIZE}")
 print(f"  Total graphs per run: {SAMPLE_PER_SIZE * 3}")
 print(f"  Base seed: {SEED}")
+if BASE_FOLDER != ".":
+    print(f"  Output folder: {BASE_FOLDER}/")
 print(f"{'='*80}\n")
 
 # ============================================================================
@@ -121,7 +151,7 @@ for run_num in range(1, N_RUNS + 1):
     print(f"  Total: {len(sampled_graphs)} graphs\n")
     
     # Create graph list file for this run
-    graph_list_file = f"graph_list_run{run_num}.py"
+    graph_list_file = os.path.join(TEMP_DIR, f"graph_list_run{run_num}.py")
     
     with open(graph_list_file, 'w') as f:
         f.write(f"# Auto-generated graph list for run {run_num}\n")
@@ -142,7 +172,13 @@ for run_num in range(1, N_RUNS + 1):
     print(f"Created graph list file: {graph_list_file}")
     
     # Create a wrapper script that sets environment variables and runs the experiment
-    wrapper_script = f"run_experiment_{run_num}.py"
+    wrapper_script = os.path.join(TEMP_DIR, f"run_experiment_{run_num}.py")
+    
+    # Define output file paths
+    metrics_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_metrics.csv")
+    edges_all_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_edges_all.csv")
+    edges_added_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_edges_added.csv")
+    checkpoint_file = os.path.join(OUTPUT_DIR, f"checkpoint_run{run_num}.csv")
     
     with open(wrapper_script, 'w') as f:
         f.write(f"""#!/usr/bin/env python3
@@ -151,10 +187,10 @@ import os
 import sys
 
 # Set environment variables for output files
-os.environ['OUTPUT_METRICS_FILE'] = './results_run{run_num}_metrics.csv'
-os.environ['OUTPUT_EDGES_ALL_FILE'] = './results_run{run_num}_edges_all.csv'
-os.environ['OUTPUT_EDGES_ADDED_FILE'] = './results_run{run_num}_edges_added.csv'
-os.environ['CHECKPOINT_FILE'] = './checkpoint_run{run_num}.csv'
+os.environ['OUTPUT_METRICS_FILE'] = '{metrics_file}'
+os.environ['OUTPUT_EDGES_ALL_FILE'] = '{edges_all_file}'
+os.environ['OUTPUT_EDGES_ADDED_FILE'] = '{edges_added_file}'
+os.environ['CHECKPOINT_FILE'] = '{checkpoint_file}'
 
 # Update sys.argv to pass graph list argument
 sys.argv = ['thesis_experiments_final_script.py', '--graph-list', '{graph_list_file}']
@@ -178,7 +214,7 @@ with open('thesis_experiments_final_script.py', 'r') as script_file:
     else:
         print(f"\n✓ Run {run_num} completed successfully")
     
-    all_run_files.append(f"./results_run{run_num}_metrics.csv")
+    all_run_files.append(metrics_file)
     
     # Clean up temporary script
     # os.remove(script_name)  # Keep for debugging
@@ -193,7 +229,7 @@ print(f"{'='*80}\n")
 all_dfs = []
 
 for run_num in range(1, N_RUNS + 1):
-    metrics_file = f"./results_run{run_num}_metrics.csv"
+    metrics_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_metrics.csv")
     
     if os.path.exists(metrics_file):
         df = pd.read_csv(metrics_file)
@@ -220,7 +256,7 @@ df_all = pd.concat(all_dfs, ignore_index=True)
 print(f"\nTotal graphs across all runs: {len(df_all)}")
 
 # Save combined results
-combined_file = "./results_all_runs_combined.csv"
+combined_file = os.path.join(OUTPUT_DIR, "results_all_runs_combined.csv")
 df_all.to_csv(combined_file, index=False)
 print(f"Combined results saved to: {combined_file}")
 
@@ -340,7 +376,7 @@ for size_bucket in ["Small", "Medium", "Large"]:
 df_aggregated = pd.DataFrame(aggregated_stats)
 
 # Save aggregated statistics
-aggregated_file = "./results_aggregated_by_size.csv"
+aggregated_file = os.path.join(OUTPUT_DIR, "results_aggregated_by_size.csv")
 df_aggregated.to_csv(aggregated_file, index=False)
 print(f"\n✓ Aggregated statistics saved to: {aggregated_file}")
 
@@ -356,7 +392,7 @@ pivot_mean = df_aggregated.pivot_table(
     values="Mean"
 ).reset_index()
 
-pivot_mean_file = "./results_summary_mean_by_size.csv"
+pivot_mean_file = os.path.join(OUTPUT_DIR, "results_summary_mean_by_size.csv")
 pivot_mean.to_csv(pivot_mean_file, index=False)
 print(f"✓ Mean summary saved to: {pivot_mean_file}")
 
@@ -373,7 +409,7 @@ pivot_ci = df_aggregated.pivot_table(
     aggfunc='first'
 ).reset_index()
 
-pivot_ci_file = "./results_summary_ci95_by_size.csv"
+pivot_ci_file = os.path.join(OUTPUT_DIR, "results_summary_ci95_by_size.csv")
 pivot_ci.to_csv(pivot_ci_file, index=False)
 print(f"✓ 95% CI summary saved to: {pivot_ci_file}")
 
@@ -381,10 +417,10 @@ print(f"✓ 95% CI summary saved to: {pivot_ci_file}")
 pivot_improvement = df_aggregated.pivot_table(
     index=["SizeBucket", "Metric"],
     columns="Reward",
-    values="Mean_Improvement_%"
+    values="Mean_Improvement"
 ).reset_index()
 
-pivot_improvement_file = "./results_summary_improvement_by_size.csv"
+pivot_improvement_file = os.path.join(OUTPUT_DIR, "results_summary_improvement_by_size.csv")
 pivot_improvement.to_csv(pivot_improvement_file, index=False)
 print(f"✓ Improvement summary saved to: {pivot_improvement_file}")
 
@@ -408,7 +444,12 @@ print(f"95% CI summary: {pivot_ci_file}")
 print(f"Improvement summary: {pivot_improvement_file}")
 print(f"\nPer-run files:")
 for run_num in range(1, N_RUNS + 1):
-    print(f"  Run {run_num}: results_run{run_num}_metrics.csv")
+    print(f"  Run {run_num}: {os.path.join(OUTPUT_DIR, f'results_run{run_num}_metrics.csv')}")
+
+if BASE_FOLDER != ".":
+    print(f"\nAll files organized in: {BASE_FOLDER}/")
+    print(f"  Temporary files: {TEMP_DIR}/")
+    print(f"  Output files: {OUTPUT_DIR}/")
 
 # Display sample results
 print(f"\n{'='*80}")
