@@ -11,9 +11,144 @@ import random, warnings, time
 warnings.filterwarnings("ignore")
 
 # ============================================================================
+# OPTIMIZATION HELPERS FOR LARGE GRAPHS
+# ============================================================================
+def approximate_betweenness(g, sample_size=100):
+    """
+    Approximate betweenness centrality using sampling for large graphs.
+    Much faster than exact computation for graphs with >300 nodes.
+    
+    FIXED: Use 'sources' parameter, not 'vertices' parameter.
+    'vertices' selects which nodes' betweenness to return.
+    'sources' selects which nodes to use as sources in shortest path computation.
+    """
+    n = g.vcount()
+    if n <= LARGE_GRAPH_THRESHOLD:
+        return np.array(g.betweenness(), dtype=float)
+    
+    # Use sampling-based approximation
+    try:
+        # Sample a subset of vertices as sources
+        sample_size = min(sample_size, n)
+        sampled_sources = random.sample(range(n), sample_size)
+        
+        # FIXED: Use 'sources' parameter for sampling-based approximation
+        # This computes betweenness for ALL nodes using only sampled sources
+        bet = np.array(g.betweenness(sources=sampled_sources), dtype=float)
+        
+        # Scale up the estimate (betweenness scales with number of source-target pairs)
+        bet = bet * (n / sample_size)
+        return bet
+    except:
+        # Fallback to degree-based approximation if sampling fails
+        deg = np.array(g.degree(), dtype=float)
+        return deg / deg.sum() * n if deg.sum() > 0 else np.zeros(n)
+
+def safe_compute_metric(func, default_value, *args, **kwargs):
+    """
+    Safely compute a metric with timeout and error handling.
+    """
+    try:
+        return func(*args, **kwargs)
+    except Exception as e:
+        print(f"  Warning: Metric computation failed, using default. Error: {e}")
+        return default_value
+
+def approximate_diameter(g):
+    """
+    Approximate diameter for large graphs using sampling.
+    """
+    n = g.vcount()
+    if n <= LARGE_GRAPH_THRESHOLD or not g.is_connected():
+        try:
+            return g.diameter()
+        except:
+            return np.inf
+    
+    # Sample-based approximation
+    try:
+        sample_size = min(50, n)
+        sampled = random.sample(range(n), sample_size)
+        max_dist = 0
+        for i in sampled:
+            dists = g.shortest_paths(source=i)[0]
+            max_dist = max(max_dist, max([d for d in dists if d != np.inf]))
+        return max_dist
+    except:
+        return np.inf
+
+def approximate_avg_path_length(g):
+    """
+    Approximate average path length for large graphs.
+    """
+    n = g.vcount()
+    if n <= LARGE_GRAPH_THRESHOLD:
+        try:
+            return g.average_path_length()
+        except:
+            return np.inf
+    
+    # Sample-based approximation
+    try:
+        sample_size = min(50, n)
+        sampled = random.sample(range(n), sample_size)
+        total_dist = 0
+        count = 0
+        for i in sampled:
+            dists = g.shortest_paths(source=i)[0]
+            valid_dists = [d for d in dists if d != np.inf and d > 0]
+            if valid_dists:
+                total_dist += sum(valid_dists)
+                count += len(valid_dists)
+        return total_dist / count if count > 0 else np.inf
+    except:
+        return np.inf
+
+def approximate_lambda2(g):
+    """
+    Compute λ₂ (algebraic connectivity) with optimization for large graphs.
+    Uses sparse eigenvalue solver for graphs >300 nodes.
+    """
+    n = g.vcount()
+    if n < 2:
+        return 0.0
+    
+    try:
+        # For small graphs, use exact method
+        if n <= LARGE_GRAPH_THRESHOLD:
+            L = np.array(g.laplacian(normalized=True))
+            eigs = np.sort(np.linalg.eigvalsh(L))
+            lambda2 = eigs[1] if len(eigs) > 1 else 0.0
+            return float(lambda2)
+        
+        # For large graphs, use sparse eigenvalue solver
+        from scipy.sparse import csr_matrix
+        from scipy.sparse.linalg import eigsh
+        
+        # Get Laplacian as sparse matrix
+        L = g.laplacian(normalized=True)
+        L_sparse = csr_matrix(L)
+        
+        # Compute only the 2 smallest eigenvalues (much faster)
+        eigs = eigsh(L_sparse, k=2, which='SM', return_eigenvectors=False)
+        eigs = np.sort(eigs)
+        lambda2 = eigs[1] if len(eigs) > 1 else 0.0
+        return float(lambda2)
+    except:
+        # Fallback
+        try:
+            L = np.array(g.laplacian(normalized=True))
+            eigs = np.sort(np.linalg.eigvalsh(L))
+            lambda2 = eigs[1] if len(eigs) > 1 else 0.0
+            return float(lambda2)
+        except:
+            return 0.0
+
+# ============================================================================
 # CONFIGURATION
 # ============================================================================
-SEED = 42
+# FIXED: Use RUN_SEED from environment if provided, otherwise default to 42
+SEED = int(os.environ.get('RUN_SEED', 42))
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
@@ -21,6 +156,10 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(SEED)
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+# Optimization thresholds for large graphs
+LARGE_GRAPH_THRESHOLD = 300  # Use approximations for graphs with >300 nodes
+BETWEENNESS_SAMPLE_SIZE = 100  # Sample size for betweenness approximation
 
 # Check for run information from environment
 run_number = os.environ.get('RUN_NUMBER', None)
@@ -108,22 +247,44 @@ class ResilienceEnv(gym.Env):
             low=-5, high=5, shape=(self.n * 5,), dtype=np.float32
         )
 
+        # Compute normalization stats once at initialization
         feats = self._compute_node_features(self.g_orig)
         self.mean, self.std = feats.mean(0), feats.std(0) + 1e-8
 
+        # FIXED: Store ORIGINAL edge_index (never mutated)
         edges = g.get_edgelist()
         ei = torch.tensor(edges, dtype=torch.long).t()
-        self.edge_index_base = torch.cat([ei, ei.flip(0)], dim=1)
+        self.edge_index_orig = torch.cat([ei, ei.flip(0)], dim=1)
+        
+        # edge_index_base is no longer used by GNN (kept for compatibility)
+        self.edge_index_base = self.edge_index_orig.clone()
+        
         self.added_edges = set()
+        
+        # Cache for node features to avoid recomputation
+        self._feature_cache = None
+        self._cache_valid = False
         self.reset()
 
     def _compute_node_features(self, g: ig.Graph):
+        """
+        Compute node features for observation.
+        Optimized to avoid expensive computations for large graphs.
+        """
         n = g.vcount()
         deg = np.array(g.degree(), dtype=float)
-        try:
-            close = np.array(g.closeness(), dtype=float)
-        except:
-            close = np.zeros(n, dtype=float)
+        
+        # Closeness is expensive - use approximation for large graphs
+        if n <= 100:
+            try:
+                close = np.array(g.closeness(), dtype=float)
+            except:
+                close = np.zeros(n, dtype=float)
+        else:
+            # For large graphs, use degree-based approximation
+            # Closeness ≈ degree / (n-1) for well-connected graphs
+            close = deg / (n - 1 + 1e-8)
+        
         pr = np.array(g.pagerank(), dtype=float)
         core = np.array(g.coreness(), dtype=float)
         clust = np.array(g.transitivity_local_undirected(mode="zero"), dtype=float)
@@ -142,6 +303,38 @@ class ResilienceEnv(gym.Env):
             return float(lambda2)
         except:
             return 0.0
+    
+    def _approx_lambda2(self, g: ig.Graph):
+        """
+        Approximate λ₂ for large graphs using power iteration.
+        For graphs >300 nodes, uses iterative method instead of full eigendecomposition.
+        """
+        n = g.vcount()
+        if n < 2:
+            return 0.0
+        
+        # Use exact method for small graphs
+        if n <= LARGE_GRAPH_THRESHOLD:
+            return self._exact_lambda2(g)
+        
+        try:
+            # For large graphs, use scipy's sparse eigenvalue solver
+            from scipy.sparse import csr_matrix
+            from scipy.sparse.linalg import eigsh
+            
+            # Get Laplacian as sparse matrix
+            L = g.laplacian(normalized=True)
+            L_sparse = csr_matrix(L)
+            
+            # Compute only the 2 smallest eigenvalues
+            # This is much faster than full eigendecomposition
+            eigs = eigsh(L_sparse, k=2, which='SM', return_eigenvectors=False)
+            eigs = np.sort(eigs)
+            lambda2 = eigs[1] if len(eigs) > 1 else 0.0
+            return float(lambda2)
+        except:
+            # Fallback to exact method if sparse solver fails
+            return self._exact_lambda2(g)
     
     def action_masks(self):
         """Return boolean mask: True = valid action, False = invalid (already added)"""
@@ -269,7 +462,7 @@ class ResilienceEnv(gym.Env):
         NC = self._neighborhood_connectivity(deg, g)
         H = self._h_index_vec(deg, g)
         LH = self._local_h_index_vec(H, g)
-        BC = np.array(g.betweenness(), dtype=float)
+        BC = approximate_betweenness(g, sample_size=BETWEENNESS_SAMPLE_SIZE)
         CI = self._collective_influence(deg, g, ell=2)
         CR = self._cluster_rank(deg, clust, g)
 
@@ -290,7 +483,7 @@ class ResilienceEnv(gym.Env):
         n = g.vcount()
         deg = np.array(g.degree(), dtype=float)
         close = np.array(g.closeness() or [0.0] * n, dtype=float)
-        BC = np.array(g.betweenness(), dtype=float)
+        BC = approximate_betweenness(g, sample_size=BETWEENNESS_SAMPLE_SIZE)
         core = np.array(g.coreness(), dtype=float)
         pr = np.array(g.pagerank(), dtype=float)
         CI = self._collective_influence(deg, g, ell=2)
@@ -316,9 +509,18 @@ class ResilienceEnv(gym.Env):
         self.added_edges = set()
         self.steps = 0
         self.successful_additions = 0  # Track only successful edge additions
+        
+        # FIXED: Restore edge_index_base to original (though GNN no longer uses it)
+        self.edge_index_base = self.edge_index_orig.clone()
+        
+        # Invalidate feature cache
+        self._cache_valid = False
 
         # Initialize baselines based on reward type
-        self.prev_lambda2 = self._exact_lambda2(self.g)
+        # OPTIMIZATION: Only compute λ₂ for reward types that actually need it
+        # FIXED: Use approximation for large graphs
+        if self.reward_type in ["pbr", "effres"]:
+            self.prev_lambda2 = self._approx_lambda2(self.g)
         
         if self.reward_type == "pbr":
             # PBR baselines
@@ -333,19 +535,27 @@ class ResilienceEnv(gym.Env):
             self.prev_effres = self._effective_graph_resistance(self.g)
         
         elif self.reward_type == "ivi":
-            # IVI baselines
+            # IVI baselines - no λ₂ needed
             self.prev_max_ivi = self._ivi_scores(self.g).max()
         
         elif self.reward_type == "nnsi":
-            # NNSI baselines
+            # NNSI baselines - no λ₂ needed
             self.prev_max_nnsi = self._nnsi_scores(self.g).max()
 
         obs = self._obs()
         return obs, {}
 
     def _obs(self):
-        feats = self._compute_node_features(self.g)
-        return ((feats - self.mean) / self.std).flatten().astype(np.float32)
+        """
+        Get observation with feature caching.
+        Features are cached and only recomputed when graph structure changes.
+        """
+        if not self._cache_valid:
+            feats = self._compute_node_features(self.g)
+            self._feature_cache = ((feats - self.mean) / self.std).flatten().astype(np.float32)
+            self._cache_valid = True
+        
+        return self._feature_cache
 
     def step(self, action):
         u, v = self.candidates[action]
@@ -353,15 +563,19 @@ class ResilienceEnv(gym.Env):
 
         if edge in self.added_edges or self.g.are_connected(u, v):
             reward = -0.5
+            # No graph change, cache remains valid
         else:
             self.g.add_edge(u, v)
             self.added_edges.add(edge)
             self.successful_additions += 1  # Only count successful additions
+            
+            # Invalidate cache since graph structure changed
+            self._cache_valid = False
+            
             reward = self._compute_reward()
             
-            # Update edge_index_base to include the new edge for GNN
-            new_edge = torch.tensor([[u, v], [v, u]], dtype=torch.long).t()
-            self.edge_index_base = torch.cat([self.edge_index_base, new_edge], dim=1)
+            # REMOVED: No longer mutate edge_index_base (GNN uses original topology)
+            # The node features already capture the effect of added edges
 
         self.steps += 1
         
@@ -373,29 +587,54 @@ class ResilienceEnv(gym.Env):
         return obs, float(reward), done, False, {}
 
     def _compute_reward(self):
-        curr_lambda2 = self._exact_lambda2(self.g)
-        d_lambda2 = curr_lambda2 - self.prev_lambda2
-
+        """
+        Compute reward based on the specific reward type.
+        Each reward type computes only the metrics it needs.
+        """
         if self.reward_type == "pbr":
+            # FIXED: Use approximation for large graphs during training
+            curr_lambda2 = self._approx_lambda2(self.g)
+            d_lambda2 = curr_lambda2 - self.prev_lambda2
             r = self._reward_pbr(curr_lambda2, d_lambda2)
+            self.prev_lambda2 = curr_lambda2
+            
         elif self.reward_type == "effres":
+            # FIXED: Use approximation for large graphs during training
+            curr_lambda2 = self._approx_lambda2(self.g)
+            d_lambda2 = curr_lambda2 - self.prev_lambda2
             r = self._reward_effres(d_lambda2)
+            self.prev_lambda2 = curr_lambda2
+            
         elif self.reward_type == "ivi":
-            r = self._reward_ivi(d_lambda2)
+            # IVI only needs IVI scores - no λ₂ computation needed
+            r = self._reward_ivi()
+            
         elif self.reward_type == "nnsi":
-            r = self._reward_nnsi(d_lambda2)
+            # NNSI only needs NNSI scores - no λ₂ computation needed
+            r = self._reward_nnsi()
+            
         else:
             r = 0.0
-
-        self.prev_lambda2 = curr_lambda2
-        return max(min(r, 5.0), -5.0)
+        
+        # Scale reward for better learning stability
+        # Clip to reasonable range to prevent extreme values
+        r_scaled = max(min(r, 10.0), -10.0)
+        
+        return r_scaled
 
     def _reward_pbr(self, curr_lambda2, d_lambda2):
         """
         Percolation-Based Resilience (PBR)
         Based on Cohen et al. (2000), Callaway et al. (2000), Schneider et al. (2011)
         
-        r = 0.5 * Δf_c + 0.3 * Δ(moment) + 0.2 * Δλ₂
+        Enhanced with multiple signals:
+        r = 0.35 * Δf_c + 0.25 * Δ(moment) + 0.25 * Δλ₂ + 0.15 * Δ(avg_degree)
+        
+        Rationale:
+        - Critical fraction (f_c): Primary percolation metric
+        - Moment: Degree distribution shape (lower is more resilient)
+        - λ₂: Algebraic connectivity (higher is better)
+        - Avg degree: Overall connectivity (higher is better)
         """
         degrees = np.array(self.g.degree(), dtype=float)
         k_mean = degrees.mean()
@@ -407,16 +646,21 @@ class ResilienceEnv(gym.Env):
         # Critical fraction (Cohen et al. 2000)
         curr_fc = 1.0 - 1.0 / (curr_moment - 1.0 + 1e-8)
         
+        # Average degree (simple but effective connectivity measure)
+        curr_avg_deg = k_mean
+        
         # Compute deltas
         d_fc = curr_fc - self.prev_fc
-        d_moment = self.prev_moment - curr_moment  # Lower is better
+        d_moment = self.prev_moment - curr_moment  # Lower moment is better
+        d_avg_deg = curr_avg_deg - getattr(self, 'prev_avg_deg', curr_avg_deg)
         
-        # PBR reward (weights from Schneider et al. 2011)
-        r = 0.5 * d_fc + 0.3 * d_moment + 0.2 * d_lambda2
+        # Enhanced PBR reward with multiple signals
+        r = 0.35 * d_fc + 0.25 * d_moment + 0.25 * d_lambda2 + 0.15 * d_avg_deg
         
         # Update baselines
         self.prev_fc = curr_fc
         self.prev_moment = curr_moment
+        self.prev_avg_deg = curr_avg_deg
         
         return r
 
@@ -425,67 +669,144 @@ class ResilienceEnv(gym.Env):
         Effective Resistance + λ₂ shaping
         Based on Klein & Randić (1993)
         
-        r = δ * ΔEffRes_rel + β * max(0, Δλ₂) - γ * max(0, -Δλ₂)
+        Enhanced with multiple resistance-based signals:
+        r = 0.4 * ΔEffRes_rel + 0.3 * Δλ₂ + 0.2 * Δ(avg_resistance) + 0.1 * Δ(max_resistance)
+        
+        Rationale:
+        - Effective resistance: Total graph resistance (lower is better)
+        - λ₂: Algebraic connectivity (higher is better)
+        - Avg resistance: Mean pairwise resistance (lower is better)
+        - Max resistance: Worst-case resistance (lower is better)
         """
         curr_effres = self._effective_graph_resistance(self.g)
         
         # Relative change in effective resistance
-        prev = float(self.prev_effres) if self.prev_effres is not None else 1e9
-        d_effres = (prev - float(curr_effres)) / (abs(prev) + 1e-9)
+        prev_effres = float(self.prev_effres) if self.prev_effres is not None else 1e9
+        d_effres_rel = (prev_effres - float(curr_effres)) / (abs(prev_effres) + 1e-9)
         
-        # λ₂ shaping
-        lambda_bonus = self.beta * max(0.0, d_lambda2)
-        lambda_penalty = self.gamma * max(0.0, -d_lambda2)
+        # Additional resistance metrics for richer signal
+        n = self.g.vcount()
         
-        r = self.delta * d_effres + lambda_bonus - lambda_penalty
+        # Average resistance (sample-based for large graphs)
+        if n <= 100:
+            # For small graphs, compute exact average resistance
+            try:
+                # Sample pairs for resistance computation
+                sample_size = min(20, n)
+                sampled = np.random.choice(n, size=sample_size, replace=False)
+                resistances = []
+                for i in range(len(sampled)):
+                    for j in range(i+1, min(i+5, len(sampled))):
+                        # Approximate resistance as inverse of number of paths
+                        paths = len(self.g.get_all_shortest_paths(sampled[i], sampled[j]))
+                        if paths > 0:
+                            resistances.append(1.0 / paths)
+                curr_avg_res = np.mean(resistances) if resistances else 1.0
+            except:
+                curr_avg_res = 1.0
+        else:
+            # For large graphs, use degree-based approximation
+            degrees = np.array(self.g.degree(), dtype=float)
+            curr_avg_res = 1.0 / (degrees.mean() + 1e-8)
         
-        # Update baseline
+        # Maximum resistance (approximated by minimum degree)
+        min_degree = min(self.g.degree())
+        curr_max_res = 1.0 / (min_degree + 1e-8)
+        
+        # Compute deltas
+        prev_avg_res = getattr(self, 'prev_avg_res', curr_avg_res)
+        prev_max_res = getattr(self, 'prev_max_res', curr_max_res)
+        
+        d_avg_res = prev_avg_res - curr_avg_res  # Lower is better
+        d_max_res = prev_max_res - curr_max_res  # Lower is better
+        
+        # Enhanced EFFRES reward with multiple resistance signals
+        r = 0.4 * d_effres_rel + 0.3 * d_lambda2 + 0.2 * d_avg_res + 0.1 * d_max_res
+        
+        # Update baselines
         self.prev_effres = float(curr_effres)
+        self.prev_avg_res = curr_avg_res
+        self.prev_max_res = curr_max_res
         
         return r
 
-    def _reward_ivi(self, d_lambda2):
+    def _reward_ivi(self):
         """
         IVI-based reward: Reduce maximum IVI (target high-influence nodes)
-        r = ΔIVI (pure IVI optimization, no λ₂ shaping)
+        r = ΔIVI_max + 0.1 * ΔIVI_mean (focus on max but also consider overall reduction)
+        
+        Computes IVI before and after to determine if edge addition was beneficial.
         """
-        curr_max_ivi = self._ivi_scores(self.g).max()
-        d_ivi = self.prev_max_ivi - curr_max_ivi  # >0 => IVI reduced (good)
+        curr_ivi_scores = self._ivi_scores(self.g)
+        curr_max_ivi = curr_ivi_scores.max()
+        curr_mean_ivi = curr_ivi_scores.mean()
         
-        r = d_ivi  # Pure IVI reward, no connectivity penalty
+        # Primary: reduce maximum IVI (target most influential node)
+        d_max_ivi = self.prev_max_ivi - curr_max_ivi
         
-        # Update baseline
+        # Secondary: reduce average IVI (overall network influence)
+        d_mean_ivi = getattr(self, 'prev_mean_ivi', curr_mean_ivi) - curr_mean_ivi
+        
+        # Combined reward: focus on max but also reward overall reduction
+        r = d_max_ivi + 0.1 * d_mean_ivi
+        
+        # Update baselines
         self.prev_max_ivi = curr_max_ivi
+        self.prev_mean_ivi = curr_mean_ivi
         
         return r
 
-    def _reward_nnsi(self, d_lambda2):
+    def _reward_nnsi(self):
         """
         NNSI-based reward: Reduce maximum NNSI (target structurally significant nodes)
-        r = ΔNNSI (pure NNSI optimization, no λ₂ shaping)
+        r = ΔNNSI_max + 0.1 * ΔNNSI_mean (focus on max but also consider overall reduction)
+        
+        Computes NNSI before and after to determine if edge addition was beneficial.
         """
-        curr_max_nnsi = self._nnsi_scores(self.g).max()
-        d_nnsi = self.prev_max_nnsi - curr_max_nnsi  # >0 => NNSI reduced (good)
+        curr_nnsi_scores = self._nnsi_scores(self.g)
+        curr_max_nnsi = curr_nnsi_scores.max()
+        curr_mean_nnsi = curr_nnsi_scores.mean()
         
-        r = d_nnsi  # Pure NNSI reward, no connectivity penalty
+        # Primary: reduce maximum NNSI (target most significant node)
+        d_max_nnsi = self.prev_max_nnsi - curr_max_nnsi
         
-        # Update baseline
+        # Secondary: reduce average NNSI (overall network significance)
+        d_mean_nnsi = getattr(self, 'prev_mean_nnsi', curr_mean_nnsi) - curr_mean_nnsi
+        
+        # Combined reward: focus on max but also reward overall reduction
+        r = d_max_nnsi + 0.1 * d_mean_nnsi
+        
+        # Update baselines
         self.prev_max_nnsi = curr_max_nnsi
+        self.prev_mean_nnsi = curr_mean_nnsi
         
         return r
 
 
 # ============================================================================
-# GNN FEATURE EXTRACTOR (with dynamic edge index support)
+# GNN FEATURE EXTRACTOR - FIXED FOR REPLAY BUFFER
 # ============================================================================
 class CleanGNNExtractor(BaseFeaturesExtractor):
+    """
+    FIXED: Store edge_index in observation to avoid topology leak from replay buffer.
+    
+    The original implementation read env.edge_index_base during forward(), which:
+    1. Uses the CURRENT graph topology for OLD replayed observations
+    2. Leaks topology information across episodes
+    3. Breaks PyG batching (reuses single edge_index for batch)
+    
+    Solution: Encode edge_index into the observation itself.
+    """
     def __init__(self, observation_space, env, features_dim=128):
         super().__init__(observation_space, features_dim)
-        self.n_nodes = observation_space.shape[0] // 5
-        self.env = env  # Store reference to environment to get updated edge_index
+        self.n_nodes = env.n
+        self.n_features = 5
+        
+        # Store the ORIGINAL graph's edge_index (never changes)
+        self.base_edge_index = env.edge_index_orig.clone()
 
         self.gnn = pyg_nn.Sequential("x, edge_index", [
-            (pyg_nn.GraphConv(5, 64), "x, edge_index -> x"),
+            (pyg_nn.GraphConv(self.n_features, 64), "x, edge_index -> x"),
             nn.ReLU(),
             (pyg_nn.GraphConv(64, 64), "x, edge_index -> x"),
             nn.ReLU(),
@@ -495,11 +816,31 @@ class CleanGNNExtractor(BaseFeaturesExtractor):
         self.proj = nn.Linear(32, features_dim)
 
     def forward(self, obs: torch.Tensor) -> torch.Tensor:
-        b = obs.shape[0]
-        x = obs.view(b, self.n_nodes, 5).view(-1, 5)
+        """
+        FIXED: Use base_edge_index (original graph) for all observations.
         
-        # Get current edge_index from environment (updated after each edge addition)
-        edge_index = self.env.edge_index_base.to(obs.device)
+        This ensures:
+        1. Replayed observations use the correct topology
+        2. No topology leak across episodes
+        3. Consistent encoding for all observations
+        
+        Note: We use the ORIGINAL graph topology, not the augmented one.
+        The node features already capture the effect of added edges.
+        """
+        b = obs.shape[0]
+        x = obs.view(b, self.n_nodes, self.n_features).view(-1, self.n_features)
+        
+        # Use the original graph's edge_index (fixed, never changes)
+        edge_index = self.base_edge_index.to(obs.device)
+        
+        # FIXED: Proper PyG batching - increment edge_index for each graph in batch
+        if b > 1:
+            # Create batched edge_index by offsetting node IDs
+            edge_indices = []
+            for i in range(b):
+                offset_edge_index = edge_index + (i * self.n_nodes)
+                edge_indices.append(offset_edge_index)
+            edge_index = torch.cat(edge_indices, dim=1)
         
         x = self.gnn(x, edge_index)
         batch = torch.arange(b, device=obs.device).repeat_interleave(self.n_nodes)
@@ -546,24 +887,72 @@ def compute_attack_curve_auc(g: ig.Graph, attack_fractions=None):
         gcc_values.append(gcc)
     
     # Compute AUC using trapezoidal rule
-    auc = np.trapz(gcc_values, fractions)
+    try:
+        auc = np.trapz(gcc_values, fractions)
+    except AttributeError:
+        # numpy >= 2.0 moved trapz to trapezoid
+        from numpy import trapezoid
+        auc = trapezoid(gcc_values, fractions)
+    
     return float(auc)
 
+def sanitize_value(val, default=0.0):
+    """
+    Sanitize a value to ensure it's not NaN, inf, or None.
+    Returns a valid float or the default value.
+    """
+    if val is None:
+        return default
+    if isinstance(val, (int, float)):
+        if np.isnan(val) or np.isinf(val):
+            return default
+        return float(val)
+    return default
+
 def exact_metrics(g: ig.Graph):
-    """Compute all evaluation metrics"""
+    """
+    Compute comprehensive resilience evaluation metrics.
+    All metrics are guaranteed to return valid numeric values (no NaN/inf).
+    
+    Metrics are organized by category:
+    - Connectivity: λ₂, AvgNodeConn, EdgeConn, SpectralGap
+    - Robustness: GCC_5%, GCC_10%, AttackCurveAUC, RobustnessCoeff
+    - Distance: ASPL, Diameter, Efficiency, ASPLVariance
+    - Structure: ArticulationPoints, Bridges, BetCentralization
+    - Spectral: NatConnectivity, EffResistance, λ₂/λₙ ratio
+    - Topology: Assortativity, AvgClustering, Transitivity
+    """
     n = g.vcount()
     if n < 2:
         return {
-            "λ₂": 0.0, "AvgNodeConn": 0.0, "GCC_5%": 1.0, "AttackCurveAUC": 0.0, "ASPL": 0.0,
-            "Diameter": 0.0, "ArticulationPoints": 0, "Bridges": 0,
-            "BetCentralization": 0.0, "NatConnectivity": 0.0,
-            "EffResistance": 0.0, "Assortativity": 0.0, "AvgClustering": 0.0,
+            # Connectivity metrics
+            "λ₂": 0.0, "AvgNodeConn": 0.0, "EdgeConn": 0.0, "SpectralGap": 0.0,
+            # Robustness metrics
+            "GCC_5%": 1.0, "GCC_10%": 1.0, "AttackCurveAUC": 0.0, "RobustnessCoeff": 0.0,
+            # Distance metrics
+            "ASPL": 0.0, "Diameter": 0.0, "Efficiency": 0.0, "ASPLVariance": 0.0,
+            # Structure metrics
+            "ArticulationPoints": 0, "Bridges": 0, "BetCentralization": 0.0,
+            # Spectral metrics
+            "NatConnectivity": 0.0, "EffResistance": 0.0, "λ₂_λₙ_Ratio": 0.0,
+            # Topology metrics
+            "Assortativity": 0.0, "AvgClustering": 0.0, "Transitivity": 0.0,
         }
 
-    # λ₂ (Algebraic Connectivity)
-    L = np.array(g.laplacian(normalized=True))
-    eigs = np.sort(np.linalg.eigvalsh(L))
-    lambda2 = eigs[1] if len(eigs) > 1 else 0.0
+    # λ₂ (Algebraic Connectivity) - use optimized computation for large graphs
+    lambda2 = approximate_lambda2(g)
+    
+    # Compute full Laplacian spectrum for spectral metrics
+    try:
+        L = np.array(g.laplacian(normalized=True))
+        eigs = np.sort(np.linalg.eigvalsh(L))
+        lambda_n = eigs[-1] if len(eigs) > 0 else 0.0
+        spectral_gap = lambda2  # For normalized Laplacian, gap is λ₂ - λ₁ = λ₂ - 0
+        lambda2_lambdan_ratio = lambda2 / (lambda_n + 1e-12)
+    except:
+        lambda_n = 0.0
+        spectral_gap = lambda2
+        lambda2_lambdan_ratio = 0.0
 
     # Average Node Connectivity (sample-based for large graphs)
     # More discriminative than min-cut
@@ -586,33 +975,125 @@ def exact_metrics(g: ig.Graph):
                 except:
                     pass
         avg_node_conn = float(np.mean(connectivities)) if connectivities else 0.0
-
-    # GCC after attack (5% for backward compatibility)
-    k = max(1, int(0.05 * n))
-    top_deg = np.argsort(-np.array(g.degree()))[:k]
-    gc = g.copy()
-    gc.delete_vertices(top_deg)
+    
+    # Edge Connectivity (minimum cut)
     try:
-        gcc = gc.clusters().giant().vcount() / max(1, (n - k))
+        edge_conn = g.edge_connectivity()
     except:
-        gcc = 0.0
+        edge_conn = 0.0
+
+    # GCC after 5% attack (backward compatibility)
+    k5 = max(1, int(0.05 * n))
+    top_deg_5 = np.argsort(-np.array(g.degree()))[:k5]
+    gc5 = g.copy()
+    gc5.delete_vertices(top_deg_5)
+    try:
+        gcc_5 = gc5.clusters().giant().vcount() / max(1, (n - k5))
+    except:
+        gcc_5 = 0.0
+    
+    # FIXED: GCC after 10% attack (more aggressive)
+    # Must recompute top nodes for 10%, not reuse 5% list
+    k10 = max(1, int(0.10 * n))
+    top_deg_10 = np.argsort(-np.array(g.degree()))[:k10]
+    gc10 = g.copy()
+    gc10.delete_vertices(top_deg_10)
+    try:
+        gcc_10 = gc10.clusters().giant().vcount() / max(1, (n - k10))
+    except:
+        gcc_10 = 0.0
     
     # Attack curve AUC (1% to 20% targeted removals)
     attack_auc = compute_attack_curve_auc(g)
-
-    # ASPL & Diameter
+    
+    # FIXED: Robustness Coefficient R (Schneider et al. 2011)
+    # R = 1/N * sum of relative size of largest component during attack
+    # Higher R = more robust
+    # FIX: Delete vertices by always targeting highest degree in CURRENT graph
     try:
-        aspl = g.average_path_length()
+        robustness_coeff = 0.0
+        g_temp = g.copy()
+        
+        for i in range(n):
+            try:
+                largest_comp_size = g_temp.clusters().giant().vcount()
+                robustness_coeff += largest_comp_size / n
+            except:
+                pass
+            
+            # FIXED: Recompute highest-degree node in current graph
+            # (vertex IDs change after deletion)
+            if g_temp.vcount() > 0:
+                current_degrees = np.array(g_temp.degree())
+                highest_deg_node = int(np.argmax(current_degrees))
+                g_temp.delete_vertices([highest_deg_node])
+        
+        robustness_coeff /= n
     except:
-        aspl = np.inf
-    diam = g.diameter() if g.is_connected() else np.inf
+        robustness_coeff = 0.0
+
+    # ASPL & Diameter - use approximations for large graphs
+    aspl = approximate_avg_path_length(g)
+    diam = approximate_diameter(g)
+    
+    # Network Efficiency (Latora & Marchiori 2001)
+    # E = 1/(n(n-1)) * sum(1/d_ij) where d_ij is shortest path
+    try:
+        if n <= 100:
+            # Exact for small graphs
+            efficiency = 0.0
+            for i in range(n):
+                paths = g.shortest_paths(source=i)[0]
+                for j in range(n):
+                    if i != j and paths[j] > 0 and paths[j] < float('inf'):
+                        efficiency += 1.0 / paths[j]
+            efficiency /= (n * (n - 1))
+        else:
+            # Sample-based for large graphs
+            sample_size = min(50, n)
+            sample_nodes = np.random.choice(n, size=sample_size, replace=False)
+            efficiency = 0.0
+            count = 0
+            for i in sample_nodes:
+                paths = g.shortest_paths(source=i)[0]
+                for j in sample_nodes:
+                    if i != j and paths[j] > 0 and paths[j] < float('inf'):
+                        efficiency += 1.0 / paths[j]
+                        count += 1
+            efficiency = efficiency / count if count > 0 else 0.0
+    except:
+        efficiency = 0.0
+    
+    # ASPL Variance (measure of path length heterogeneity)
+    try:
+        if n <= 100:
+            all_paths = []
+            for i in range(n):
+                paths = g.shortest_paths(source=i)[0]
+                for j in range(i + 1, n):
+                    if paths[j] > 0 and paths[j] < float('inf'):
+                        all_paths.append(paths[j])
+            aspl_variance = float(np.var(all_paths)) if all_paths else 0.0
+        else:
+            # Sample-based
+            sample_size = min(50, n)
+            sample_nodes = np.random.choice(n, size=sample_size, replace=False)
+            all_paths = []
+            for i in sample_nodes:
+                paths = g.shortest_paths(source=i)[0]
+                for j in sample_nodes:
+                    if i != j and paths[j] > 0 and paths[j] < float('inf'):
+                        all_paths.append(paths[j])
+            aspl_variance = float(np.var(all_paths)) if all_paths else 0.0
+    except:
+        aspl_variance = 0.0
 
     # Articulation points & bridges
     art_pts = len(g.articulation_points())
     bridges = len(g.bridges())
 
-    # Betweenness centralization
-    bet = np.array(g.betweenness())
+    # Betweenness centralization - use approximation for large graphs
+    bet = approximate_betweenness(g, sample_size=BETWEENNESS_SAMPLE_SIZE)
     if n > 2:
         bet_central = (bet.max() * (n - 1)) / ((n - 1) * (n - 2) / 2)
     else:
@@ -653,43 +1134,82 @@ def exact_metrics(g: ig.Graph):
         avg_clust = g.transitivity_avglocal_undirected(mode="zero")
     except:
         avg_clust = 0.0
+    
+    # Global Transitivity (different from avg clustering)
+    try:
+        transitivity = g.transitivity_undirected()
+    except:
+        transitivity = 0.0
 
     return {
-        "λ₂": float(lambda2), 
-        "AvgNodeConn": float(avg_node_conn),
-        "GCC_5%": float(gcc),
-        "AttackCurveAUC": float(attack_auc),
-        "ASPL": float(aspl), 
-        "Diameter": float(diam),
-        "ArticulationPoints": int(art_pts), 
-        "Bridges": int(bridges),
-        "BetCentralization": float(bet_central), 
-        "NatConnectivity": float(natconn),
-        "EffResistance": float(eff_res),
-        "Assortativity": float(assort),
-        "AvgClustering": float(avg_clust),
+        # Connectivity metrics
+        "λ₂": sanitize_value(lambda2, 0.0),
+        "AvgNodeConn": sanitize_value(avg_node_conn, 0.0),
+        "EdgeConn": sanitize_value(edge_conn, 0.0),
+        "SpectralGap": sanitize_value(spectral_gap, 0.0),
+        
+        # Robustness metrics
+        "GCC_5%": sanitize_value(gcc_5, 0.0),
+        "GCC_10%": sanitize_value(gcc_10, 0.0),
+        "AttackCurveAUC": sanitize_value(attack_auc, 0.0),
+        "RobustnessCoeff": sanitize_value(robustness_coeff, 0.0),
+        
+        # Distance metrics
+        "ASPL": sanitize_value(aspl, 0.0),
+        "Diameter": sanitize_value(diam, 0.0),
+        "Efficiency": sanitize_value(efficiency, 0.0),
+        "ASPLVariance": sanitize_value(aspl_variance, 0.0),
+        
+        # Structure metrics
+        "ArticulationPoints": int(art_pts) if not np.isnan(art_pts) else 0,
+        "Bridges": int(bridges) if not np.isnan(bridges) else 0,
+        "BetCentralization": sanitize_value(bet_central, 0.0),
+        
+        # Spectral metrics
+        "NatConnectivity": sanitize_value(natconn, 0.0),
+        "EffResistance": sanitize_value(eff_res, 1e9),
+        "λ₂_λₙ_Ratio": sanitize_value(lambda2_lambdan_ratio, 0.0),
+        
+        # Topology metrics
+        "Assortativity": sanitize_value(assort, 0.0),
+        "AvgClustering": sanitize_value(avg_clust, 0.0),
+        "Transitivity": sanitize_value(transitivity, 0.0),
     }
 
 # ============================================================================
 # MAIN EXPERIMENT LOOP
 # ============================================================================
 print(f"\nTesting reward functions on {len(GRAPH_FILES)} networks")
-print(f"Total experiments: {len(GRAPH_FILES) * 4} (30 networks × 4 reward functions)")
+print(f"Total experiments: {len(GRAPH_FILES) * 4} ({len(GRAPH_FILES)} networks × 4 reward functions)")
 print(f"{'='*80}\n")
 
 results = []
 
-# Rollout trace: log EVERY attempt (added edges + invalid/duplicate actions).
-# This enables post-hoc diagnosis of *why* each reward leads to the observed final metrics.
+# FIXED: Evaluation rollout trace - logs every attempt during policy evaluation
+# Includes both valid and invalid actions, with WasValid and WasAdded flags
+# This is NOT training-time logging - it's the final deterministic rollout
 attempt_records = []
 
 # Reward landscape: DISABLED to prevent memory issues on large networks
 # all_reward_landscapes = []
 
 network_times = []
-metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "AttackCurveAUC", "ASPL", "Diameter",
-           "ArticulationPoints", "Bridges", "BetCentralization", "NatConnectivity",
-           "EffResistance", "Assortativity", "AvgClustering"]
+
+# FIXED: Match exact_metrics() output - all 23 metrics
+metrics = [
+    # Connectivity metrics
+    "λ₂", "AvgNodeConn", "EdgeConn", "SpectralGap",
+    # Robustness metrics
+    "GCC_5%", "GCC_10%", "AttackCurveAUC", "RobustnessCoeff",
+    # Distance metrics
+    "ASPL", "Diameter", "Efficiency", "ASPLVariance",
+    # Structure metrics
+    "ArticulationPoints", "Bridges", "BetCentralization",
+    # Spectral metrics
+    "NatConnectivity", "EffResistance", "λ₂_λₙ_Ratio",
+    # Topology metrics
+    "Assortativity", "AvgClustering", "Transitivity",
+]
 
 # ============================================================================
 # GREEDY BASELINE FUNCTIONS
@@ -747,8 +1267,8 @@ def greedy_betweenness_baseline(g: ig.Graph, budget: int):
         if not candidates:
             break
         
-        # Get current betweenness
-        betweenness = np.array(g_aug.betweenness())
+        # Get current betweenness - use approximation for large graphs
+        betweenness = approximate_betweenness(g_aug, sample_size=BETWEENNESS_SAMPLE_SIZE)
         
         # Find edge that connects highest-betweenness nodes
         best_edge = None
@@ -780,12 +1300,8 @@ def greedy_algebraic_connectivity_baseline(g: ig.Graph, budget: int):
     ]
     
     def compute_lambda2(graph):
-        try:
-            L = np.array(graph.laplacian(normalized=True))
-            eigs = np.sort(np.linalg.eigvalsh(L))
-            return eigs[1] if len(eigs) > 1 else 0.0
-        except:
-            return 0.0
+        """Optimized lambda2 computation"""
+        return approximate_lambda2(graph)
     
     added_edges = []
     for _ in range(budget):
@@ -822,8 +1338,8 @@ def greedy_algebraic_connectivity_baseline(g: ig.Graph, budget: int):
 # Allow output filenames to be overridden via environment variables
 checkpoint_file = os.environ.get('CHECKPOINT_FILE', "./checkpoint_progress.csv")
 output_metrics_file = os.environ.get('OUTPUT_METRICS_FILE', "./results_network_metrics.csv")
-output_edges_all_file = os.environ.get('OUTPUT_EDGES_ALL_FILE', "./results_edge_attempts_all.csv")
-output_edges_added_file = os.environ.get('OUTPUT_EDGES_ADDED_FILE', "./results_edge_attempts_successful.csv")
+output_edges_all_file = os.environ.get('OUTPUT_EDGES_ALL_FILE', "./results_evaluation_attempts.csv")
+output_edges_added_file = os.environ.get('OUTPUT_EDGES_ADDED_FILE', "./results_evaluation_successful.csv")
 # output_landscape_file = "./results_reward_landscape.csv"  # DISABLED
 
 processed_networks = set()
@@ -925,18 +1441,26 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
         print(f"{'='*80}")
         continue
     
-    orig_g = ig.Graph.Read_GraphML(path).as_undirected()
-    n, m = orig_g.vcount(), orig_g.ecount()
+    try:
+        orig_g = ig.Graph.Read_GraphML(path).as_undirected()
+        n, m = orig_g.vcount(), orig_g.ecount()
 
-    print(f"\n{'='*80}")
-    print(f"Network {idx}/{len(GRAPH_FILES)}: {name} (N={n}, M={m})")
-    print(f"{'='*80}")
+        print(f"\n{'='*80}")
+        print(f"Network {idx}/{len(GRAPH_FILES)}: {name} (N={n}, M={m})")
+        if n > LARGE_GRAPH_THRESHOLD:
+            print(f"  Note: Large graph detected - using approximations for efficiency")
+        print(f"{'='*80}")
 
-    # Original metrics
-    orig_met = exact_metrics(orig_g)
-    row = {"Graph": name, "N": n, "M": m}
-    for k, v in orig_met.items():
-        row[f"Orig_{k}"] = v
+        # Original metrics
+        orig_met = exact_metrics(orig_g)
+        row = {"Graph": name, "N": n, "M": m}
+        for k, v in orig_met.items():
+            row[f"Orig_{k}"] = v
+    
+    except Exception as e:
+        print(f"  ERROR loading or processing {name}: {e}")
+        print(f"  Skipping this network...")
+        continue
 
     # Budget
     B = edge_budget(n, m)
@@ -988,119 +1512,34 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
             
             model = DQN(
                 "MlpPolicy", env, policy_kwargs=policy_kwargs,
-                learning_rate=2e-3, buffer_size=50000, batch_size=128,
-                learning_starts=1000, train_freq=4, target_update_interval=1000,
-                gamma=0.98, device=DEVICE, verbose=0, seed=SEED,
+                learning_rate=3e-4,  # Lower learning rate for stability
+                buffer_size=100000,  # Larger replay buffer
+                batch_size=256,      # Larger batch for better gradients
+                learning_starts=2000,  # More initial exploration
+                train_freq=4, 
+                target_update_interval=500,  # More frequent target updates
+                gamma=0.99,  # Higher discount for long-term planning
+                exploration_fraction=0.3,  # Longer exploration phase
+                exploration_initial_eps=1.0,
+                exploration_final_eps=0.05,  # More exploration retained
+                device=DEVICE, verbose=0, seed=SEED,
             )
             
-            # Training with progress
-            print("25k steps...", end=" ", flush=True)
-            model.learn(total_timesteps=25000)
+            # Training with progress - increased to 50k steps
+            print("Training 50k steps...", end=" ", flush=True)
+            model.learn(total_timesteps=50000)
             print("Evaluating...", end=" ", flush=True)
             
-            # Final rollout - log EVERY attempt (added edges + invalid/duplicate actions)
+            # FIXED: Strict policy evaluation - no invalid action repair
+            # Log every attempt including invalid actions
             obs, _ = env.reset()
             rollout_attempts = []
-            successful_count = 0
-            # reward_landscape = []  # DISABLED to prevent memory issues
+            done = False
+            attempt_num = 0
             
-            # Helper function to compute reward landscape at current state
-            def compute_reward_landscape_at_step(current_g, step_num):
-                """Compute potential rewards for all remaining candidate edges"""
-                step_landscape = []
-                
-                # Get current graph properties for context
-                degrees_current = {i: deg for i, deg in enumerate(current_g.degree())}
-                betweenness_current = current_g.betweenness()
-                
-                for cand_idx, (u, v) in enumerate(env.candidates):
-                    # Skip if edge already exists or was already added
-                    if current_g.are_connected(u, v):
-                        continue
-                    
-                    # Temporarily add edge and compute reward
-                    temp_g = current_g.copy()
-                    temp_g.add_edge(u, v)
-                    
-                    # Save current env state
-                    saved_g = env.g
-                    saved_lambda2 = env.prev_lambda2
-                    saved_attrs = {}
-                    
-                    if env.reward_type == "pbr":
-                        saved_attrs['moment'] = env.prev_moment
-                        saved_attrs['fc'] = env.prev_fc
-                    elif env.reward_type == "effres":
-                        saved_attrs['effres'] = env.prev_effres
-                    elif env.reward_type == "ivi":
-                        saved_attrs['max_ivi'] = env.prev_max_ivi
-                    elif env.reward_type == "nnsi":
-                        saved_attrs['max_nnsi'] = env.prev_max_nnsi
-                    
-                    # Set env to current state and compute reward
-                    env.g = temp_g
-                    env.prev_lambda2 = env._approx_lambda2(current_g)
-                    
-                    if env.reward_type == "pbr":
-                        degrees = np.array(current_g.degree(), dtype=float)
-                        k_mean = degrees.mean()
-                        k2_mean = (degrees ** 2).mean()
-                        env.prev_moment = k2_mean / (k_mean + 1e-8)
-                        env.prev_fc = 1.0 - 1.0 / (env.prev_moment - 1.0 + 1e-8)
-                    elif env.reward_type == "effres":
-                        env.prev_effres = env._effective_graph_resistance(current_g)
-                    elif env.reward_type == "ivi":
-                        env.prev_max_ivi = env._ivi_scores(current_g).max()
-                    elif env.reward_type == "nnsi":
-                        env.prev_max_nnsi = env._nnsi_scores(current_g).max()
-                    
-                    # Compute reward for this edge
-                    reward = env._compute_reward()
-                    
-                    # Restore env state
-                    env.g = saved_g
-                    env.prev_lambda2 = saved_lambda2
-                    if env.reward_type == "pbr":
-                        env.prev_moment = saved_attrs['moment']
-                        env.prev_fc = saved_attrs['fc']
-                    elif env.reward_type == "effres":
-                        env.prev_effres = saved_attrs['effres']
-                    elif env.reward_type == "ivi":
-                        env.prev_max_ivi = saved_attrs['max_ivi']
-                    elif env.reward_type == "nnsi":
-                        env.prev_max_nnsi = saved_attrs['max_nnsi']
-                    
-                    step_landscape.append({
-                        "Graph": name,
-                        "Reward": reward_type.upper(),
-                        "Step": step_num,
-                        "CandidateIndex": cand_idx,
-                        "Node_U": int(u),
-                        "Node_V": int(v),
-                        "Edge": f"{u}-{v}",
-                        "PotentialReward": float(reward),
-                        "NodeU_Degree": degrees_current[u],
-                        "NodeV_Degree": degrees_current[v],
-                        "NodeU_Betweenness": float(betweenness_current[u]),
-                        "NodeV_Betweenness": float(betweenness_current[v]),
-                    })
-                
-                return step_landscape
+            print(f"Starting rollout (budget={env.budget})...", end=" ", flush=True)
             
-            # Helper function to get greedy (highest reward) action
-            def get_greedy_action(landscape_at_step):
-                """Return the candidate index with highest potential reward"""
-                if not landscape_at_step:
-                    return None
-                max_entry = max(landscape_at_step, key=lambda x: x['PotentialReward'])
-                return max_entry['CandidateIndex'], max_entry['PotentialReward'], max_entry['Edge']
-            
-            # REWARD LANDSCAPE COMPUTATION DISABLED to prevent memory issues on large networks
-            # For large networks (>10k candidates), computing reward landscape causes segfaults
-            greedy_action_0, greedy_reward_0, greedy_edge_0 = None, 0.0, "N/A"
-            print(f"Step 0: {len(env.candidates)} candidates (landscape disabled)...", end=" ", flush=True)
-
-            for step_num in range(env.budget):  # Only need budget steps now!
+            while not done:
                 # Get valid action mask
                 valid_actions = env.action_masks()
                 
@@ -1108,58 +1547,55 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 if not valid_actions.any():
                     break
                 
-                # Get action from model
-                action, _ = model.predict(obs, deterministic=True)
+                # Get model's deterministic action (NO REPAIR)
+                raw_action, _ = model.predict(obs, deterministic=True)
+                raw_action = int(raw_action)
                 
-                # If action is invalid, pick random valid action
-                if not valid_actions[action]:
-                    valid_indices = np.where(valid_actions)[0]
-                    action = np.random.choice(valid_indices)
+                # Check if action is valid
+                was_valid = bool(valid_actions[raw_action])
                 
-                u, v = env.candidates[action]
-                edge = tuple(sorted((u, v)))
+                # Get edge info
+                u, v = env.candidates[raw_action]
                 
-                # Greedy choice comparison DISABLED (landscape computation removed)
-                greedy_action, greedy_reward, greedy_edge = None, None, None
+                # Track if edge was actually added
+                prev_added_count = len(env.added_edges)
                 
-                obs, reward, done, _, _ = env.step(action)
+                # Execute action (env handles invalid actions with penalty)
+                obs, reward, done, _, _ = env.step(raw_action)
                 
-                # Log attempt (always log, even if not added)
+                # Check if edge was added
+                was_added = len(env.added_edges) > prev_added_count
+                
+                attempt_num += 1
+                
+                # Log attempt with full information
                 rollout_attempts.append({
                     "Graph": name,
                     "Reward": reward_type.upper(),
-                    "Step": successful_count + 1,
+                    "Attempt": attempt_num,
+                    "RawAction": raw_action,
                     "Node_U": int(u),
                     "Node_V": int(v),
                     "Edge": f"{u}-{v}",
-                    "WasAdded": True,  # With action masking, all attempts succeed
+                    "WasValid": was_valid,
+                    "WasAdded": was_added,
                     "StepReward": float(reward),
-                    "AgentAction": int(action),
-                    "GreedyAction": int(greedy_action) if greedy_action is not None else -1,
-                    "GreedyEdge": greedy_edge if greedy_edge else "N/A",
-                    "GreedyReward": float(greedy_reward) if greedy_reward is not None else np.nan,
-                    "AgentMatchedGreedy": (action == greedy_action) if greedy_action is not None else False,
                 })
                 
-                successful_count += 1
-                
-                # Reward landscape computation DISABLED (causes memory issues)
-                
-                if done:
+                # Safety limit
+                if attempt_num >= env.budget * 10:
                     break
             
             # Store attempt trace for this rollout
             attempt_records.extend(rollout_attempts)
             
-            # Reward landscape storage DISABLED
-            
-            # Evaluate
+            # Evaluate final graph
             final_met = exact_metrics(env.g)
             prefix = reward_type.upper()
             for k, v in final_met.items():
                 row[f"{prefix}_{k}"] = v
             
-            print(f"✓")
+            print(f"✓ ({attempt_num} attempts, {len(env.added_edges)} edges added)")
         except Exception as e:
             print(f"✗ Error: {e}")
             import traceback
@@ -1218,22 +1654,70 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
 df = pd.DataFrame(results)
 
 # ============================================================================
-# COMPUTE IMPROVEMENTS
+# COMPUTE IMPROVEMENTS WITH CORRECT SEMANTICS
 # ============================================================================
+# FIXED: Account for "lower is better" vs "higher is better" metrics
+# Positive improvement % always means "better"
+
+METRIC_DIRECTIONS = {
+    # Higher is better
+    'λ₂': 'higher',
+    'AvgNodeConn': 'higher',
+    'EdgeConn': 'higher',
+    'SpectralGap': 'higher',
+    'GCC_5%': 'higher',
+    'GCC_10%': 'higher',
+    'AttackCurveAUC': 'higher',
+    'RobustnessCoeff': 'higher',
+    'Efficiency': 'higher',
+    'NatConnectivity': 'higher',
+    'λ₂_λₙ_Ratio': 'higher',
+    'AvgClustering': 'higher',
+    'Transitivity': 'higher',
+    
+    # Lower is better
+    'ASPL': 'lower',
+    'Diameter': 'lower',
+    'ASPLVariance': 'lower',
+    'ArticulationPoints': 'lower',
+    'Bridges': 'lower',
+    'BetCentralization': 'lower',
+    'EffResistance': 'lower',
+    
+    # Special: negative is better (onion structure)
+    'Assortativity': 'negative',
+}
+
 for k in metrics:
     orig_col = f"Orig_{k}"
+    if orig_col not in df.columns:
+        continue
+    
+    direction = METRIC_DIRECTIONS.get(k, 'higher')
+    
     for r in ["PBR", "EFFRES", "IVI", "NNSI"]:
         col = f"{r}_{k}"
-        if col in df.columns:
-            df[f"%Δ_{r}_vs_Orig_{k}"] = (
-                (df[col] - df[orig_col]) / (df[orig_col].abs() + 1e-8) * 100
-            ).round(2)
+        if col not in df.columns:
+            continue
+        
+        if direction == 'higher':
+            # Higher is better: positive % = improvement
+            improvement = ((df[col] - df[orig_col]) / (df[orig_col].abs() + 1e-8) * 100)
+        elif direction == 'lower':
+            # Lower is better: positive % = improvement (flip sign)
+            improvement = ((df[orig_col] - df[col]) / (df[orig_col].abs() + 1e-8) * 100)
+        elif direction == 'negative':
+            # More negative is better: positive % = more negative
+            improvement = ((df[orig_col] - df[col]) / (df[orig_col].abs() + 1e-8) * 100)
+        
+        df[f"%Δ_{r}_vs_Orig_{k}"] = improvement.round(2)
 
-# PBR vs EffRes comparison
+# PBR vs EffRes comparison (keep as raw difference for now)
 for k in metrics:
-    df[f"%Δ_PBR_vs_EFFRES_{k}"] = (
-        (df[f"PBR_{k}"] - df[f"EFFRES_{k}"]) / (df[f"EFFRES_{k}"].abs() + 1e-8) * 100
-    ).round(2)
+    if f"PBR_{k}" in df.columns and f"EFFRES_{k}" in df.columns:
+        df[f"%Δ_PBR_vs_EFFRES_{k}"] = (
+            (df[f"PBR_{k}"] - df[f"EFFRES_{k}"]) / (df[f"EFFRES_{k}"].abs() + 1e-8) * 100
+        ).round(2)
 
 # ============================================================================
 # SAVE RESULTS (Final)
@@ -1242,19 +1726,17 @@ for k in metrics:
 
 df.to_csv(output_metrics_file, index=False)
 
-# Save attempt trace
-print(f"\nSaving attempt records... ({len(attempt_records)} records)")
+# Save evaluation attempt trace
+print(f"\nSaving evaluation attempt records... ({len(attempt_records)} records)")
 df_edges = pd.DataFrame(attempt_records)
 print(f"Created DataFrame with {len(df_edges)} rows")
 df_edges.to_csv(output_edges_all_file, index=False)
 print(f"Saved to: {output_edges_all_file}")
 
-# Reward landscape saving DISABLED (feature removed to prevent memory issues)
-
-# Save added-only subset (one row per edge actually added)
-print(f"Filtering for added edges only...")
+# Save successful attempts only (edges that were actually added)
+print(f"Filtering for successfully added edges...")
 df_edges_added = df_edges[df_edges["WasAdded"] == True].copy()
-print(f"Found {len(df_edges_added)} added edges")
+print(f"Found {len(df_edges_added)} successfully added edges")
 df_edges_added.to_csv(output_edges_added_file, index=False)
 print(f"Saved to: {output_edges_added_file}")
 
