@@ -103,11 +103,19 @@ def load_and_categorize_graphs(graph_dir):
 
 small_pool, medium_pool, large_pool, xlarge_pool = load_and_categorize_graphs(GRAPH_DIR)
 
-# Verify we have enough graphs
-if len(small_pool) < SAMPLE_PER_SIZE:
-    print(f"Warning: Only {len(small_pool)} small graphs available, adjusting sample size")
-    SAMPLE_PER_SIZE = min(SAMPLE_PER_SIZE, len(small_pool), len(medium_pool), 
-                          len(large_pool), len(xlarge_pool))
+# FIXED: Verify we have enough graphs in ALL buckets, not just small
+effective_sample_per_size = min(
+    SAMPLE_PER_SIZE,
+    len(small_pool),
+    len(medium_pool),
+    len(large_pool),
+    len(xlarge_pool)
+)
+
+if effective_sample_per_size < SAMPLE_PER_SIZE:
+    print(f"\n⚠️  Warning: Adjusting sample size from {SAMPLE_PER_SIZE} to {effective_sample_per_size}")
+    print(f"   (Limited by smallest bucket)")
+    SAMPLE_PER_SIZE = effective_sample_per_size
 
 # ============================================================================
 # RUN EXPERIMENTS
@@ -177,44 +185,35 @@ for run_num in range(1, N_RUNS + 1):
     
     print(f"Created graph list file: {graph_list_file}")
     
-    # Create wrapper script
-    wrapper_script = os.path.join(TEMP_DIR, f"run_experiment_{run_num}.py")
-    
+    # Define output file paths
     metrics_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_metrics.csv")
-    edges_all_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_edges_all.csv")
-    edges_added_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_edges_added.csv")
+    edges_all_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_evaluation_attempts.csv")
+    edges_added_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_evaluation_successful.csv")
     checkpoint_file = os.path.join(OUTPUT_DIR, f"checkpoint_run{run_num}.csv")
     
-    with open(wrapper_script, 'w') as f:
-        f.write(f"""#!/usr/bin/env python3
-# Wrapper script for run {run_num}
-# Seed: {run_seed}
-import os
-import sys
-
-# Set environment variables for output files
-os.environ['OUTPUT_METRICS_FILE'] = '{metrics_file}'
-os.environ['OUTPUT_EDGES_ALL_FILE'] = '{edges_all_file}'
-os.environ['OUTPUT_EDGES_ADDED_FILE'] = '{edges_added_file}'
-os.environ['CHECKPOINT_FILE'] = '{checkpoint_file}'
-os.environ['RUN_SEED'] = '{run_seed}'
-
-# Update sys.argv to pass graph list argument
-sys.argv = ['thesis_experiments_final_script.py', '--graph-list', '{graph_list_file}']
-
-# Execute the original script
-with open('thesis_experiments_final_script.py', 'r') as script_file:
-    exec(script_file.read())
-""")
-    
-    print(f"Created wrapper script: {wrapper_script}")
-    
-    # Run the experiment
+    # FIXED: Run experiment with proper environment variables (no wrapper script needed)
     print(f"\n{'='*80}")
     print(f"EXECUTING EXPERIMENT {run_num}/{N_RUNS}")
     print(f"{'='*80}\n")
     
-    result = subprocess.run(['python', wrapper_script], capture_output=False)
+    # Build environment dict
+    env_vars = os.environ.copy()
+    env_vars.update({
+        'OUTPUT_METRICS_FILE': metrics_file,
+        'OUTPUT_EDGES_ALL_FILE': edges_all_file,
+        'OUTPUT_EDGES_ADDED_FILE': edges_added_file,
+        'CHECKPOINT_FILE': checkpoint_file,
+        'RUN_SEED': str(run_seed),
+        'RUN_NUMBER': str(run_num),
+        'TOTAL_RUNS': str(N_RUNS),
+    })
+    
+    # Run experiment directly with subprocess
+    result = subprocess.run(
+        ['python3', 'thesis_experiments_final_script.py', '--graph-list', graph_list_file],
+        env=env_vars,
+        capture_output=False
+    )
     
     if result.returncode != 0:
         print(f"\n Warning: Run {run_num} exited with code {result.returncode}")
@@ -277,12 +276,51 @@ print(f"\n{'='*80}")
 print(f"COMPUTING STATISTICS WITH 95% CONFIDENCE INTERVALS")
 print(f"{'='*80}\n")
 
-metrics = ["λ₂", "AvgNodeConn", "GCC_5%", "AttackCurveAUC", "ASPL", "Diameter",
-           "ArticulationPoints", "Bridges", "BetCentralization", "NatConnectivity",
-           "EffResistance", "Assortativity", "AvgClustering"]
+# FIXED: Include ALL metrics from exact_metrics()
+metrics = [
+    # Connectivity metrics
+    "λ₂", "AvgNodeConn", "EdgeConn", "SpectralGap",
+    # Robustness metrics
+    "GCC_5%", "GCC_10%", "AttackCurveAUC", "RobustnessCoeff",
+    # Distance metrics
+    "ASPL", "Diameter", "Efficiency", "ASPLVariance",
+    # Structure metrics
+    "ArticulationPoints", "Bridges", "BetCentralization",
+    # Spectral metrics
+    "NatConnectivity", "EffResistance", "λ₂_λₙ_Ratio",
+    # Topology metrics
+    "Assortativity", "AvgClustering", "Transitivity",
+]
 
-# Metrics that use absolute change instead of percentage
-absolute_change_metrics = ["AvgClustering", "Assortativity", "BetCentralization"]
+# FIXED: Metric directions for correct improvement calculation
+METRIC_DIRECTIONS = {
+    # Higher is better
+    'λ₂': 'higher',
+    'AvgNodeConn': 'higher',
+    'EdgeConn': 'higher',
+    'SpectralGap': 'higher',
+    'GCC_5%': 'higher',
+    'GCC_10%': 'higher',
+    'AttackCurveAUC': 'higher',
+    'RobustnessCoeff': 'higher',
+    'Efficiency': 'higher',
+    'NatConnectivity': 'higher',
+    'λ₂_λₙ_Ratio': 'higher',
+    'AvgClustering': 'higher',
+    'Transitivity': 'higher',
+    
+    # Lower is better
+    'ASPL': 'lower',
+    'Diameter': 'lower',
+    'ASPLVariance': 'lower',
+    'ArticulationPoints': 'lower',
+    'Bridges': 'lower',
+    'BetCentralization': 'lower',
+    'EffResistance': 'lower',
+    
+    # Special: negative is better
+    'Assortativity': 'negative',
+}
 
 def compute_ci_95(data):
     """Compute 95% confidence interval using t-distribution"""
@@ -363,14 +401,21 @@ for size_bucket in ["Small", "Medium", "Large", "XLarge"]:
             std_val = reward_values.std()
             ci_low, ci_high = compute_ci_95(reward_values)
             
-            # Compute improvement statistics
+            # FIXED: Compute improvement statistics with correct semantics
             if len(orig_values) > 0 and len(orig_values) == len(reward_values):
-                if metric in absolute_change_metrics:
-                    improvements = reward_values.values - orig_values.values
-                    improvement_type = "Absolute"
-                else:
+                direction = METRIC_DIRECTIONS.get(metric, 'higher')
+                
+                if direction == 'higher':
+                    # Higher is better: positive % = improvement
                     improvements = ((reward_values.values - orig_values.values) / (np.abs(orig_values.values) + 1e-8) * 100)
-                    improvement_type = "Percentage"
+                elif direction == 'lower':
+                    # Lower is better: positive % = improvement (flip sign)
+                    improvements = ((orig_values.values - reward_values.values) / (np.abs(orig_values.values) + 1e-8) * 100)
+                elif direction == 'negative':
+                    # More negative is better: positive % = more negative
+                    improvements = ((orig_values.values - reward_values.values) / (np.abs(orig_values.values) + 1e-8) * 100)
+                
+                improvement_type = f"Percentage ({direction} is better)"
                 
                 improvements = improvements[~np.isnan(improvements)]
                 
