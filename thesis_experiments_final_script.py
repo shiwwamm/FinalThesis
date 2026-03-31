@@ -1,7 +1,19 @@
 
+# ============================================================================
+# CRITICAL: Prevent thread oversubscription in VMs (must be before imports)
+# ============================================================================
+import os
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMBA_NUM_THREADS"] = "1"
+os.environ["TORCH_NUM_THREADS"] = "1"
+os.environ["TORCH_NUM_INTEROP_THREADS"] = "1"
 
 ### IMPORTS
-import os, numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
+import numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
 import igraph as ig, gymnasium as gym, torch, torch.nn as nn, torch_geometric.nn as pyg_nn
 from gymnasium import spaces
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
@@ -10,6 +22,10 @@ from sb3_contrib.common.maskable.utils import get_action_masks
 from tqdm import tqdm
 import random, warnings, time
 warnings.filterwarnings("ignore")
+
+# Set PyTorch thread limits after import
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
 
 # ============================================================================
 # OPTIMIZATION HELPERS FOR LARGE GRAPHS
