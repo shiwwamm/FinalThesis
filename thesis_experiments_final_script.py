@@ -1234,7 +1234,6 @@ attempt_records = []
 
 network_times = []
 
-# FIXED: Match exact_metrics() output - all 23 metrics
 metrics = [
     # Connectivity metrics
     "λ₂", "AvgNodeConn", "EdgeConn", "SpectralGap",
