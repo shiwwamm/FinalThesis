@@ -1650,6 +1650,13 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 row[f"{prefix}_{k}"] = v
             
             print(f"✓ ({attempt_num} attempts, {len(env.added_edges)} edges added)")
+            
+            # CRITICAL: Delete model and env to free memory immediately
+            del model
+            del env
+            import gc
+            gc.collect()
+            
         except Exception as e:
             print(f"✗ Error: {e}")
             import traceback
@@ -1690,12 +1697,16 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
         df_edges_added_temp = df_edges_temp[df_edges_temp["WasAdded"] == True].copy()
         df_edges_added_temp.to_csv(output_edges_added_file, index=False)
     
-    # Reward landscape saving DISABLED (feature removed)
-    
     # Update checkpoint file
     processed_networks.add(name)
     checkpoint_df = pd.DataFrame({'Graph': list(processed_networks)})
     checkpoint_df.to_csv(checkpoint_file, index=False)
+    
+    # CRITICAL: Force memory cleanup after each network to prevent crashes
+    import gc
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
     
     print(f"Done ({len(processed_networks)}/{len(GRAPH_FILES)} networks)")
     
