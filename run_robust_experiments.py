@@ -284,6 +284,8 @@ for run_num in range(1, N_RUNS + 1):
         'NUMEXPR_NUM_THREADS': '1',
         'VECLIB_MAXIMUM_THREADS': '1',
         'NUMBA_NUM_THREADS': '1',
+        'TORCH_NUM_THREADS': '1',
+        'TORCH_NUM_INTEROP_THREADS': '1',
     })
     
     # Run experiment directly with subprocess
