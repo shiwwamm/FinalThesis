@@ -362,6 +362,9 @@ for run_num in range(1, N_RUNS + 1):
         run_level_stats.append(row)
 
 df_run_stats = pd.DataFrame(run_level_stats)
+run_level_file = os.path.join(OUTPUT_DIR, "results_run_level_by_size.csv")
+df_run_stats.to_csv(run_level_file, index=False)
+print(f"✓ Run-level summary: {run_level_file}")
 print(f"Computed statistics for {len(df_run_stats)} (run, size) combinations")
 
 # Now compute cross-run statistics with confidence intervals
