@@ -1,16 +1,7 @@
 
 
-# ============================================================================
-# CRITICAL: Prevent thread oversubscription in VMs (must be before imports)
-# ============================================================================
-import os
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-os.environ["NUMEXPR_NUM_THREADS"] = "1"
-
 ### IMPORTS
-import sys, numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
+import os, numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
 import igraph as ig, gymnasium as gym, torch, torch.nn as nn, torch_geometric.nn as pyg_nn
 from gymnasium import spaces
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
@@ -19,10 +10,6 @@ from sb3_contrib.common.maskable.utils import get_action_masks
 from tqdm import tqdm
 import random, warnings, time
 warnings.filterwarnings("ignore")
-
-# Set PyTorch thread limits
-torch.set_num_threads(1)
-torch.set_num_interop_threads(1)
 
 # ============================================================================
 # OPTIMIZATION HELPERS FOR LARGE GRAPHS
@@ -853,11 +840,12 @@ class CleanGNNExtractor(BaseFeaturesExtractor):
         self.n_progress = 2
         self.base_edge_index = env.edge_index_orig.clone()
         
-        # Simplified GNN with smaller hidden dimensions for memory efficiency
         self.gnn = pyg_nn.Sequential("x, edge_index", [
-            (pyg_nn.GraphConv(self.n_features, 32), "x, edge_index -> x"),
+            (pyg_nn.GraphConv(self.n_features, 64), "x, edge_index -> x"),
             nn.ReLU(),
-            (pyg_nn.GraphConv(32, 32), "x, edge_index -> x"),
+            (pyg_nn.GraphConv(64, 64), "x, edge_index -> x"),
+            nn.ReLU(),
+            (pyg_nn.GraphConv(64, 32), "x, edge_index -> x"),
         ])
         self.pool = pyg_nn.global_mean_pool
         # graph embedding (32) + progress features (2)
@@ -1262,127 +1250,6 @@ metrics = [
 ]
 
 # ============================================================================
-# GREEDY BASELINE FUNCTIONS
-# ============================================================================
-def greedy_degree_baseline(g: ig.Graph, budget: int):
-    """Greedy baseline: Add edges between lowest-degree nodes"""
-    g_aug = g.copy()
-    existing = set(tuple(sorted(e)) for e in g.get_edgelist())
-    n = g.vcount()
-    
-    candidates = [
-        (i, j) for i in range(n) for j in range(i + 1, n)
-        if (i, j) not in existing
-    ]
-    
-    added_edges = []
-    for _ in range(budget):
-        if not candidates:
-            break
-        
-        # Get current degrees
-        degrees = np.array(g_aug.degree())
-        
-        # Find edge that connects lowest-degree nodes
-        best_edge = None
-        best_score = float('inf')
-        
-        for u, v in candidates:
-            score = degrees[u] + degrees[v]  # Lower is better
-            if score < best_score:
-                best_score = score
-                best_edge = (u, v)
-        
-        if best_edge:
-            u, v = best_edge
-            g_aug.add_edge(u, v)
-            added_edges.append(best_edge)
-            candidates.remove(best_edge)
-    
-    return g_aug, added_edges
-
-def greedy_betweenness_baseline(g: ig.Graph, budget: int):
-    """Greedy baseline: Add edges between highest-betweenness nodes"""
-    g_aug = g.copy()
-    existing = set(tuple(sorted(e)) for e in g.get_edgelist())
-    n = g.vcount()
-    
-    candidates = [
-        (i, j) for i in range(n) for j in range(i + 1, n)
-        if (i, j) not in existing
-    ]
-    
-    added_edges = []
-    for _ in range(budget):
-        if not candidates:
-            break
-        
-        # Get current betweenness - use approximation for large graphs
-        betweenness = approximate_betweenness(g_aug, sample_size=BETWEENNESS_SAMPLE_SIZE)
-        
-        # Find edge that connects highest-betweenness nodes
-        best_edge = None
-        best_score = -float('inf')
-        
-        for u, v in candidates:
-            score = betweenness[u] + betweenness[v]  # Higher is better
-            if score > best_score:
-                best_score = score
-                best_edge = (u, v)
-        
-        if best_edge:
-            u, v = best_edge
-            g_aug.add_edge(u, v)
-            added_edges.append(best_edge)
-            candidates.remove(best_edge)
-    
-    return g_aug, added_edges
-
-def greedy_algebraic_connectivity_baseline(g: ig.Graph, budget: int):
-    """Greedy baseline: Add edge that maximizes λ₂ increase"""
-    g_aug = g.copy()
-    existing = set(tuple(sorted(e)) for e in g.get_edgelist())
-    n = g.vcount()
-    
-    candidates = [
-        (i, j) for i in range(n) for j in range(i + 1, n)
-        if (i, j) not in existing
-    ]
-    
-    def compute_lambda2(graph):
-        """Optimized lambda2 computation"""
-        return approximate_lambda2(graph)
-    
-    added_edges = []
-    for _ in range(budget):
-        if not candidates:
-            break
-        
-        current_lambda2 = compute_lambda2(g_aug)
-        
-        # Find edge that maximizes λ₂ increase
-        best_edge = None
-        best_improvement = -float('inf')
-        
-        for u, v in candidates:
-            g_temp = g_aug.copy()
-            g_temp.add_edge(u, v)
-            new_lambda2 = compute_lambda2(g_temp)
-            improvement = new_lambda2 - current_lambda2
-            
-            if improvement > best_improvement:
-                best_improvement = improvement
-                best_edge = (u, v)
-        
-        if best_edge:
-            u, v = best_edge
-            g_aug.add_edge(u, v)
-            added_edges.append(best_edge)
-            candidates.remove(best_edge)
-    
-    return g_aug, added_edges
-
-# ============================================================================
 # CHECKPOINT SYSTEM - Load previous progress if exists
 # ============================================================================
 # Allow output filenames to be overridden via environment variables
@@ -1517,35 +1384,6 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
     row["BudgetEdges"] = B
     print(f"Budget: {B} edges")
     
-    # ============================================================================
-    # GREEDY BASELINES
-    # ============================================================================
-    print(f"  Running greedy baselines...")
-    
-    # Greedy Degree
-    print(f"    [1/3] Greedy Degree...", end=" ", flush=True)
-    g_deg, _ = greedy_degree_baseline(orig_g, B)
-    deg_met = exact_metrics(g_deg)
-    for k, v in deg_met.items():
-        row[f"GREEDY_DEG_{k}"] = v
-    print(f"✓")
-    
-    # Greedy Betweenness
-    print(f"    [2/3] Greedy Betweenness...", end=" ", flush=True)
-    g_bet, _ = greedy_betweenness_baseline(orig_g, B)
-    bet_met = exact_metrics(g_bet)
-    for k, v in bet_met.items():
-        row[f"GREEDY_BET_{k}"] = v
-    print(f"✓")
-    
-    # Greedy Algebraic Connectivity
-    print(f"    [3/3] Greedy λ₂...", end=" ", flush=True)
-    g_alg, _ = greedy_algebraic_connectivity_baseline(orig_g, B)
-    alg_met = exact_metrics(g_alg)
-    for k, v in alg_met.items():
-        row[f"GREEDY_ALG_{k}"] = v
-    print(f"✓")
-
     # Test all four reward functions
     for reward_idx, reward_type in enumerate(["pbr", "effres", "ivi", "nnsi"], 1):
         print(f"  [{reward_idx}/4] {reward_type.upper():10s} - Training...", end=" ", flush=True)
@@ -1565,7 +1403,7 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
             policy_kwargs = dict(
                 features_extractor_class=CleanGNNExtractor,
                 features_extractor_kwargs=dict(env=env),
-                net_arch=[128, 128],  # Reduced from [256, 256] for memory efficiency
+                net_arch=[256, 256],
             )
             
             model = MaskablePPO(
@@ -1573,9 +1411,9 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 env,
                 policy_kwargs=policy_kwargs,
                 learning_rate=3e-4,
-                n_steps=512,  # Reduced from 1024 to lower memory usage
-                batch_size=128,  # Reduced from 256 to lower memory usage
-                n_epochs=5,  # Reduced from 10 to lower memory usage
+                n_steps=1024,
+                batch_size=256,
+                n_epochs=10,
                 gamma=0.99,
                 gae_lambda=0.95,
                 ent_coef=0.01,
@@ -1585,16 +1423,9 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 seed=SEED,
             )
             
-            # Training with progress - reduced to 25k steps for memory stability
-            print("Training 25k steps...", end=" ", flush=True)
-            model.learn(total_timesteps=25000)
-            
-            # Force memory cleanup after training
-            import gc
-            gc.collect()
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
-            
+            # Training with progress - 50k steps
+            print("Training 50k steps...", end=" ", flush=True)
+            model.learn(total_timesteps=50000)
             print("Evaluating...", end=" ", flush=True)
             
             # Evaluation with action masking
