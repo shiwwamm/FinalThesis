@@ -1,7 +1,16 @@
 
 
+# ============================================================================
+# CRITICAL: Prevent thread oversubscription in VMs (must be before imports)
+# ============================================================================
+import os
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
 ### IMPORTS
-import os, numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
+import sys, numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
 import igraph as ig, gymnasium as gym, torch, torch.nn as nn, torch_geometric.nn as pyg_nn
 from gymnasium import spaces
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
@@ -10,6 +19,10 @@ from sb3_contrib.common.maskable.utils import get_action_masks
 from tqdm import tqdm
 import random, warnings, time
 warnings.filterwarnings("ignore")
+
+# Set PyTorch thread limits
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
 
 # ============================================================================
 # OPTIMIZATION HELPERS FOR LARGE GRAPHS
@@ -840,12 +853,11 @@ class CleanGNNExtractor(BaseFeaturesExtractor):
         self.n_progress = 2
         self.base_edge_index = env.edge_index_orig.clone()
         
+        # Simplified GNN with smaller hidden dimensions for memory efficiency
         self.gnn = pyg_nn.Sequential("x, edge_index", [
-            (pyg_nn.GraphConv(self.n_features, 64), "x, edge_index -> x"),
+            (pyg_nn.GraphConv(self.n_features, 32), "x, edge_index -> x"),
             nn.ReLU(),
-            (pyg_nn.GraphConv(64, 64), "x, edge_index -> x"),
-            nn.ReLU(),
-            (pyg_nn.GraphConv(64, 32), "x, edge_index -> x"),
+            (pyg_nn.GraphConv(32, 32), "x, edge_index -> x"),
         ])
         self.pool = pyg_nn.global_mean_pool
         # graph embedding (32) + progress features (2)
@@ -1553,7 +1565,7 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
             policy_kwargs = dict(
                 features_extractor_class=CleanGNNExtractor,
                 features_extractor_kwargs=dict(env=env),
-                net_arch=[256, 256],
+                net_arch=[128, 128],  # Reduced from [256, 256] for memory efficiency
             )
             
             model = MaskablePPO(
@@ -1561,9 +1573,9 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 env,
                 policy_kwargs=policy_kwargs,
                 learning_rate=3e-4,
-                n_steps=1024,
-                batch_size=256,
-                n_epochs=10,
+                n_steps=512,  # Reduced from 1024 to lower memory usage
+                batch_size=128,  # Reduced from 256 to lower memory usage
+                n_epochs=5,  # Reduced from 10 to lower memory usage
                 gamma=0.99,
                 gae_lambda=0.95,
                 ent_coef=0.01,
@@ -1573,9 +1585,16 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 seed=SEED,
             )
             
-            # Training with progress - 50k steps
-            print("Training 50k steps...", end=" ", flush=True)
-            model.learn(total_timesteps=50000)
+            # Training with progress - reduced to 25k steps for memory stability
+            print("Training 25k steps...", end=" ", flush=True)
+            model.learn(total_timesteps=25000)
+            
+            # Force memory cleanup after training
+            import gc
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            
             print("Evaluating...", end=" ", flush=True)
             
             # Evaluation with action masking
