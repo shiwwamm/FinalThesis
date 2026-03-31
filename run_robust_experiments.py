@@ -4,7 +4,17 @@ Robust experiment runner with proper randomization and confidence intervals.
 Ensures each run uses different graph samples and handles large networks efficiently.
 
 Usage:
-    python run_robust_experiments.py [output_folder]
+    python run_robust_experiments.py [size_category] [output_folder]
+    
+    size_category: small, medium, large, xlarge, or all (default: all)
+    output_folder: optional output directory name
+    
+Examples:
+    python run_robust_experiments.py small results_small
+    python run_robust_experiments.py medium results_medium
+    python run_robust_experiments.py large results_large
+    python run_robust_experiments.py xlarge results_xlarge
+    python run_robust_experiments.py all results_all
 """
 
 import os
@@ -17,12 +27,14 @@ import numpy as np
 from scipy import stats
 import igraph as ig
 from datetime import datetime
+import time
+import gc
 
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
 N_RUNS = 10
-SAMPLE_PER_SIZE = 5  # Sample 5 graphs per size category per run (20 total)
+SAMPLE_PER_SIZE = 5  # Sample 5 graphs per size category per run
 GRAPH_DIR = "./real_world_topologies"
 BASE_SEED = 42
 
@@ -35,10 +47,21 @@ SIZE_LARGE_MAX = 299
 SIZE_XLARGE_MIN = 300
 
 # Parse command line arguments
+SIZE_CATEGORY = "all"  # Default to all sizes
+BASE_FOLDER = None
+
 if len(sys.argv) > 1:
-    BASE_FOLDER = sys.argv[1]
-else:
-    BASE_FOLDER = f"results_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    arg1 = sys.argv[1].lower()
+    if arg1 in ["small", "medium", "large", "xlarge", "all"]:
+        SIZE_CATEGORY = arg1
+        if len(sys.argv) > 2:
+            BASE_FOLDER = sys.argv[2]
+    else:
+        # First arg is folder name, use all sizes
+        BASE_FOLDER = sys.argv[1]
+
+if BASE_FOLDER is None:
+    BASE_FOLDER = f"results_{SIZE_CATEGORY}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
 TEMP_DIR = os.path.join(BASE_FOLDER, "temp")
 OUTPUT_DIR = os.path.join(BASE_FOLDER, "output")
@@ -47,15 +70,27 @@ OUTPUT_DIR = os.path.join(BASE_FOLDER, "output")
 os.makedirs(TEMP_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+# Determine which size categories to process
+if SIZE_CATEGORY == "all":
+    ACTIVE_CATEGORIES = ["small", "medium", "large", "xlarge"]
+    graphs_per_run = SAMPLE_PER_SIZE * 4
+else:
+    ACTIVE_CATEGORIES = [SIZE_CATEGORY]
+    graphs_per_run = SAMPLE_PER_SIZE
+
 print(f"\n{'='*80}")
 print(f"ROBUST REPEATED EXPERIMENTS")
 print(f"{'='*80}")
 print(f"Configuration:")
+print(f"  Size category: {SIZE_CATEGORY.upper()}")
 print(f"  Runs: {N_RUNS}")
 print(f"  Samples per size per run: {SAMPLE_PER_SIZE}")
-print(f"  Size categories: Small, Medium, Large, XLarge")
-print(f"  Total graphs per run: {SAMPLE_PER_SIZE * 4} = {SAMPLE_PER_SIZE}×4 categories")
-print(f"  Total experiments: {N_RUNS * SAMPLE_PER_SIZE * 4} graphs")
+if SIZE_CATEGORY == "all":
+    print(f"  Size categories: Small, Medium, Large, XLarge")
+    print(f"  Total graphs per run: {graphs_per_run} = {SAMPLE_PER_SIZE}×4 categories")
+else:
+    print(f"  Total graphs per run: {graphs_per_run}")
+print(f"  Total experiments: {N_RUNS * graphs_per_run} graphs")
 print(f"  Base seed: {BASE_SEED}")
 print(f"  Output folder: {BASE_FOLDER}/")
 print(f"  Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -103,19 +138,38 @@ def load_and_categorize_graphs(graph_dir):
 
 small_pool, medium_pool, large_pool, xlarge_pool = load_and_categorize_graphs(GRAPH_DIR)
 
-# FIXED: Verify we have enough graphs in ALL buckets, not just small
-effective_sample_per_size = min(
-    SAMPLE_PER_SIZE,
-    len(small_pool),
-    len(medium_pool),
-    len(large_pool),
-    len(xlarge_pool)
-)
+# Create a mapping of category names to pools
+category_pools = {
+    "small": small_pool,
+    "medium": medium_pool,
+    "large": large_pool,
+    "xlarge": xlarge_pool
+}
 
-if effective_sample_per_size < SAMPLE_PER_SIZE:
-    print(f"\n⚠️  Warning: Adjusting sample size from {SAMPLE_PER_SIZE} to {effective_sample_per_size}")
-    print(f"   (Limited by smallest bucket)")
-    SAMPLE_PER_SIZE = effective_sample_per_size
+# Verify we have enough graphs in the selected categories
+if SIZE_CATEGORY == "all":
+    effective_sample_per_size = min(
+        SAMPLE_PER_SIZE,
+        len(small_pool),
+        len(medium_pool),
+        len(large_pool),
+        len(xlarge_pool)
+    )
+    if effective_sample_per_size < SAMPLE_PER_SIZE:
+        print(f"\n⚠️  Warning: Adjusting sample size from {SAMPLE_PER_SIZE} to {effective_sample_per_size}")
+        print(f"   (Limited by smallest bucket)")
+        SAMPLE_PER_SIZE = effective_sample_per_size
+else:
+    # Check if selected category has enough graphs
+    selected_pool = category_pools[SIZE_CATEGORY]
+    if len(selected_pool) < SAMPLE_PER_SIZE:
+        print(f"\n⚠️  Warning: Only {len(selected_pool)} graphs available in {SIZE_CATEGORY} category")
+        print(f"   Adjusting sample size from {SAMPLE_PER_SIZE} to {len(selected_pool)}")
+        SAMPLE_PER_SIZE = len(selected_pool)
+    
+    if len(selected_pool) == 0:
+        print(f"\n❌ ERROR: No graphs found in {SIZE_CATEGORY} category!")
+        sys.exit(1)
 
 # ============================================================================
 # RUN EXPERIMENTS
@@ -134,32 +188,49 @@ for run_num in range(1, N_RUNS + 1):
     np.random.seed(run_seed)
     
     print(f"Run seed: {run_seed}")
+    print(f"Sampling graphs for size category: {SIZE_CATEGORY.upper()}")
     
-    # Sample graphs - DIFFERENT for each run
-    sampled_small = random.sample(small_pool, min(SAMPLE_PER_SIZE, len(small_pool)))
-    sampled_medium = random.sample(medium_pool, min(SAMPLE_PER_SIZE, len(medium_pool)))
-    sampled_large = random.sample(large_pool, min(SAMPLE_PER_SIZE, len(large_pool)))
-    sampled_xlarge = random.sample(xlarge_pool, min(SAMPLE_PER_SIZE, len(xlarge_pool)))
+    # Sample graphs based on selected category
+    sampled_graphs = []
+    for category in ACTIVE_CATEGORIES:
+        pool = category_pools[category]
+        sample_size = min(SAMPLE_PER_SIZE, len(pool))
+        sampled = random.sample(pool, sample_size)
+        sampled_graphs.extend(sampled)
+        print(f"  {category.capitalize()}: {len(sampled)} graphs sampled")
     
-    sampled_graphs = sampled_small + sampled_medium + sampled_large + sampled_xlarge
     
     print(f"\nSampled graphs for Run {run_num}:")
-    print(f"  Small:   {[name for name, _, _ in sampled_small[:3]]}... ({len(sampled_small)} total)")
-    print(f"  Medium:  {[name for name, _, _ in sampled_medium[:3]]}... ({len(sampled_medium)} total)")
-    print(f"  Large:   {[name for name, _, _ in sampled_large[:3]]}... ({len(sampled_large)} total)")
-    print(f"  XLarge:  {[name for name, _, _ in sampled_xlarge[:3]]}... ({len(sampled_xlarge)} total)")
+    for category in ACTIVE_CATEGORIES:
+        cat_graphs = [g for g in sampled_graphs if (
+            (category == "small" and g[2] <= SIZE_SMALL_MAX) or
+            (category == "medium" and SIZE_MEDIUM_MIN <= g[2] <= SIZE_MEDIUM_MAX) or
+            (category == "large" and SIZE_LARGE_MIN <= g[2] <= SIZE_LARGE_MAX) or
+            (category == "xlarge" and g[2] >= SIZE_XLARGE_MIN)
+        )]
+        if cat_graphs:
+            print(f"  {category.capitalize():8s}: {[name for name, _, _ in cat_graphs[:3]]}... ({len(cat_graphs)} total)")
     print(f"  Total:   {len(sampled_graphs)} graphs\n")
     
     # Store metadata
-    run_metadata.append({
+    metadata_entry = {
         'run': run_num,
         'seed': run_seed,
+        'size_category': SIZE_CATEGORY,
         'n_graphs': len(sampled_graphs),
-        'small_graphs': [name for name, _, _ in sampled_small],
-        'medium_graphs': [name for name, _, _ in sampled_medium],
-        'large_graphs': [name for name, _, _ in sampled_large],
-        'xlarge_graphs': [name for name, _, _ in sampled_xlarge]
-    })
+    }
+    
+    # Add graph lists per category
+    for category in ACTIVE_CATEGORIES:
+        cat_graphs = [g for g in sampled_graphs if (
+            (category == "small" and g[2] <= SIZE_SMALL_MAX) or
+            (category == "medium" and SIZE_MEDIUM_MIN <= g[2] <= SIZE_MEDIUM_MAX) or
+            (category == "large" and SIZE_LARGE_MIN <= g[2] <= SIZE_LARGE_MAX) or
+            (category == "xlarge" and g[2] >= SIZE_XLARGE_MIN)
+        )]
+        metadata_entry[f'{category}_graphs'] = [name for name, _, _ in cat_graphs]
+    
+    run_metadata.append(metadata_entry)
     
     # Create graph list file for this run
     graph_list_file = os.path.join(TEMP_DIR, f"graph_list_run{run_num}.py")
@@ -206,21 +277,41 @@ for run_num in range(1, N_RUNS + 1):
         'RUN_SEED': str(run_seed),
         'RUN_NUMBER': str(run_num),
         'TOTAL_RUNS': str(N_RUNS),
+        # Thread limits to prevent oversubscription in VMs
+        'OMP_NUM_THREADS': '1',
+        'OPENBLAS_NUM_THREADS': '1',
+        'MKL_NUM_THREADS': '1',
+        'NUMEXPR_NUM_THREADS': '1',
+        'VECLIB_MAXIMUM_THREADS': '1',
+        'NUMBA_NUM_THREADS': '1',
     })
     
     # Run experiment directly with subprocess
-    result = subprocess.run(
-        ['python3', 'thesis_experiments_final_script.py', '--graph-list', graph_list_file],
-        env=env_vars,
-        capture_output=False
-    )
+    try:
+        result = subprocess.run(
+            ['python3', 'thesis_experiments_final_script.py', '--graph-list', graph_list_file],
+            env=env_vars,
+            capture_output=False,
+            timeout=7200  # 2 hour timeout per run
+        )
+        
+        if result.returncode != 0:
+            print(f"\n⚠️  Warning: Run {run_num} exited with code {result.returncode}")
+            print(f"   This run will be skipped in aggregation")
+        else:
+            print(f"\n✓ Run {run_num} completed successfully")
+            all_run_files.append(metrics_file)
+    except subprocess.TimeoutExpired:
+        print(f"\n⚠️  Warning: Run {run_num} timed out after 2 hours")
+        print(f"   This run will be skipped in aggregation")
+    except Exception as e:
+        print(f"\n⚠️  Warning: Run {run_num} failed with error: {e}")
+        print(f"   This run will be skipped in aggregation")
     
-    if result.returncode != 0:
-        print(f"\n Warning: Run {run_num} exited with code {result.returncode}")
-    else:
-        print(f"\n✓ Run {run_num} completed successfully")
-    
-    all_run_files.append(metrics_file)
+    # Force garbage collection between runs to prevent memory accumulation
+    import gc
+    gc.collect()
+    time.sleep(2)  # Brief pause to allow system cleanup
 
 # Save run metadata
 metadata_file = os.path.join(OUTPUT_DIR, "run_metadata.csv")
@@ -235,30 +326,49 @@ print(f"{'='*80}\n")
 # LOAD AND COMBINE ALL RESULTS
 # ============================================================================
 all_dfs = []
+successful_runs = 0
+failed_runs = 0
 
 for run_num in range(1, N_RUNS + 1):
     metrics_file = os.path.join(OUTPUT_DIR, f"results_run{run_num}_metrics.csv")
     
     if os.path.exists(metrics_file):
-        df = pd.read_csv(metrics_file)
-        df['Run'] = run_num
-        
-        # Add size bucket column
-        df['SizeBucket'] = df['N'].apply(lambda n: 
-            'Small' if n <= SIZE_SMALL_MAX 
-            else 'Medium' if SIZE_MEDIUM_MIN <= n <= SIZE_MEDIUM_MAX 
-            else 'Large' if SIZE_LARGE_MIN <= n <= SIZE_LARGE_MAX
-            else 'XLarge'
-        )
-        
-        all_dfs.append(df)
-        print(f"Loaded Run {run_num}: {len(df)} graphs")
+        try:
+            df = pd.read_csv(metrics_file)
+            if len(df) > 0:
+                df['Run'] = run_num
+                
+                # Add size bucket column
+                df['SizeBucket'] = df['N'].apply(lambda n: 
+                    'Small' if n <= SIZE_SMALL_MAX 
+                    else 'Medium' if SIZE_MEDIUM_MIN <= n <= SIZE_MEDIUM_MAX 
+                    else 'Large' if SIZE_LARGE_MIN <= n <= SIZE_LARGE_MAX
+                    else 'XLarge'
+                )
+                
+                all_dfs.append(df)
+                successful_runs += 1
+                print(f"✓ Loaded Run {run_num}: {len(df)} graphs")
+            else:
+                failed_runs += 1
+                print(f"⚠️  Run {run_num}: Empty file, skipping")
+        except Exception as e:
+            failed_runs += 1
+            print(f"⚠️  Run {run_num}: Error loading file ({e}), skipping")
     else:
-        print(f"Warning: {metrics_file} not found")
+        failed_runs += 1
+        print(f"⚠️  Run {run_num}: File not found, skipping")
+
+print(f"\nSummary: {successful_runs} successful runs, {failed_runs} failed runs")
 
 if not all_dfs:
-    print("Error: No result files found!")
+    print("\n❌ Error: No result files found! All runs failed.")
+    print("   Check the error messages above for details.")
     exit(1)
+
+if successful_runs < 3:
+    print(f"\n⚠️  Warning: Only {successful_runs} successful runs (minimum 3 recommended for statistics)")
+    print("   Results may not be statistically reliable.")
 
 # Combine all runs
 df_all = pd.concat(all_dfs, ignore_index=True)
@@ -519,8 +629,11 @@ print(f"\n{'='*80}")
 print(f"EXPERIMENT COMPLETE")
 print(f"{'='*80}")
 print(f"\nConfiguration:")
-print(f"  Total runs: {N_RUNS}")
-print(f"  Graphs per run: ~{len(sampled_graphs)}")
+print(f"  Size category: {SIZE_CATEGORY.upper()}")
+print(f"  Total runs attempted: {N_RUNS}")
+print(f"  Successful runs: {successful_runs}")
+print(f"  Failed runs: {failed_runs}")
+print(f"  Graphs per run: ~{graphs_per_run}")
 print(f"  Total experiments: {len(df_all)}")
 print(f"  Output folder: {BASE_FOLDER}/")
 
@@ -539,11 +652,12 @@ print(f"\n{'='*80}")
 print(f"VERIFICATION: Check for variation across runs")
 print(f"{'='*80}")
 
-# Quick check for variation
+# Quick check for variation - only for active categories
 for size in ["Small", "Medium", "Large", "XLarge"]:
-    subset = df_aggregated[df_aggregated["SizeBucket"] == size]
-    if len(subset) > 0:
-        avg_std = subset["Std"].mean()
-        print(f"  {size:8s}: Average Std = {avg_std:.4f}")
+    if size.lower() in ACTIVE_CATEGORIES:
+        subset = df_aggregated[df_aggregated["SizeBucket"] == size]
+        if len(subset) > 0:
+            avg_std = subset["Std"].mean()
+            print(f"  {size:8s}: Average Std = {avg_std:.4f}")
 
 print(f"\n{'='*80}\n")
