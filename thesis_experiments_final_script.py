@@ -4,8 +4,9 @@
 import os, numpy as np, pandas as pd, matplotlib.pyplot as plt, seaborn as sns
 import igraph as ig, gymnasium as gym, torch, torch.nn as nn, torch_geometric.nn as pyg_nn
 from gymnasium import spaces
-from stable_baselines3 import DQN
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
+from sb3_contrib import MaskablePPO
+from sb3_contrib.common.maskable.utils import get_action_masks
 from tqdm import tqdm
 import random, warnings, time
 warnings.filterwarnings("ignore")
@@ -206,12 +207,135 @@ start_time = time.time(  )
 # ============================================================================
 # BUDGET FUNCTION
 # ============================================================================
-def edge_budget(n: int, m: int) -> int:
-    """Budget B(N,M) = clamp(ceil(0.15*N), 2, min(ceil(0.1*M), 20))"""
-    node_based = int(np.ceil(0.15 * n))
-    edge_based = int(np.ceil(0.10 * m))
-    upper = min(edge_based if edge_based > 0 else 20, 20)
-    return max(2, min(node_based, upper))
+def edge_budget(
+    n: int,
+    m: int,
+    delta_k_bar: float = 0.5,  # target increase in average degree
+    max_edges_compute: int | None = None,
+) -> int:
+    """
+    Compute edge budget based on target average degree increase.
+    
+    Args:
+        n: Number of nodes
+        m: Number of existing edges
+        delta_k_bar: Target increase in average degree (default: 0.5)
+        max_edges_compute: Optional maximum budget for computational reasons
+    
+    Returns:
+        Number of edges to add
+    
+    Formula:
+        - Each added edge raises average degree by 2/n
+        - To increase avg degree by delta_k_bar, need: delta_k_bar * n / 2 edges
+        - Capped by available headroom (non-edges)
+    """
+    headroom = n * (n - 1) // 2 - m  # number of non-edges available
+    if headroom <= 0:
+        return 0
+    
+    # Each added edge raises average degree by 2/n
+    b = int(np.ceil(delta_k_bar * n / 2.0))
+    
+    if max_edges_compute is not None:
+        b = min(b, max_edges_compute)
+    
+    return min(b, headroom)
+
+# ============================================================================
+# REWARD-AGNOSTIC CANDIDATE SHORTLIST BUILDER
+# ============================================================================
+def build_candidate_shortlist(
+    g: ig.Graph,
+    k: int,
+    rng: random.Random,
+    bet_sample_size: int = 100,
+    max_pool: int = 5000,
+):
+    """
+    Build a fixed-size shortlist of feasible non-edges.
+    
+    Channels:
+    1) long shortest-path pairs
+    2) high betweenness endpoint pairs
+    3) low-degree endpoint pairs
+    4) random feasible pairs
+    
+    Returns a list of length <= k containing (u, v) tuples.
+    """
+    n = g.vcount()
+    existing = set(tuple(sorted(e)) for e in g.get_edgelist())
+    
+    all_non_edges = [
+        (i, j) for i in range(n) for j in range(i + 1, n)
+        if (i, j) not in existing
+    ]
+    if not all_non_edges:
+        return []
+    
+    # Optional presampling for large graphs
+    if len(all_non_edges) > max_pool:
+        pool = rng.sample(all_non_edges, max_pool)
+    else:
+        pool = all_non_edges
+    
+    degrees = np.array(g.degree(), dtype=float)
+    bet = approximate_betweenness(g, sample_size=bet_sample_size)
+    
+    # Distance cache only for sources we need
+    sources = sorted({u for u, _ in pool})
+    dist_cache = {}
+    for s in sources:
+        try:
+            dist_cache[s] = g.shortest_paths(source=s)[0]
+        except Exception:
+            dist_cache[s] = [np.inf] * n
+    
+    scored = []
+    for (u, v) in pool:
+        d = dist_cache[u][v]
+        if d == np.inf:
+            d = float(n)  # disconnected pairs get highest priority
+        scored.append({
+            "edge": (u, v),
+            "dist_score": float(d),                    # higher is better
+            "bet_score": float(bet[u] + bet[v]),      # higher is better
+            "deg_score": float(-(degrees[u] + degrees[v])),  # lower-degree endpoints preferred
+        })
+    
+    quarter = max(1, k // 4)
+    
+    top_dist = [x["edge"] for x in sorted(scored, key=lambda z: z["dist_score"], reverse=True)[:quarter]]
+    top_bet  = [x["edge"] for x in sorted(scored, key=lambda z: z["bet_score"], reverse=True)[:quarter]]
+    top_deg  = [x["edge"] for x in sorted(scored, key=lambda z: z["deg_score"], reverse=True)[:quarter]]
+    
+    remaining = list({x["edge"] for x in scored} - set(top_dist) - set(top_bet) - set(top_deg))
+    rand_pick = rng.sample(remaining, min(quarter, len(remaining))) if remaining else []
+    
+    shortlist = []
+    seen = set()
+    for edge in top_dist + top_bet + top_deg + rand_pick:
+        if edge not in seen:
+            shortlist.append(edge)
+            seen.add(edge)
+        if len(shortlist) >= k:
+            break
+    
+    # Refill if duplicates reduced the size
+    if len(shortlist) < k:
+        refill = [x["edge"] for x in sorted(
+            scored,
+            key=lambda z: (z["dist_score"], z["bet_score"], z["deg_score"]),
+            reverse=True
+        )]
+        for edge in refill:
+            if edge not in seen:
+                shortlist.append(edge)
+                seen.add(edge)
+            if len(shortlist) >= k:
+                break
+    
+    return shortlist[:k]
 
 # ============================================================================
 # RESILIENCE ENVIRONMENT WITH PBR AND EFFRES
@@ -219,49 +343,59 @@ def edge_budget(n: int, m: int) -> int:
 class ResilienceEnv(gym.Env):
     metadata = {"render_modes": []}
 
-    def __init__(self, path, reward_type="pbr", budget_edges=None, 
-                 gamma=5.0, beta=1.0, delta=1.0):
+    def __init__(
+        self,
+        path,
+        reward_type="pbr",
+        budget_edges=None,
+        gamma=5.0,
+        beta=1.0,
+        delta=1.0,
+        shortlist_size=None,
+        max_candidate_pool=5000,
+    ):
         super().__init__()
         g = ig.Graph.Read_GraphML(path).as_undirected()
         self.g_orig = g.copy()
         self.n = g.vcount()
         self.m = g.ecount()
         assert reward_type in ["pbr", "effres", "ivi", "nnsi"]
+        
         self.reward_type = reward_type
         self.gamma = gamma
         self.beta = beta
         self.delta = delta
-
+        
         if budget_edges is None:
             self.budget = edge_budget(self.n, self.m)
         else:
             self.budget = budget_edges
-
-        existing = set(tuple(sorted(e)) for e in g.get_edgelist())
-        self.candidates = [
-            (i, j) for i in range(self.n) for j in range(i + 1, self.n)
-            if (i, j) not in existing
-        ]
-        self.action_space = spaces.Discrete(len(self.candidates))
+        
+        # Fixed action-space size
+        if shortlist_size is None:
+            self.shortlist_size = min(512, max(128, 16 * self.budget))
+        else:
+            self.shortlist_size = int(shortlist_size)
+        
+        self.max_candidate_pool = max_candidate_pool
+        self.rng = random.Random(SEED)
+        
+        self.action_space = spaces.Discrete(self.shortlist_size)
+        # Observation: node features (n * 5) + progress features (2)
         self.observation_space = spaces.Box(
-            low=-5, high=5, shape=(self.n * 5,), dtype=np.float32
+            low=-5, high=5, shape=(self.n * 5 + 2,), dtype=np.float32
         )
-
-        # Compute normalization stats once at initialization
+        
         feats = self._compute_node_features(self.g_orig)
         self.mean, self.std = feats.mean(0), feats.std(0) + 1e-8
-
-        # FIXED: Store ORIGINAL edge_index (never mutated)
+        
         edges = g.get_edgelist()
         ei = torch.tensor(edges, dtype=torch.long).t()
         self.edge_index_orig = torch.cat([ei, ei.flip(0)], dim=1)
-        
-        # edge_index_base is no longer used by GNN (kept for compatibility)
         self.edge_index_base = self.edge_index_orig.clone()
         
         self.added_edges = set()
-        
-        # Cache for node features to avoid recomputation
+        self.current_shortlist = []
         self._feature_cache = None
         self._cache_valid = False
         self.reset()
@@ -289,6 +423,29 @@ class ResilienceEnv(gym.Env):
         core = np.array(g.coreness(), dtype=float)
         clust = np.array(g.transitivity_local_undirected(mode="zero"), dtype=float)
         return np.stack([deg, close, pr, core, clust], axis=1).astype(np.float32)
+    
+    def _refresh_shortlist(self):
+        """Rebuild the candidate shortlist after graph changes."""
+        self.current_shortlist = build_candidate_shortlist(
+            self.g,
+            k=self.shortlist_size,
+            rng=self.rng,
+            bet_sample_size=BETWEENNESS_SAMPLE_SIZE,
+            max_pool=self.max_candidate_pool,
+        )
+    
+    def action_masks(self):
+        """Return boolean mask: True = valid action, False = invalid (already added)"""
+        masks = np.zeros(self.shortlist_size, dtype=bool)
+        for idx, edge in enumerate(self.current_shortlist):
+            if edge is None:
+                continue
+            u, v = edge
+            if (u, v) in self.added_edges or self.g.are_connected(u, v):
+                masks[idx] = False
+            else:
+                masks[idx] = True
+        return masks
 
     def _exact_lambda2(self, g: ig.Graph):
         """Exact λ₂ (Algebraic Connectivity) - same as evaluation"""
@@ -335,18 +492,6 @@ class ResilienceEnv(gym.Env):
         except:
             # Fallback to exact method if sparse solver fails
             return self._exact_lambda2(g)
-    
-    def action_masks(self):
-        """Return boolean mask: True = valid action, False = invalid (already added)"""
-        masks = np.ones(len(self.candidates), dtype=bool)
-        
-        for idx, (u, v) in enumerate(self.candidates):
-            edge = tuple(sorted((u, v)))
-            # Mask if edge already added OR already exists in graph
-            if edge in self.added_edges or self.g.are_connected(u, v):
-                masks[idx] = False
-        
-        return masks
 
     def _effective_graph_resistance(self, g: ig.Graph):
         """
@@ -374,6 +519,25 @@ class ResilienceEnv(gym.Env):
             return 1e9
         
         return float(n * np.sum(1.0 / nonzero))
+    
+    def _compute_fc_from_graph(self, g: ig.Graph) -> float:
+        """
+        Compute critical fraction (f_c) from graph.
+        Based on Cohen et al. (2000) percolation theory.
+        """
+        degrees = np.array(g.degree(), dtype=float)
+        k_mean = degrees.mean()
+        if k_mean <= 1e-12:
+            return 0.0
+        
+        k2_mean = (degrees ** 2).mean()
+        kappa = k2_mean / (k_mean + 1e-8)
+        
+        if kappa <= 2.0:
+            return 0.0
+        
+        fc = 1.0 - 1.0 / (kappa - 1.0 + 1e-8)
+        return float(np.clip(fc, 0.0, 1.0))
 
     # ========== IVI/NNSI Helper Methods ==========
     def _minmax(self, arr: np.ndarray):
@@ -515,20 +679,14 @@ class ResilienceEnv(gym.Env):
         
         # Invalidate feature cache
         self._cache_valid = False
+        
+        # Refresh shortlist
+        self._refresh_shortlist()
 
         # Initialize baselines based on reward type
-        # OPTIMIZATION: Only compute λ₂ for reward types that actually need it
-        # FIXED: Use approximation for large graphs
-        if self.reward_type in ["pbr", "effres"]:
-            self.prev_lambda2 = self._approx_lambda2(self.g)
-        
         if self.reward_type == "pbr":
             # PBR baselines
-            degrees = np.array(self.g.degree(), dtype=float)
-            k_mean = degrees.mean()
-            k2_mean = (degrees ** 2).mean()
-            self.prev_moment = k2_mean / (k_mean + 1e-8)
-            self.prev_fc = 1.0 - 1.0 / (self.prev_moment - 1.0 + 1e-8)
+            self.prev_fc = self._compute_fc_from_graph(self.g)
         
         elif self.reward_type == "effres":
             # EffRes baselines
@@ -547,44 +705,58 @@ class ResilienceEnv(gym.Env):
 
     def _obs(self):
         """
-        Get observation with feature caching.
+        Get observation with feature caching and progress features.
         Features are cached and only recomputed when graph structure changes.
         """
         if not self._cache_valid:
             feats = self._compute_node_features(self.g)
-            self._feature_cache = ((feats - self.mean) / self.std).flatten().astype(np.float32)
+            node_feats = ((feats - self.mean) / self.std).flatten().astype(np.float32)
+            self._feature_cache = node_feats
             self._cache_valid = True
         
-        return self._feature_cache
+        # Add progress features
+        budget_used = self.successful_additions / max(1, self.budget)
+        valid_frac = self.action_masks().mean()
+        
+        progress_feats = np.array([budget_used, valid_frac], dtype=np.float32)
+        
+        return np.concatenate([self._feature_cache, progress_feats])
 
     def step(self, action):
-        u, v = self.candidates[action]
+        action = int(action)
+        
+        # Invalid slot index
+        if action < 0 or action >= len(self.current_shortlist):
+            reward = -1.0
+            self.steps += 1
+            done = self.successful_additions >= self.budget or self.steps >= self.budget * 10
+            return self._obs(), float(reward), done, False, {}
+        
+        edge = self.current_shortlist[action]
+        
+        # Empty slot
+        if edge is None:
+            reward = -1.0
+            self.steps += 1
+            done = self.successful_additions >= self.budget or self.steps >= self.budget * 10
+            return self._obs(), float(reward), done, False, {}
+        
+        u, v = edge
         edge = tuple(sorted((u, v)))
-
+        
         if edge in self.added_edges or self.g.are_connected(u, v):
-            reward = -0.5
-            # No graph change, cache remains valid
+            reward = -1.0
         else:
             self.g.add_edge(u, v)
             self.added_edges.add(edge)
-            self.successful_additions += 1  # Only count successful additions
-            
-            # Invalidate cache since graph structure changed
+            self.successful_additions += 1
             self._cache_valid = False
-            
             reward = self._compute_reward()
-            
-            # REMOVED: No longer mutate edge_index_base (GNN uses original topology)
-            # The node features already capture the effect of added edges
-
+            self._refresh_shortlist()
+        
         self.steps += 1
-        
-        # Done when budget edges added OR too many failed attempts (safety limit)
-        max_attempts = self.budget * 10  # Allow up to 10x budget in total attempts
-        done = self.successful_additions >= self.budget or self.steps >= max_attempts
-        
-        obs = self._obs()
-        return obs, float(reward), done, False, {}
+        done = self.successful_additions >= self.budget or self.steps >= self.budget * 10
+        return self._obs(), float(reward), done, False, {}
 
     def _compute_reward(self):
         """
@@ -592,18 +764,10 @@ class ResilienceEnv(gym.Env):
         Each reward type computes only the metrics it needs.
         """
         if self.reward_type == "pbr":
-            # FIXED: Use approximation for large graphs during training
-            curr_lambda2 = self._approx_lambda2(self.g)
-            d_lambda2 = curr_lambda2 - self.prev_lambda2
-            r = self._reward_pbr(curr_lambda2, d_lambda2)
-            self.prev_lambda2 = curr_lambda2
+            r = self._reward_pbr()
             
         elif self.reward_type == "effres":
-            # FIXED: Use approximation for large graphs during training
-            curr_lambda2 = self._approx_lambda2(self.g)
-            d_lambda2 = curr_lambda2 - self.prev_lambda2
-            r = self._reward_effres(d_lambda2)
-            self.prev_lambda2 = curr_lambda2
+            r = self._reward_effres()  # d_lambda2 not used in new version
             
         elif self.reward_type == "ivi":
             # IVI only needs IVI scores - no λ₂ computation needed
@@ -616,195 +780,66 @@ class ResilienceEnv(gym.Env):
         else:
             r = 0.0
         
-        # Scale reward for better learning stability
-        # Clip to reasonable range to prevent extreme values
-        r_scaled = max(min(r, 10.0), -10.0)
+        # Clip to reasonable range
+        r_scaled = float(np.clip(r, -1.0, 1.0))
         
         return r_scaled
 
-    def _reward_pbr(self, curr_lambda2, d_lambda2):
+    def _reward_pbr(self):
         """
-        Percolation-Based Resilience (PBR)
-        Based on Cohen et al. (2000), Callaway et al. (2000), Schneider et al. (2011)
-        
-        Enhanced with multiple signals:
-        r = 0.35 * Δf_c + 0.25 * Δ(moment) + 0.25 * Δλ₂ + 0.15 * Δ(avg_degree)
-        
-        Rationale:
-        - Critical fraction (f_c): Primary percolation metric
-        - Moment: Degree distribution shape (lower is more resilient)
-        - λ₂: Algebraic connectivity (higher is better)
-        - Avg degree: Overall connectivity (higher is better)
+        Percolation-Based Resilience (PBR) - normalized marginal objective.
         """
-        degrees = np.array(self.g.degree(), dtype=float)
-        k_mean = degrees.mean()
-        k2_mean = (degrees ** 2).mean()
+        curr_fc = self._compute_fc_from_graph(self.g)
+        prev_fc = getattr(self, "prev_fc", curr_fc)
         
-        # Degree distribution moment (Callaway et al. 2000)
-        curr_moment = k2_mean / (k_mean + 1e-8)
+        r = (curr_fc - prev_fc) / (abs(prev_fc) + 1e-8)
         
-        # Critical fraction (Cohen et al. 2000)
-        curr_fc = 1.0 - 1.0 / (curr_moment - 1.0 + 1e-8)
-        
-        # Average degree (simple but effective connectivity measure)
-        curr_avg_deg = k_mean
-        
-        # Compute deltas
-        d_fc = curr_fc - self.prev_fc
-        d_moment = self.prev_moment - curr_moment  # Lower moment is better
-        d_avg_deg = curr_avg_deg - getattr(self, 'prev_avg_deg', curr_avg_deg)
-        
-        # Enhanced PBR reward with multiple signals
-        r = 0.35 * d_fc + 0.25 * d_moment + 0.25 * d_lambda2 + 0.15 * d_avg_deg
-        
-        # Update baselines
         self.prev_fc = curr_fc
-        self.prev_moment = curr_moment
-        self.prev_avg_deg = curr_avg_deg
-        
         return r
-
-    def _reward_effres(self, d_lambda2):
+    
+    def _reward_effres(self):
         """
-        Effective Resistance + λ₂ shaping
-        Based on Klein & Randić (1993)
-        
-        Enhanced with multiple resistance-based signals:
-        r = 0.4 * ΔEffRes_rel + 0.3 * Δλ₂ + 0.2 * Δ(avg_resistance) + 0.1 * Δ(max_resistance)
-        
-        Rationale:
-        - Effective resistance: Total graph resistance (lower is better)
-        - λ₂: Algebraic connectivity (higher is better)
-        - Avg resistance: Mean pairwise resistance (lower is better)
-        - Max resistance: Worst-case resistance (lower is better)
+        Effective Resistance - normalized marginal objective.
         """
         curr_effres = self._effective_graph_resistance(self.g)
-        
-        # Relative change in effective resistance
-        prev_effres = float(self.prev_effres) if self.prev_effres is not None else 1e9
-        d_effres_rel = (prev_effres - float(curr_effres)) / (abs(prev_effres) + 1e-9)
-        
-        # Additional resistance metrics for richer signal
-        n = self.g.vcount()
-        
-        # Average resistance (sample-based for large graphs)
-        if n <= 100:
-            # For small graphs, compute exact average resistance
-            try:
-                # Sample pairs for resistance computation
-                sample_size = min(20, n)
-                sampled = np.random.choice(n, size=sample_size, replace=False)
-                resistances = []
-                for i in range(len(sampled)):
-                    for j in range(i+1, min(i+5, len(sampled))):
-                        # Approximate resistance as inverse of number of paths
-                        paths = len(self.g.get_all_shortest_paths(sampled[i], sampled[j]))
-                        if paths > 0:
-                            resistances.append(1.0 / paths)
-                curr_avg_res = np.mean(resistances) if resistances else 1.0
-            except:
-                curr_avg_res = 1.0
-        else:
-            # For large graphs, use degree-based approximation
-            degrees = np.array(self.g.degree(), dtype=float)
-            curr_avg_res = 1.0 / (degrees.mean() + 1e-8)
-        
-        # Maximum resistance (approximated by minimum degree)
-        min_degree = min(self.g.degree())
-        curr_max_res = 1.0 / (min_degree + 1e-8)
-        
-        # Compute deltas
-        prev_avg_res = getattr(self, 'prev_avg_res', curr_avg_res)
-        prev_max_res = getattr(self, 'prev_max_res', curr_max_res)
-        
-        d_avg_res = prev_avg_res - curr_avg_res  # Lower is better
-        d_max_res = prev_max_res - curr_max_res  # Lower is better
-        
-        # Enhanced EFFRES reward with multiple resistance signals
-        r = 0.4 * d_effres_rel + 0.3 * d_lambda2 + 0.2 * d_avg_res + 0.1 * d_max_res
-        
-        # Update baselines
-        self.prev_effres = float(curr_effres)
-        self.prev_avg_res = curr_avg_res
-        self.prev_max_res = curr_max_res
-        
+        prev_effres = getattr(self, "prev_effres", curr_effres)
+        r = (prev_effres - curr_effres) / (abs(prev_effres) + 1e-8)
+        self.prev_effres = curr_effres
         return r
-
+    
     def _reward_ivi(self):
         """
-        IVI-based reward: Reduce maximum IVI (target high-influence nodes)
-        r = ΔIVI_max + 0.1 * ΔIVI_mean (focus on max but also consider overall reduction)
-        
-        Computes IVI before and after to determine if edge addition was beneficial.
+        IVI-based reward - normalized marginal objective.
         """
         curr_ivi_scores = self._ivi_scores(self.g)
         curr_max_ivi = curr_ivi_scores.max()
-        curr_mean_ivi = curr_ivi_scores.mean()
-        
-        # Primary: reduce maximum IVI (target most influential node)
-        d_max_ivi = self.prev_max_ivi - curr_max_ivi
-        
-        # Secondary: reduce average IVI (overall network influence)
-        d_mean_ivi = getattr(self, 'prev_mean_ivi', curr_mean_ivi) - curr_mean_ivi
-        
-        # Combined reward: focus on max but also reward overall reduction
-        r = d_max_ivi + 0.1 * d_mean_ivi
-        
-        # Update baselines
+        prev_max_ivi = getattr(self, "prev_max_ivi", curr_max_ivi)
+        r = (prev_max_ivi - curr_max_ivi) / (abs(prev_max_ivi) + 1e-8)
         self.prev_max_ivi = curr_max_ivi
-        self.prev_mean_ivi = curr_mean_ivi
-        
         return r
-
+    
     def _reward_nnsi(self):
         """
-        NNSI-based reward: Reduce maximum NNSI (target structurally significant nodes)
-        r = ΔNNSI_max + 0.1 * ΔNNSI_mean (focus on max but also consider overall reduction)
-        
-        Computes NNSI before and after to determine if edge addition was beneficial.
+        NNSI-based reward - normalized marginal objective.
         """
         curr_nnsi_scores = self._nnsi_scores(self.g)
         curr_max_nnsi = curr_nnsi_scores.max()
-        curr_mean_nnsi = curr_nnsi_scores.mean()
-        
-        # Primary: reduce maximum NNSI (target most significant node)
-        d_max_nnsi = self.prev_max_nnsi - curr_max_nnsi
-        
-        # Secondary: reduce average NNSI (overall network significance)
-        d_mean_nnsi = getattr(self, 'prev_mean_nnsi', curr_mean_nnsi) - curr_mean_nnsi
-        
-        # Combined reward: focus on max but also reward overall reduction
-        r = d_max_nnsi + 0.1 * d_mean_nnsi
-        
-        # Update baselines
+        prev_max_nnsi = getattr(self, "prev_max_nnsi", curr_max_nnsi)
+        r = (prev_max_nnsi - curr_max_nnsi) / (abs(prev_max_nnsi) + 1e-8)
         self.prev_max_nnsi = curr_max_nnsi
-        self.prev_mean_nnsi = curr_mean_nnsi
-        
         return r
-
 
 # ============================================================================
 # GNN FEATURE EXTRACTOR - FIXED FOR REPLAY BUFFER
 # ============================================================================
 class CleanGNNExtractor(BaseFeaturesExtractor):
-    """
-    FIXED: Store edge_index in observation to avoid topology leak from replay buffer.
-    
-    The original implementation read env.edge_index_base during forward(), which:
-    1. Uses the CURRENT graph topology for OLD replayed observations
-    2. Leaks topology information across episodes
-    3. Breaks PyG batching (reuses single edge_index for batch)
-    
-    Solution: Encode edge_index into the observation itself.
-    """
     def __init__(self, observation_space, env, features_dim=128):
         super().__init__(observation_space, features_dim)
         self.n_nodes = env.n
         self.n_features = 5
-        
-        # Store the ORIGINAL graph's edge_index (never changes)
+        self.n_progress = 2
         self.base_edge_index = env.edge_index_orig.clone()
-
+        
         self.gnn = pyg_nn.Sequential("x, edge_index", [
             (pyg_nn.GraphConv(self.n_features, 64), "x, edge_index -> x"),
             nn.ReLU(),
@@ -813,44 +848,52 @@ class CleanGNNExtractor(BaseFeaturesExtractor):
             (pyg_nn.GraphConv(64, 32), "x, edge_index -> x"),
         ])
         self.pool = pyg_nn.global_mean_pool
-        self.proj = nn.Linear(32, features_dim)
-
+        # graph embedding (32) + progress features (2)
+        self.proj = nn.Linear(32 + self.n_progress, features_dim)
+    
     def forward(self, obs: torch.Tensor) -> torch.Tensor:
-        """
-        FIXED: Use base_edge_index (original graph) for all observations.
-        
-        This ensures:
-        1. Replayed observations use the correct topology
-        2. No topology leak across episodes
-        3. Consistent encoding for all observations
-        
-        Note: We use the ORIGINAL graph topology, not the augmented one.
-        The node features already capture the effect of added edges.
-        """
         b = obs.shape[0]
-        x = obs.view(b, self.n_nodes, self.n_features).view(-1, self.n_features)
+        node_dim = self.n_nodes * self.n_features
+        node_obs = obs[:, :node_dim].contiguous()
+        progress_obs = obs[:, node_dim: node_dim + self.n_progress]
         
-        # Use the original graph's edge_index (fixed, never changes)
+        x = node_obs.reshape(b, self.n_nodes, self.n_features).reshape(-1, self.n_features)
         edge_index = self.base_edge_index.to(obs.device)
         
-        # FIXED: Proper PyG batching - increment edge_index for each graph in batch
         if b > 1:
-            # Create batched edge_index by offsetting node IDs
             edge_indices = []
             for i in range(b):
-                offset_edge_index = edge_index + (i * self.n_nodes)
-                edge_indices.append(offset_edge_index)
+                edge_indices.append(edge_index + (i * self.n_nodes))
             edge_index = torch.cat(edge_indices, dim=1)
         
         x = self.gnn(x, edge_index)
         batch = torch.arange(b, device=obs.device).repeat_interleave(self.n_nodes)
         x = self.pool(x, batch)
+        x = torch.cat([x, progress_obs], dim=1)
         x = self.proj(x)
         return x
 
 # ============================================================================
 # EVALUATION METRICS
 # ============================================================================
+def average_node_connectivity_exact(g: ig.Graph) -> float:
+    """
+    Compute exact average pairwise node connectivity for small graphs.
+    This is the average of vertex_connectivity(i, j) over all pairs.
+    """
+    n = g.vcount()
+    if n < 2:
+        return 0.0
+    
+    vals = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            try:
+                vals.append(g.vertex_connectivity(i, j))
+            except:
+                pass
+    return float(np.mean(vals)) if vals else 0.0
+
 def compute_attack_curve_auc(g: ig.Graph, attack_fractions=None):
     """
     Compute AUC of attack curve (targeted degree-based removal)
@@ -954,14 +997,10 @@ def exact_metrics(g: ig.Graph):
         spectral_gap = lambda2
         lambda2_lambdan_ratio = 0.0
 
-    # Average Node Connectivity (sample-based for large graphs)
-    # More discriminative than min-cut
+    # Average Node Connectivity (pairwise average, consistent across graph sizes)
     if n <= 50:
-        # Exact for small graphs
-        try:
-            avg_node_conn = g.vertex_connectivity()
-        except:
-            avg_node_conn = 0.0
+        # Exact pairwise average for small graphs
+        avg_node_conn = average_node_connectivity_exact(g)
     else:
         # Sample-based approximation for large graphs
         sample_size = min(50, n)
@@ -1501,8 +1540,16 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
         print(f"  [{reward_idx}/4] {reward_type.upper():10s} - Training...", end=" ", flush=True)
         
         try:
-            env = ResilienceEnv(path, reward_type=reward_type, budget_edges=B,
-                              gamma=5.0, beta=1.0, delta=1.0)
+            env = ResilienceEnv(
+                path,
+                reward_type=reward_type,
+                budget_edges=B,
+                gamma=5.0,
+                beta=1.0,
+                delta=1.0,
+                shortlist_size=min(512, max(128, 16 * B)),
+                max_candidate_pool=5000,
+            )
             
             policy_kwargs = dict(
                 features_extractor_class=CleanGNNExtractor,
@@ -1510,28 +1557,29 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 net_arch=[256, 256],
             )
             
-            model = DQN(
-                "MlpPolicy", env, policy_kwargs=policy_kwargs,
-                learning_rate=3e-4,  # Lower learning rate for stability
-                buffer_size=100000,  # Larger replay buffer
-                batch_size=256,      # Larger batch for better gradients
-                learning_starts=2000,  # More initial exploration
-                train_freq=4, 
-                target_update_interval=500,  # More frequent target updates
-                gamma=0.99,  # Higher discount for long-term planning
-                exploration_fraction=0.3,  # Longer exploration phase
-                exploration_initial_eps=1.0,
-                exploration_final_eps=0.05,  # More exploration retained
-                device=DEVICE, verbose=0, seed=SEED,
+            model = MaskablePPO(
+                "MlpPolicy",
+                env,
+                policy_kwargs=policy_kwargs,
+                learning_rate=3e-4,
+                n_steps=1024,
+                batch_size=256,
+                n_epochs=10,
+                gamma=0.99,
+                gae_lambda=0.95,
+                ent_coef=0.01,
+                clip_range=0.2,
+                device=DEVICE,
+                verbose=0,
+                seed=SEED,
             )
             
-            # Training with progress - increased to 50k steps
+            # Training with progress - 50k steps
             print("Training 50k steps...", end=" ", flush=True)
             model.learn(total_timesteps=50000)
             print("Evaluating...", end=" ", flush=True)
             
-            # FIXED: Strict policy evaluation - no invalid action repair
-            # Log every attempt including invalid actions
+            # Evaluation with action masking
             obs, _ = env.reset()
             rollout_attempts = []
             done = False
@@ -1540,27 +1588,34 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
             print(f"Starting rollout (budget={env.budget})...", end=" ", flush=True)
             
             while not done:
-                # Get valid action mask
-                valid_actions = env.action_masks()
+                # Get action masks for MaskablePPO
+                action_masks = get_action_masks(env)
                 
                 # If no valid actions left, stop
-                if not valid_actions.any():
+                if not action_masks.any():
                     break
                 
-                # Get model's deterministic action (NO REPAIR)
-                raw_action, _ = model.predict(obs, deterministic=True)
+                # Get model's action with masking
+                raw_action, _ = model.predict(obs, deterministic=True, action_masks=action_masks)
                 raw_action = int(raw_action)
                 
-                # Check if action is valid
-                was_valid = bool(valid_actions[raw_action])
+                # Check if action is valid (should always be true with masking)
+                was_valid = bool(action_masks[raw_action])
                 
-                # Get edge info
-                u, v = env.candidates[raw_action]
+                # Get edge info from shortlist
+                if raw_action < len(env.current_shortlist):
+                    edge_tuple = env.current_shortlist[raw_action]
+                    if edge_tuple is not None:
+                        u, v = edge_tuple
+                    else:
+                        u, v = -1, -1  # Empty slot
+                else:
+                    u, v = -1, -1  # Invalid index
                 
                 # Track if edge was actually added
                 prev_added_count = len(env.added_edges)
                 
-                # Execute action (env handles invalid actions with penalty)
+                # Execute action
                 obs, reward, done, _, _ = env.step(raw_action)
                 
                 # Check if edge was added
@@ -1735,8 +1790,12 @@ print(f"Saved to: {output_edges_all_file}")
 
 # Save successful attempts only (edges that were actually added)
 print(f"Filtering for successfully added edges...")
-df_edges_added = df_edges[df_edges["WasAdded"] == True].copy()
-print(f"Found {len(df_edges_added)} successfully added edges")
+if len(df_edges) > 0 and "WasAdded" in df_edges.columns:
+    df_edges_added = df_edges[df_edges["WasAdded"] == True].copy()
+    print(f"Found {len(df_edges_added)} successfully added edges")
+else:
+    df_edges_added = pd.DataFrame()
+    print(f"No edge attempts recorded (empty DataFrame)")
 df_edges_added.to_csv(output_edges_added_file, index=False)
 print(f"Saved to: {output_edges_added_file}")
 
