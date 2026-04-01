@@ -23,9 +23,8 @@ from tqdm import tqdm
 import random, warnings, time
 warnings.filterwarnings("ignore")
 
-# Set PyTorch thread limits after import
-torch.set_num_threads(1)
-torch.set_num_interop_threads(1)
+# Verify thread limits (environment variables should have set these)
+print(f"PyTorch threads: {torch.get_num_threads()}, interop: {torch.get_num_interop_threads()}")
 
 # ============================================================================
 # OPTIMIZATION HELPERS FOR LARGE GRAPHS
