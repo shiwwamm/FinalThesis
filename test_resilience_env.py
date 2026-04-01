@@ -20,8 +20,9 @@ from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 from sb3_contrib import MaskablePPO
 from sb3_contrib.common.maskable.utils import get_action_masks
 
-torch.set_num_threads(1)
-torch.set_num_interop_threads(1)
+# Verify thread limits are set by environment variables
+print(f"Thread check: PyTorch threads={torch.get_num_threads()}, interop={torch.get_num_interop_threads()}")
+print()
 
 # Import the environment from the main script
 sys.path.insert(0, '.')
