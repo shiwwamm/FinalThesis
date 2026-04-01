@@ -302,14 +302,24 @@ def build_candidate_shortlist(
     dist_cache = {}
     for s in sources:
         try:
-            dist_cache[s] = g.shortest_paths(source=s)[0]
+            sp = g.shortest_paths(source=s)
+            # Ensure it's a list, not a single value
+            if isinstance(sp, list) and len(sp) > 0:
+                dist_cache[s] = sp[0]
+            else:
+                dist_cache[s] = [np.inf] * n
         except Exception:
             dist_cache[s] = [np.inf] * n
     
     scored = []
     for (u, v) in pool:
-        d = dist_cache[u][v]
-        if d == np.inf:
+        # Safely get distance
+        if u in dist_cache and isinstance(dist_cache[u], (list, np.ndarray)) and v < len(dist_cache[u]):
+            d = dist_cache[u][v]
+        else:
+            d = np.inf
+            
+        if d == np.inf or np.isinf(d):
             d = float(n)  # disconnected pairs get highest priority
         scored.append({
             "edge": (u, v),
@@ -1433,6 +1443,7 @@ for idx, path in enumerate(tqdm(GRAPH_FILES, desc="Overall Progress"), 1):
                 gae_lambda=0.95,
                 ent_coef=0.01,
                 clip_range=0.2,
+                max_grad_norm=None,  # Disable gradient clipping to avoid PyTorch bug
                 device=DEVICE,
                 verbose=0,
                 seed=SEED,
