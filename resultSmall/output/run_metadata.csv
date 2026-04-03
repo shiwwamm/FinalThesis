@@ -1,0 +1,11 @@
+run,seed,size_category,n_graphs,small_graphs
+1,42137,small,5,"['Garr199904', 'Cesnet200511', 'Telecomserbia', 'Evolink', 'Packetexchange']"
+2,42274,small,5,"['HiberniaUs', 'Marnet', 'Nordu1989', 'Renam', 'Arpanet19706']"
+3,42411,small,5,"['HurricaneElectric', 'Nextgen', 'Internetmci', 'Layer42', 'Zamren']"
+4,42548,small,5,"['Gambia', 'Epoch', 'Iij', 'Istar', 'Bandcon']"
+5,42685,small,5,"['Iinet', 'Intranetwork', 'Ilan', 'CrlNetworkServices', 'Compuserve']"
+6,42822,small,5,"['Arpanet19723', 'Cesnet200304', 'Iij', 'Sago', 'Cesnet1993']"
+7,42959,small,5,"['Bren', 'KentmanFeb2008', 'Harnet', 'Ibm', 'Cesnet1993']"
+8,43096,small,5,"['Renater2004', 'Nsfnet', 'Zamren', 'Arnes', 'BtEurope']"
+9,43233,small,5,"['Dataxchange', 'Janetbackbone', 'Agis', 'DeutscheTelekom', 'Cesnet1999']"
+10,43370,small,5,"['PionierL3', 'Netrail', 'Garr199905', 'Ai3', 'Belnet2008']"
