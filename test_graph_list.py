@@ -1,3 +1,0 @@
-topo = {
-    "Interoute": "Interoute.graphml",
-}
