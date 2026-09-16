@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import os
+import sys
 
 # Set style
 sns.set_style("whitegrid")
@@ -19,15 +20,25 @@ plt.rcParams['font.size'] = 9
 # ============================================================================
 # LOAD DATA
 # ============================================================================
-aggregated_file = "./results_aggregated_by_size.csv"
+# Optional folder: python visualize_aggregated_results.py [run_folder|combined_folder]
+base = sys.argv[1] if len(sys.argv) > 1 else "."
+if base.endswith(".csv"):
+    candidates = [base]
+else:
+    candidates = [
+        os.path.join(base, "output", "results_aggregated_by_size.csv"),
+        os.path.join(base, "results_aggregated_by_size.csv"),
+    ]
+aggregated_file = next((p for p in candidates if os.path.exists(p)), None)
 
-if not os.path.exists(aggregated_file):
-    print(f"❌ Error: {aggregated_file} not found!")
-    print("Run 'python run_repeated_experiments.py' first.")
+if aggregated_file is None:
+    print(f"❌ Error: results_aggregated_by_size.csv not found under '{base}'")
+    print("Usage: python visualize_aggregated_results.py [folder]")
+    print("Run experiments first (run_repeated_experiments.py / combine_separate_experiments.py).")
     exit(1)
 
 df = pd.read_csv(aggregated_file)
-print(f"Loaded {len(df)} aggregated statistics")
+print(f"Loaded {len(df)} aggregated statistics from {aggregated_file}")
 
 # ============================================================================
 # PLOT CONFIGURATION
@@ -48,7 +59,7 @@ colors = {
     "GREEDY_ALG": "#386641"
 }
 
-output_dir = "./aggregated_plots"
+output_dir = os.path.join(base if not base.endswith(".csv") else ".", "aggregated_plots")
 os.makedirs(output_dir, exist_ok=True)
 
 # ============================================================================
